@@ -1,0 +1,16 @@
+{
+    "name": "runopencode/metadata-bundle",
+    "description": "Symfony integration with runopencode/metadata library.",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Nikola Svitlica a.k.a TheCelavi",
+            "email": "thecelavi@runopencode.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.4",
+        "runopencode/metadata": "self.version"
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "name": "runopencode/phplib",
+    "minimum-stability": "stable",
+    "type": "library",
+    "description": "A PHP library for common functionalities.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nikola Svitlica a.k.a TheCelavi",
+            "email": "thecelavi@runopencode.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "RunOpenCode\\": "src/RunOpenCode/"
+        }
+    },
+    "require": {
+        "php": ">=8.4",
+        "psr/cache": "^3.0",
+        "symfony/cache": "^7.3"
+    },
+    "require-dev": {
+        "symplify/monorepo-builder": "^12.2",
+        "phpunit/phpunit": "^12.4",
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.88",
+        "rector/rector": "*"
+    },
+    "replace": {
+        "runopencode/metadata": "self.version"
+    },
+    "scripts": {
+        "phpunit": "XDEBUG_MODE=coverage vendor/bin/phpunit --colors=always --testdox",
+        "phpstan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --memory-limit=-1",
+        "phpcs": "XDEBUG_MODE=off vendor/bin/php-cs-fixer fix --diff --verbose --show-progress=dots --allow-risky=yes",
+        "rector": "XDEBUG_MODE=off vendor/bin/rector process --ansi --dry-run"
+    }
+}

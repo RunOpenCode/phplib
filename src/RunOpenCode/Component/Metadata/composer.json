@@ -1,0 +1,17 @@
+{
+    "name": "runopencode/metadata",
+    "description": "Utility to read/search for class/property/method metadata (attributes).",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Nikola Svitlica a.k.a TheCelavi",
+            "email": "thecelavi@runopencode.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.4",
+        "psr/cache": "^3.0",
+        "symfony/cache": "^7.3"
+    }
+}
