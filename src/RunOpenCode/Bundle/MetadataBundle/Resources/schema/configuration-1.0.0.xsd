@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns="http://www.runopencode.com/xsd-schema/query-resources-loader-bundle"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.runopencode.com/xsd-schema/query-resources-loader-bundle"
+            elementFormDefault="qualified"
+>
+
+    <xsd:element name="config" type="config"/>
+
+    <xsd:complexType name="config">
+
+        <xsd:all>
+            <xsd:element name="cache-pool" type="xsd:string" minOccurs="0" />
+        </xsd:all>
+
+    </xsd:complexType>
+
+</xsd:schema>

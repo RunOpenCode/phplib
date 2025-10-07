@@ -1,0 +1,5 @@
+memory_limit=${PHP_MEMORY_LIMIT}
+date.timezone=${SYSTEM_TIMEZONE}
+error_log=${PHP_ERROR_LOG}
+display_startup_errors=1
+expose_php=Off

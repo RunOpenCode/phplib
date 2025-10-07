@@ -1,0 +1,7 @@
+parameters:
+    level: max
+    excludePaths:
+        - src/RunOpenCode/Component/*/vendor/*
+        - src/RunOpenCode/Bundle/*/vendor/*
+    paths:
+        - src/
