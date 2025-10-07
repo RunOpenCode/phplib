@@ -183,5 +183,6 @@ class FooClass
     #[BarAttribute('bar_private_property_1')]
     #[FooAttribute('foo_private_property')]
     #[BarAttribute('bar_private_property_2')]
+    // @phpstan-ignore-next-line property.uninitializedReadonly property.unused
     private readonly string $privateProperty;
 }
