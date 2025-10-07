@@ -2,7 +2,7 @@
     "name": "runopencode/phplib",
     "minimum-stability": "stable",
     "type": "library",
-    "description": "A PHP library for common functionalities.",
+    "description": "A collection of PHP libraries within mono-repository.",
     "license": "MIT",
     "authors": [
         {
