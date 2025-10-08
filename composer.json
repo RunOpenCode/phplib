@@ -40,8 +40,8 @@
         "rector": "XDEBUG_MODE=off vendor/bin/rector process --ansi --dry-run"
     },
     "replace": {
-        "runopencode/metadata": "0.1.14",
-        "runopencode/metadata-bundle": "0.1.14"
+        "runopencode/metadata": "0.1.0",
+        "runopencode/metadata-bundle": "0.1.0"
     },
     "minimum-stability": "stable"
 }
