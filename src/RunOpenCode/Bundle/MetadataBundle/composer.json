@@ -1,6 +1,6 @@
 {
     "name": "runopencode/metadata-bundle",
-    "description": "Symfony integration with runopencode/metadata library.",
+    "description": "Symfony integration with runopencode/metadata component.",
     "minimum-stability": "stable",
     "license": "proprietary",
     "authors": [
@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=8.4",
-        "runopencode/metadata": "^0.2",
+        "runopencode/metadata": "^0.1.1",
         "symfony/http-kernel": "^7.0",
         "symfony/cache": "^7.0",
         "symfony/config": "^7.0",
