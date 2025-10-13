@@ -17,7 +17,8 @@
                     method="create"
             />
             
-            <argument type="service" id="@runopencode.metadata.cache_pool"/>
+            <argument type="service" id="runopencode.metadata.cache_pool"/>
+            <argument>%kernel.environment%</argument>
         </service>
 
         <!-- Expose reader interface as service identifier -->

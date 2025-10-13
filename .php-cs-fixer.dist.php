@@ -12,7 +12,7 @@ return $config->setRules([
     '@PSR12'                     => true,
     'strict_param'               => true,
     'array_syntax'               => ['syntax' => 'short'],
-    'native_function_invocation' => ['include' => ['@all']],
+    'native_function_invocation' => ['include' => ['@internal']],
     'function_declaration'       => [
         'closure_fn_spacing'       => 'none',
         'closure_function_spacing' => 'none',

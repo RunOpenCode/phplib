@@ -31,7 +31,10 @@
         "psr-4": {
             "RunOpenCode\\": "src/RunOpenCode/",
             "Monorepo\\": "monorepo/"
-        }
+        },
+        "files": [
+            "src/RunOpenCode/Component/Dataset/functions.php"
+        ]
     },
     "scripts": {
         "phpunit": "XDEBUG_MODE=coverage vendor/bin/phpunit --colors=always --testdox",

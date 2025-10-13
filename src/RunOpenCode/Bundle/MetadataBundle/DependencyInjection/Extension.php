@@ -51,7 +51,7 @@ final class Extension extends BundleExtension
          */
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('runopencode.metadata.cache_pool', $config['cache_pool'] ?? 'cache.system');
+        $container->setAlias('runopencode.metadata.cache_pool', $config['cache_pool'] ?? 'cache.system');
         $loader->load('services.xml');
     }
 }

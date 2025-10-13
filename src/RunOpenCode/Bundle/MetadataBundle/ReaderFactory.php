@@ -16,12 +16,12 @@ final readonly class ReaderFactory
     {
         // noop.
     }
-    
-    public static function create(CacheItemPoolInterface $pool): ReaderInterface
+
+    public static function create(CacheItemPoolInterface $pool, string $environment): ReaderInterface
     {
         $memory = new ArrayAdapter(storeSerialized: false);
-        $stack  = new ChainAdapter([$memory, $pool]);
-        
+        $stack  = 'prod' === $environment ? new ChainAdapter([$memory, $pool]) : $memory;
+
         return new Reader($stack);
     }
 }
