@@ -7,6 +7,22 @@ namespace RunOpenCode\Component\Dataset;
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 
+use function RunOpenCode\Component\Dataset\batch as dataset_batch;
+use function RunOpenCode\Component\Dataset\distinct as dataset_distinct;
+use function RunOpenCode\Component\Dataset\filter as dataset_filter;
+use function RunOpenCode\Component\Dataset\flatten as dataset_flatten;
+use function RunOpenCode\Component\Dataset\map as dataset_map;
+use function RunOpenCode\Component\Dataset\merge as dataset_merge;
+use function RunOpenCode\Component\Dataset\reverse as dataset_reverse;
+use function RunOpenCode\Component\Dataset\skip as dataset_skip;
+use function RunOpenCode\Component\Dataset\take as dataset_take;
+use function RunOpenCode\Component\Dataset\takeUntil as dataset_take_until;
+use function RunOpenCode\Component\Dataset\tap as dataset_tap;
+use function RunOpenCode\Component\Dataset\aggregate as dataset_aggregate;
+use function RunOpenCode\Component\Dataset\collect as dataset_collect;
+use function RunOpenCode\Component\Dataset\reduce as dataset_reduce;
+use function RunOpenCode\Component\Dataset\sort as dataset_sort;
+
 /**
  * Dataset iterable stream.
  *
@@ -58,7 +74,7 @@ class Stream extends AbstractStream
      */
     public function batch(callable $onBatch, int $size = 1000): self
     {
-        return batch($this, $onBatch, $size);
+        return dataset_batch($this, $onBatch, $size);
     }
 
     /**
@@ -72,7 +88,7 @@ class Stream extends AbstractStream
      */
     public function distinct(?callable $identity = null): self
     {
-        return distinct($this, $identity);
+        return dataset_distinct($this, $identity);
     }
 
     /**
@@ -86,7 +102,7 @@ class Stream extends AbstractStream
      */
     public function filter(callable $filter): self
     {
-        return filter($this, $filter);
+        return dataset_filter($this, $filter);
     }
 
     /**
@@ -98,7 +114,7 @@ class Stream extends AbstractStream
      */
     public function flatten(): self
     {
-        return flatten($this);
+        return dataset_flatten($this);
     }
 
     /**
@@ -116,7 +132,7 @@ class Stream extends AbstractStream
      */
     public function map(callable $valueTransform, ?callable $keyTransform = null): self
     {
-        return map($this, $valueTransform, $keyTransform);
+        return dataset_map($this, $valueTransform, $keyTransform);
     }
 
     /**
@@ -133,7 +149,7 @@ class Stream extends AbstractStream
      */
     public function merge(iterable $collection): self
     {
-        return merge($this, $collection);
+        return dataset_merge($this, $collection);
     }
 
     /**
@@ -147,7 +163,7 @@ class Stream extends AbstractStream
      */
     public function reverse(): self
     {
-        return reverse($this);
+        return dataset_reverse($this);
     }
 
     /**
@@ -161,7 +177,7 @@ class Stream extends AbstractStream
      */
     public function skip(int $count): self
     {
-        return skip($this, $count);
+        return dataset_skip($this, $count);
     }
 
     /**
@@ -178,7 +194,7 @@ class Stream extends AbstractStream
      */
     public function sort(?callable $comparator = null, bool $byKeys = false): self
     {
-        return sort($this, $comparator, $byKeys);
+        return dataset_sort($this, $comparator, $byKeys);
     }
 
     /**
@@ -192,7 +208,7 @@ class Stream extends AbstractStream
      */
     public function take(int $count): self
     {
-        return take($this, $count);
+        return dataset_take($this, $count);
     }
 
     /**
@@ -206,7 +222,7 @@ class Stream extends AbstractStream
      */
     public function takeUntil(callable $predicate): self
     {
-        return takeUntil($this, $predicate);
+        return dataset_take_until($this, $predicate);
     }
 
     /**
@@ -220,7 +236,7 @@ class Stream extends AbstractStream
      */
     public function tap(callable $callback): self
     {
-        return tap($this, $callback);
+        return dataset_tap($this, $callback);
     }
 
     /**
@@ -235,7 +251,7 @@ class Stream extends AbstractStream
      */
     public function aggregate(string $name, string $reducer, mixed ...$args): self
     {
-        return aggregate($name, $this, $reducer, ...$args);
+        return dataset_aggregate($name, $this, $reducer, ...$args);
     }
 
     /**
@@ -253,7 +269,7 @@ class Stream extends AbstractStream
      */
     public function collect(string $collector, mixed ...$args): CollectorInterface
     {
-        return collect($this, $collector, ...$args);
+        return dataset_collect($this, $collector, ...$args);
     }
 
     /**
@@ -271,7 +287,7 @@ class Stream extends AbstractStream
      */
     public function reduce(callable|string $reducer, mixed ...$args): mixed
     {
-        return reduce($this, $reducer, ...$args);
+        return dataset_reduce($this, $reducer, ...$args);
     }
 
     /**
