@@ -1,0 +1,49 @@
+# An example global gitignore file
+#
+# Place a copy if this at ~/.gitignore_global
+# Run `git config --global core.excludesfile ~/.gitignore_global`
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+*.pyo
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Temporary and lock files #
+############################
+*.bak
+*.swp
+*.swo
+*~
+*#
+*.sw[mnpcod]
+*.tmp
+*.tmp.*
+*.cache
+# do not ignore useful lock files.
+!symfony.lock
+!composer.lock
+
+# IDE files #
+#############
+.vscode
+.idea
+.iml
+*.sublime-workspace
+

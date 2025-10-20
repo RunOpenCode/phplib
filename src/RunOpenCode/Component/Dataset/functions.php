@@ -235,9 +235,9 @@ function skip(iterable $collection, int $count): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>               $collection Collection to iterate over.
- * @param (callable(TValue, TValue): int)|null $comparator User defined callable to compare two items. If null, spaceship operator (<=>) is used.
- * @param bool                                 $byKeys     If `byKeys` is true, keys will be compared instead of values.
+ * @param iterable<TKey, TValue>                                                                  $collection Collection to iterate over.
+ * @param ($byKeys is false ? (callable(TValue, TValue): int) : (callable(TKey, TKey): int))|null $comparator User defined callable to compare two items. If null, spaceship operator (<=>) is used.
+ * @param bool                                                                                    $byKeys     If `byKeys` is true, keys will be compared instead of values.
  *
  * @return Stream<TKey, TValue>
  *

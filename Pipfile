@@ -8,6 +8,13 @@ click = "*"
 rich = "*"
 python-dotenv = "*"
 pygit2= "*"
+sphinx="*"
+furo="*"
+sphinx-favicon="*"
+sphinx-autobuild = "*"
+sphinxcontrib-phpdomain = "*"
+sphinx-copybutton = "*"
+sphinx-inline-tabs = "*"
 
 [dev-packages]
 

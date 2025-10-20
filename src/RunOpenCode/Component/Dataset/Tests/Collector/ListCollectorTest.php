@@ -78,7 +78,7 @@ final class ListCollectorTest extends TestCase
 
         $this->assertSame(2, $collector->aggregators['count']);
         $this->assertSame(12, $collector->aggregators['sum']);
-        $this->assertSame(6, $collector->aggregators['average']);
+        $this->assertEqualsWithDelta(6, $collector->aggregators['average'], 0.0001);
     }
 
     #[Test]

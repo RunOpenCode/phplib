@@ -12,6 +12,8 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  *
  * @implements \IteratorAggregate<non-empty-string, AggregatorInterface<mixed, mixed, mixed>>
  * @implements \ArrayAccess<non-empty-string, AggregatorInterface<mixed, mixed, mixed>>
+ *
+ * @internal
  */
 final class Registry implements \IteratorAggregate, \Countable, \ArrayAccess
 {
@@ -64,6 +66,14 @@ final class Registry implements \IteratorAggregate, \Countable, \ArrayAccess
             throw new LogicException(\sprintf(
                 'Aggregator with name "%s" is already registered in the registry.',
                 $offset
+            ));
+        }
+
+        if ($value->name !== $offset) {
+            throw new LogicException(\sprintf(
+                'Aggregator name mismatch. Given offset is "%s" while aggregator name is "%s".',
+                $offset,
+                $value->name
             ));
         }
 

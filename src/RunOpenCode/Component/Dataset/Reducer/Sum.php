@@ -63,7 +63,6 @@ final class Sum extends AbstractStream implements ReducerInterface
                 continue;
             }
 
-            // @phpstan-ignore-next-line
             $this->value = $extracted + ($this->value ?? 0);
 
             yield $key => $value;

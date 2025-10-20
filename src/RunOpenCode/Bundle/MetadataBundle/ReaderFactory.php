@@ -12,6 +12,7 @@ use Symfony\Component\Cache\Adapter\ChainAdapter;
 
 final readonly class ReaderFactory
 {
+    /** @codeCoverageIgnore */
     private function __construct()
     {
         // noop.

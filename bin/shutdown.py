@@ -14,7 +14,7 @@ os.chdir(working_directory)
 
 
 @click.command()
-@click.option('--verbose/--silent', default=False, help='Do you want verbose output of this command.', type=bool)
+@click.option('--verbose', '-v', is_flag=True, help='Do you want verbose output of this command?')
 def shutdown(verbose):
     """This script will tear down all services and remove all containers."""
     console.print(

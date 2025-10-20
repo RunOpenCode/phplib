@@ -20,7 +20,7 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * @phpstan-type ValueExtractor = callable(TValue, TKey): (int|float|null)
  *
  * @extends AbstractStream<TKey, TValue>
- * @implements ReducerInterface<TKey, TValue, int|float|null>
+ * @implements ReducerInterface<TKey, TValue, float|null>
  */
 final class Average extends AbstractStream implements ReducerInterface
 {
@@ -28,7 +28,13 @@ final class Average extends AbstractStream implements ReducerInterface
      * {@inheritdoc}
      */
     public mixed $value {
-        get => $this->closed ? $this->value : throw new LogicException('Stream is not closed (iterated).');
+        get {
+            if (!$this->closed) {
+                throw new LogicException('Stream is not closed (iterated).');
+            }
+
+            return null !== $this->value ? (float)$this->value : 0;
+        }
     }
 
     private \Closure $extractor;

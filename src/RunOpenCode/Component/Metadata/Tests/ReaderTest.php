@@ -42,12 +42,79 @@ final class ReaderTest extends TestCase
 
         $this->assertCount(3, \array_filter(
             \array_map(
-                // @phpstan-ignore-next-line argument.type
+            // @phpstan-ignore-next-line argument.type
                 static fn(TraceableAdapterEvent $event): string => $event->name,
                 $this->cache->getCalls(),
             ),
             static fn(string $name): bool => $name === 'save'
         ));
+    }
+
+    #[Test]
+    public function has(): void
+    {
+        $this->assertTrue($this->reader->has(ReaderStub\Foo::class, ReaderStub\FooAttribute::class));
+    }
+
+    #[Test]
+    public function get(): void
+    {
+        $this->assertSame('foo_class', $this->reader->get(ReaderStub\Foo::class, ReaderStub\FooAttribute::class)->value);
+    }
+
+    #[Test]
+    public function all(): void
+    {
+        $attributes = $this->reader->all(ReaderStub\Foo::class, ReaderStub\FooAttribute::class);
+
+        $this->assertCount(1, $attributes);
+        $this->assertInstanceOf(FooAttribute::class, $attributes[0]);
+        $this->assertSame('foo_class', $attributes[0]->value);
+    }
+
+    #[Test]
+    public function property(): void
+    {
+        $this->assertSame('foo', $this->reader->property(ReaderStub\Foo::class, ReaderStub\FooAttribute::class)->name);
+    }
+
+    #[Test]
+    public function properties(): void
+    {
+        $properties = $this->reader->properties(ReaderStub\Foo::class, ReaderStub\FooAttribute::class);
+
+        $this->assertCount(1, $properties);
+        $this->assertSame('foo', $properties[0]->name);
+    }
+    
+    #[Test]
+    public function method(): void
+    {
+        $this->assertSame('bar', $this->reader->method(ReaderStub\Foo::class, ReaderStub\FooAttribute::class)->name);
+    }
+    
+    #[Test]
+    public function methods(): void
+    {
+        $methods = $this->reader->methods(ReaderStub\Foo::class, ReaderStub\FooAttribute::class);
+
+        $this->assertCount(1, $methods);
+        $this->assertSame('bar', $methods[0]->name);
+    }
+    
+    #[Test]
+    public function member(): void
+    {
+        $this->assertSame('bar', $this->reader->member(ReaderStub\Foo::class, ReaderStub\BarAttribute::class)->name);
+    }
+
+    #[Test]
+    public function members(): void
+    {
+        $members = $this->reader->members(ReaderStub\Foo::class, ReaderStub\BarAttribute::class);
+        
+        $this->assertCount(1, $members);
+        $this->assertSame('bar', $members[0]->name);
     }
 }
 
@@ -62,6 +129,15 @@ class FooAttribute
     }
 }
 
+#[\Attribute(\Attribute::TARGET_METHOD)]
+class BarAttribute
+{
+    public function __construct(
+        public string $value
+    ) {
+    }
+}
+
 #[FooAttribute('foo_class')]
 class Foo
 {
@@ -69,6 +145,7 @@ class Foo
     public string $foo = 'foo';
 
     #[FooAttribute('bar_method')]
+    #[BarAttribute('bar_method')]
     public function bar(): void
     {
     }

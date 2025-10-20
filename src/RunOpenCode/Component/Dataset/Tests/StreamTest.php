@@ -7,6 +7,7 @@ namespace RunOpenCode\Component\Dataset\Tests;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Component\Dataset\Collector\ArrayCollector;
+use RunOpenCode\Component\Dataset\Exception\LogicException;
 use RunOpenCode\Component\Dataset\Reducer\Average;
 use RunOpenCode\Component\Dataset\Reducer\Count;
 use RunOpenCode\Component\Dataset\Reducer\Max;
@@ -14,8 +15,17 @@ use RunOpenCode\Component\Dataset\Reducer\Min;
 use RunOpenCode\Component\Dataset\Reducer\Sum;
 use RunOpenCode\Component\Dataset\Stream;
 
+use function RunOpenCode\Component\Dataset\iterable_to_array;
+
 final class StreamTest extends TestCase
 {
+    #[Test]
+    public function creates(): void
+    {
+        $stream = Stream::create([1, 2, 3]);
+        $this->assertSame([1, 2, 3], $stream->collect(ArrayCollector::class)->value);
+    }
+
     #[Test]
     public function batch(): void
     {
@@ -349,5 +359,16 @@ final class StreamTest extends TestCase
         $this->assertSame(1, new Stream($dataset)->reduce(Min::class));
         $this->assertSame(18, new Stream($dataset)->reduce(Sum::class));
         $this->assertSame(36, new Stream($dataset)->reduce(static fn(?int $carry, int $value, string $key) => $value * 2 + ($carry ?? 0)));
+    }
+
+    #[Test]
+    public function throws_exception_when_iterating_closed_stream(): void
+    {
+        $this->expectException(LogicException::class);
+
+        $stream = new Stream([]);
+
+        iterable_to_array($stream);
+        \iterator_to_array($stream);
     }
 }

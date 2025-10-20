@@ -17,6 +17,8 @@ use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
  *
  * @implements AggregatorInterface<TKey, TValue, TReducedValue>
  * @extends AbstractStream<TKey, TValue>
+ *
+ * @internal
  */
 final class Aggregator extends AbstractStream implements AggregatorInterface
 {

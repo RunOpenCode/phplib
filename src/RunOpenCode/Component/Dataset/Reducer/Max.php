@@ -15,11 +15,12 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  *
  * @template TKey
  * @template TValue
+ * @template TReducedValue
  *
- * @phpstan-type ValueExtractor = callable(TValue, TKey): (int|float|null)
+ * @phpstan-type ValueExtractor = callable(TValue, TKey): TReducedValue|null
  *
  * @extends AbstractStream<TKey, TValue>
- * @implements ReducerInterface<TKey, TValue, int|float|null>
+ * @implements ReducerInterface<TKey, TValue, TReducedValue|null>
  */
 final class Max extends AbstractStream implements ReducerInterface
 {
@@ -30,7 +31,7 @@ final class Max extends AbstractStream implements ReducerInterface
         get => $this->closed ? $this->value : throw new LogicException('Stream is not closed (iterated).');
     }
 
-    private \Closure $extractor;
+    private readonly \Closure $extractor;
 
     /**
      * @param iterable<TKey, TValue> $collection Collection of values to reduce.
@@ -43,7 +44,7 @@ final class Max extends AbstractStream implements ReducerInterface
         parent::__construct($this->collection);
         $this->extractor = (
             $extractor ??
-            static fn(mixed $value): int|float|null => \is_numeric($value) ? $value + 0 : null
+            static fn(mixed $value): mixed => $value
         )(...);
     }
 
@@ -56,7 +57,7 @@ final class Max extends AbstractStream implements ReducerInterface
         $current     = null;
 
         foreach ($this->collection as $key => $value) {
-            /** @var int|float|null $extracted */
+            /** @var TReducedValue|null $extracted */
             $extracted = ($this->extractor)($value, $key);
 
             if (null === $extracted) {

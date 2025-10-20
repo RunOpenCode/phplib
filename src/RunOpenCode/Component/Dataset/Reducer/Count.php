@@ -25,13 +25,19 @@ final class Count extends AbstractStream implements ReducerInterface
     public mixed $value {
         get => $this->closed ? $this->value : throw new LogicException('Stream is not closed (iterated).');
     }
+
+    private \Closure $callback;
+
     /**
-     * @param iterable<TKey, TValue> $collection Collection of values to reduce.
+     * @param iterable<TKey, TValue>            $collection Collection of values to reduce.
+     * @param callable(TValue, TKey): bool|null $filter     Optional filter callback to count only items that match the filter.
      */
     public function __construct(
         private readonly iterable $collection,
+        ?callable                 $filter = null,
     ) {
         parent::__construct($this->collection);
+        $this->callback = $filter ? $filter(...) : static fn(): bool => true;
     }
 
     /**
@@ -42,7 +48,12 @@ final class Count extends AbstractStream implements ReducerInterface
         $this->value = 0;
 
         foreach ($this->collection as $key => $value) {
-            $this->value++; // @phpstan-ignore-line
+            if (!($this->callback)($value, $key)) {
+                yield $key => $value;
+                continue;
+            }
+
+            $this->value++;
             yield $key => $value;
         }
     }

@@ -15,10 +15,10 @@ os.chdir(working_directory)
 
 
 @click.command()
-@click.option('--install/--no-install', default=True,
-              help='Do you want to install project dependencies with environment start?', type=bool)
-@click.option('--verbose/--silent', default=False, help='Do you want verbose output of this command?', type=bool)
-def run(install, verbose):
+@click.option('--skip-install', '-s', is_flag=True,
+              help="Do you want to skip installation of project dependencies with environment start?.")
+@click.option('--verbose', '-v', is_flag=True, help='Do you want verbose output of this command?')
+def run(skip_install, verbose):
     """This script spawns containers and optionally installs dependencies."""
     console.print(
         Markdown('# Starting runopencode/phplib development environment...'),
@@ -48,7 +48,7 @@ def run(install, verbose):
 
     container = result.stdout.decode('utf-8').strip()
 
-    if install:
+    if not skip_install:
         __composer_install(container, verbose)
 
     console.print(Markdown('***'), width=80, style="green")

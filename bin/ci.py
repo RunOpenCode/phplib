@@ -16,12 +16,12 @@ os.chdir(working_directory)
 
 
 @click.command()
-@click.option('--verbose/--silent', default=False, help='Do you want verbose output of each check?', type=bool)
-@click.option('--install/--no-install', default=True, help='Do you want install composer packages in build process?',
-              type=bool)
-@click.option('--teardown/--no-teardown', default=False, help='Do you want teardown docker compose stack at the end of the process?',
-              type=bool)
-def ci(verbose, install, teardown):
+@click.option('--verbose', '-v', is_flag=True, help='Do you want verbose output of this command?')
+@click.option('--skip-install', '-s', is_flag=True,
+              help="Do you want to skip installation of project dependencies with environment start?.")
+@click.option('--teardown', '-t', is_flag=True,
+              help="Do you want to teardown environment after CI run is complete?.")
+def ci(verbose, skip_install, teardown):
     """This script will run CI scripts and check the project."""
     start = time.time()
     console.print(Markdown('# Running CI for runopencode/phplib project.'), width=80, style="green")
@@ -36,7 +36,7 @@ def ci(verbose, install, teardown):
         'composer run phpstan': ('composer run phpstan', False),
     }
 
-    if not install:
+    if skip_install:
         del commands['composer install']
 
     for name, (command, warn_only) in commands.items():
@@ -94,8 +94,8 @@ def __spawn_containers(verbose, stdout, teardown):
     container = result.stdout.decode('utf-8').strip()
 
     if '' != container:
-        return container 
-    
+        return container
+
     result = subprocess.run(
         'docker compose -f compose.yaml up --build -d',
         stdout=stdout,

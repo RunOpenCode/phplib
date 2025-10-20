@@ -1,0 +1,19 @@
+{
+    "$schema": "https://raw.githubusercontent.com/infection/infection/0.31.7/resources/schema.json",
+    "source": {
+        "directories": [
+            "src/RunOpenCode"
+        ],
+        "excludes": [
+            "{src/RunOpenCode/Bundle/*/Tests/*}",
+            "{src/RunOpenCode/Component/*/Tests/*}"
+        ]
+    },
+    "logs": {
+        "text": "build/infections/report.txt",
+        "html": "build/infections/report.html"
+    },
+    "mutators": {
+        "@default": true
+    }
+}

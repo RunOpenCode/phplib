@@ -18,7 +18,7 @@ interface ReducerInterface extends \IteratorAggregate
     /**
      * Get reduced value.
      *
-     * @return TReducedValue
+     * @var TReducedValue
      */
     public mixed $value {
         get;
