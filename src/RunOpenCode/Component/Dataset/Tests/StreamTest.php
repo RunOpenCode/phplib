@@ -353,12 +353,12 @@ final class StreamTest extends TestCase
             'd' => 1,
         ];
 
-        $this->assertSame(4.5, new Stream($dataset)->reduce(Average::class));
+        $this->assertEqualsWithDelta(4.5, new Stream($dataset)->reduce(Average::class), PHP_FLOAT_EPSILON);
         $this->assertSame(4, new Stream($dataset)->reduce(Count::class));
         $this->assertSame(10, new Stream($dataset)->reduce(Max::class));
         $this->assertSame(1, new Stream($dataset)->reduce(Min::class));
         $this->assertSame(18, new Stream($dataset)->reduce(Sum::class));
-        $this->assertSame(36, new Stream($dataset)->reduce(static fn(?int $carry, int $value, string $key) => $value * 2 + ($carry ?? 0)));
+        $this->assertSame(36, new Stream($dataset)->reduce(static fn(?int $carry, int $value, string $key): int => $value * 2 + ($carry ?? 0)));
     }
 
     #[Test]

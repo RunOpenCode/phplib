@@ -26,8 +26,6 @@ final class Registry implements \IteratorAggregate, \Countable, \ArrayAccess
      * Register an aggregator in the registry.
      *
      * @param AggregatorInterface<mixed, mixed, mixed> $aggregator
-     *
-     * @return void
      */
     public function register(AggregatorInterface $aggregator): void
     {

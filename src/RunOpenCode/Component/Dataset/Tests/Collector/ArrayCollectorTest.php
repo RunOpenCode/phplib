@@ -46,7 +46,7 @@ final class ArrayCollectorTest extends TestCase
         $collector = collect($dataset, ArrayCollector::class);
 
         $this->assertSame(2, $collector['a']);
-        $this->assertTrue(isset($collector['b']));
+        $this->assertArrayHasKey('b', $collector);
     }
 
     #[Test]

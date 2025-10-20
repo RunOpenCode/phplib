@@ -36,7 +36,7 @@ final class ListCollectorTest extends TestCase
         $collector = collect($dataset, ListCollector::class);
 
         $this->assertSame(2, $collector[0]);
-        $this->assertTrue(isset($collector[1]));
+        $this->assertArrayHasKey(1, $collector);
     }
 
     #[Test]

@@ -10,6 +10,7 @@ use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -42,10 +43,10 @@ final class MetadataBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $services = $container->services();
-        
+
         $services
             ->set(Reader::class)
-            ->factory(ReaderFactory::class)
+            ->factory([ReaderFactory::class, 'create'])
             ->args([
                 service('runopencode.metadata.cache_pool'),
                 param('kernel.environment')
@@ -53,7 +54,7 @@ final class MetadataBundle extends AbstractBundle
 
         $services
             ->alias(ReaderInterface::class, Reader::class);
-        
+
         $services
             ->alias('runopencode.metadata.cache_pool', $config['cache_pool'] ?? 'cache.system');
     }

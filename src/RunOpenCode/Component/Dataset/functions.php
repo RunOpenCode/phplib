@@ -15,7 +15,6 @@ use RunOpenCode\Component\Dataset\Reducer\Callback;
  * @template TValue
  *
  * @param iterable<TKey, TValue> $iterable
- * @param bool                   $preserveKeys
  *
  * @return ($preserveKeys is true ? array<TKey, TValue> : list<TValue>)
  */

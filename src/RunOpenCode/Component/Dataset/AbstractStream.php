@@ -40,7 +40,7 @@ abstract class AbstractStream implements StreamInterface
     /**
      * Check if stream has been iterated through.
      */
-    final public bool $closed {
+    final public bool $closed = false {
         get {
             return $this->closed;
         }
@@ -55,7 +55,6 @@ abstract class AbstractStream implements StreamInterface
     {
         $this->upstreams = \array_values($upstreams);
         $this->registry  = new Registry();
-        $this->closed    = false;
 
         if ($this instanceof AggregatorInterface) {
             $this->registry->register($this);

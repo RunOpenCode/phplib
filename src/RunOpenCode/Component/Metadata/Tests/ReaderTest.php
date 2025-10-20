@@ -42,7 +42,7 @@ final class ReaderTest extends TestCase
 
         $this->assertCount(3, \array_filter(
             \array_map(
-            // @phpstan-ignore-next-line argument.type
+                // @phpstan-ignore-next-line argument.type
                 static fn(TraceableAdapterEvent $event): string => $event->name,
                 $this->cache->getCalls(),
             ),
@@ -86,13 +86,13 @@ final class ReaderTest extends TestCase
         $this->assertCount(1, $properties);
         $this->assertSame('foo', $properties[0]->name);
     }
-    
+
     #[Test]
     public function method(): void
     {
         $this->assertSame('bar', $this->reader->method(ReaderStub\Foo::class, ReaderStub\FooAttribute::class)->name);
     }
-    
+
     #[Test]
     public function methods(): void
     {
@@ -101,7 +101,7 @@ final class ReaderTest extends TestCase
         $this->assertCount(1, $methods);
         $this->assertSame('bar', $methods[0]->name);
     }
-    
+
     #[Test]
     public function member(): void
     {
@@ -112,7 +112,7 @@ final class ReaderTest extends TestCase
     public function members(): void
     {
         $members = $this->reader->members(ReaderStub\Foo::class, ReaderStub\BarAttribute::class);
-        
+
         $this->assertCount(1, $members);
         $this->assertSame('bar', $members[0]->name);
     }

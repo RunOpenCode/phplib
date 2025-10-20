@@ -33,7 +33,7 @@ final class SumTest extends TestCase
     {
         $reducer = new Sum([1, 2, 3], static fn(int $value, int $key): int => $value * $key);
 
-        $this->assertEquals([1, 2, 3], \iterator_to_array($reducer));
+        $this->assertSame([1, 2, 3], \iterator_to_array($reducer));
         $this->assertEquals(8, $reducer->value);
     }
 
