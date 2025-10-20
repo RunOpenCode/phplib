@@ -45,8 +45,8 @@
         "infection": "infection --threads=max"
     },
     "replace": {
-        "runopencode/metadata": "0.1.2",
-        "runopencode/metadata-bundle": "0.1.2"
+        "runopencode/metadata": "0.1.3",
+        "runopencode/metadata-bundle": "0.1.3"
     },
     "minimum-stability": "stable"
 }
