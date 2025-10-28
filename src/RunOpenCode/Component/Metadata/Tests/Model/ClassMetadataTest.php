@@ -32,6 +32,7 @@ final class ClassMetadataTest extends TestCase
     {
         $metadata = $this->createClassMetadata(ClassMetadataStub\BarClass::class);
 
+        // @phpstan-ignore-next-line
         $this->assertInstanceOf(ClassMetadataStub\BarAttribute::class, $metadata->get(ClassMetadataStub\BarAttribute::class));
         $this->assertSame('bar_class', $metadata->get(ClassMetadataStub\BarAttribute::class)->value);
         $this->assertInstanceOf(ClassMetadataStub\FooAttribute::class, $metadata->parent?->get(ClassMetadataStub\FooAttribute::class));

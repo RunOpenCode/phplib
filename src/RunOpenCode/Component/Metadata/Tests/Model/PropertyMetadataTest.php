@@ -29,6 +29,7 @@ final class PropertyMetadataTest extends TestCase
     {
         $metadata = $this->createPropertyMetadata(PropertyMetadataStub\FooClass::class, 'privateProperty');
 
+        // @phpstan-ignore-next-line
         $this->assertInstanceOf(PropertyMetadataStub\FooAttribute::class, $metadata->get(PropertyMetadataStub\FooAttribute::class));
         $this->assertSame('foo_private_property', $metadata->get(PropertyMetadataStub\FooAttribute::class)->value);
     }

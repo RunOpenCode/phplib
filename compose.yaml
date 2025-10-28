@@ -18,3 +18,25 @@ services:
         restart: always
         volumes:
             - './:/var/www/html'
+        depends_on:
+            - mysql.local 
+        networks:
+            - runopencode_phplib
+
+    mysql.local:
+        restart: on-failure
+        build:
+            context: 'docker/mysql'
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_ROOT_PASSWORD: roc
+            MYSQL_USER: roc
+            MYSQL_PASSWORD: roc
+            MYSQL_ROOT_HOST: '%'
+        networks:
+            - runopencode_phplib
+                
+networks:
+    runopencode_phplib:
+                        

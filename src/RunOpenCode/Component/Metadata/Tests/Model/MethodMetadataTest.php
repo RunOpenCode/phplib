@@ -29,6 +29,7 @@ final class MethodMetadataTest extends TestCase
     {
         $metadata = $this->createMethodMetadata(MethodMetadataStub\FooClass::class, 'privateMethod');
 
+        // @phpstan-ignore-next-line
         $this->assertInstanceOf(MethodMetadataStub\FooAttribute::class, $metadata->get(MethodMetadataStub\FooAttribute::class));
         $this->assertSame('foo_private_method', $metadata->get(MethodMetadataStub\FooAttribute::class)->value);
     }

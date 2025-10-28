@@ -68,7 +68,7 @@ final class ReaderTest extends TestCase
         $attributes = $this->reader->all(ReaderStub\Foo::class, ReaderStub\FooAttribute::class);
 
         $this->assertCount(1, $attributes);
-        $this->assertInstanceOf(FooAttribute::class, $attributes[0]);
+        $this->assertInstanceOf(FooAttribute::class, $attributes[0]); // @phpstan-ignore-line
         $this->assertSame('foo_class', $attributes[0]->value);
     }
 
