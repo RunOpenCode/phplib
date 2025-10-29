@@ -66,10 +66,5 @@
         },
         "sort-packages": true
     },
-    "replace": {
-        "runopencode/metadata": "0.1.5",
-        "runopencode/metadata-bundle": "0.1.5"
-    },
-    "version": "0.2",
     "minimum-stability": "stable"
 }

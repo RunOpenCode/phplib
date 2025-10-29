@@ -1,9 +1,9 @@
 {
     "name": "runopencode/dataset",
     "description": "Utilities for dealing with datasets and streams of data.",
-    "minimum-stability": "stable",
-    "license": "proprietary",
+    "minimum-stability": "dev",
     "version": "0.2",
+    "license": "MIT",
     "authors": [
         {
             "name": "Nikola Svitlica a.k.a TheCelavi",

@@ -1,9 +1,9 @@
 {
     "name": "runopencode/metadata",
     "description": "Utility to read/search for class/property/method metadata (attributes).",
-    "minimum-stability": "stable",
-    "license": "proprietary",
+    "minimum-stability": "dev",
     "version": "0.2",
+    "license": "MIT",
     "authors": [
         {
             "name": "Nikola Svitlica a.k.a TheCelavi",

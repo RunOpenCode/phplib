@@ -1,9 +1,9 @@
 {
     "name": "runopencode/metadata-bundle",
     "description": "Symfony integration with runopencode/metadata component.",
-    "minimum-stability": "stable",
-    "license": "proprietary",
+    "minimum-stability": "dev",
     "version": "0.2",
+    "license": "MIT",
     "authors": [
         {
             "name": "Nikola Svitlica a.k.a TheCelavi",
