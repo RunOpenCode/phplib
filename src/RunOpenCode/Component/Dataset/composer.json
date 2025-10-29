@@ -19,6 +19,29 @@
             "src/functions.php"
         ]
     },
-    "version": "0.1.11",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../Component/Query",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Metadata",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Bundle/MetadataBundle",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "version": "0.0",
     "minimum-stability": "dev"
 }
