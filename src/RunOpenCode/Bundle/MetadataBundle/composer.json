@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "runopencode/metadata": "^0.1.12",
+        "runopencode/metadata": "^0.2",
         "php": ">=8.4",
         "psr/cache": "^3.0",
         "symfony/http-kernel": "^7.0",
@@ -22,6 +22,29 @@
             "RunOpenCode\\Bundle\\MetadataBundle\\": "src/"
         }
     },
-    "version": "0.1.12",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../Component/Dataset",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Query",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Metadata",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "version": "0.2",
     "minimum-stability": "dev"
 }
