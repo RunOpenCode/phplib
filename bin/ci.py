@@ -34,6 +34,7 @@ def ci(verbose, skip_install, teardown):
         'composer run phpunit': ('composer run phpunit', False),
         'composer run phpcs': ('composer run phpcs', False),
         'composer run phpstan': ('composer run phpstan', False),
+        'composer run deps': ('composer run phpstan', False),
     }
 
     if skip_install:

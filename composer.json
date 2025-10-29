@@ -58,7 +58,8 @@
         "phpstan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --memory-limit=-1",
         "phpcs": "XDEBUG_MODE=off vendor/bin/php-cs-fixer fix --diff --verbose --show-progress=dots --allow-risky=yes",
         "rector": "XDEBUG_MODE=off vendor/bin/rector process --ansi",
-        "infection": "infection --threads=max"
+        "infection": "infection --threads=max",
+        "deps": "bin/deps"
     },
     "replace": {
         "runopencode/metadata": "0.1.4",
