@@ -56,9 +56,10 @@
         "phpunit": "XDEBUG_MODE=coverage vendor/bin/phpunit --colors=always --testdox",
         "phpstan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --memory-limit=-1",
         "phpcs": "XDEBUG_MODE=off vendor/bin/php-cs-fixer fix --diff --verbose --show-progress=dots --allow-risky=yes",
+        "deps": "bin/deps",
+        "phpmetrics": "phpmetrics --report-html=build/metrics src/",
         "rector": "XDEBUG_MODE=off vendor/bin/rector process --ansi",
-        "infection": "infection --threads=max",
-        "deps": "bin/deps"
+        "infection": "infection --threads=max"
     },
     "config": {
         "allow-plugins": {

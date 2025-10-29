@@ -90,6 +90,7 @@ RUN composer global config --no-plugins allow-plugins.infection/extension-instal
     composer global require infection/infection && \
     composer global require maglnet/composer-require-checker && \
     composer global require icanhazstring/composer-unused && \
+    composer global require phpmetrics/phpmetrics && \
     export PATH=~/.config/composer/vendor/bin:$PATH
 
 #####################################################################################
