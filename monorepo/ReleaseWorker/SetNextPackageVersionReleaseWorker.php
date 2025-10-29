@@ -9,6 +9,7 @@ use Symplify\MonorepoBuilder\ComposerJsonManipulator\FileSystem\JsonFileManager;
 use Symplify\MonorepoBuilder\FileSystem\ComposerJsonProvider;
 use Symplify\MonorepoBuilder\Release\Contract\ReleaseWorker\ReleaseWorkerInterface;
 use Symplify\MonorepoBuilder\Release\Exception\MissingComposerJsonException;
+use Symplify\MonorepoBuilder\Utils\VersionUtils;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
 final readonly class SetNextPackageVersionReleaseWorker implements ReleaseWorkerInterface
@@ -16,13 +17,14 @@ final readonly class SetNextPackageVersionReleaseWorker implements ReleaseWorker
     public function __construct(
         private ComposerJsonProvider $composerJsonProvider,
         private JsonFileManager      $jsonFileManager,
+        private VersionUtils         $versionUtils,
     ) {
     }
 
     public function work(Version $version): void
     {
         $packageJsons = $this->composerJsonProvider->getPackageComposerJsons();
-        $nextVersion  = \sprintf('%s.%s', $version->getMajor()->getValue(), $version->getMajor()->getValue());
+        $nextVersion  = \ltrim($this->versionUtils->getRequiredNextFormat($version), '^~');
 
         foreach ($packageJsons as $packageJson) {
             $packageJson->setVersion($nextVersion);
