@@ -35,6 +35,7 @@ return static function(MBConfig $config): void {
         ReleaseWorker\TagVersionReleaseWorker::class,
         ReleaseWorker\PushTagReleaseWorker::class,
         ReleaseWorker\SetNextMutualDependenciesReleaseWorker::class,
+        ProjectReleaseWorker\SetNextPackageVersionReleaseWorker::class,
         ReleaseWorker\UpdateBranchAliasReleaseWorker::class,
         ReleaseWorker\PushNextDevReleaseWorker::class,
         ProjectReleaseWorker\SubsplitReleaseWorker::class,
