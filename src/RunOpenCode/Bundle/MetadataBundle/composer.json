@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "runopencode/metadata": "^0.1.8",
+        "runopencode/metadata": "^0.2",
         "php": ">=8.4",
         "psr/cache": "^3.0",
         "symfony/http-kernel": "^7.0",
