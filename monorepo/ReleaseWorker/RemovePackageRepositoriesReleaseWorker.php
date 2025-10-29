@@ -11,21 +11,20 @@ use Symplify\MonorepoBuilder\Release\Contract\ReleaseWorker\ReleaseWorkerInterfa
 use Symplify\MonorepoBuilder\Release\Exception\MissingComposerJsonException;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final readonly class SetNextPackageVersionReleaseWorker implements ReleaseWorkerInterface
+final readonly class RemovePackageRepositoriesReleaseWorker implements ReleaseWorkerInterface
 {
     public function __construct(
         private ComposerJsonProvider $composerJsonProvider,
-        private JsonFileManager      $jsonFileManager,
+        private JsonFileManager      $jsonFileManager
     ) {
     }
 
     public function work(Version $version): void
     {
         $packageJsons = $this->composerJsonProvider->getPackageComposerJsons();
-        $nextVersion  = \sprintf('%s.%s', $version->getMajor()->getValue(), $version->getMajor()->getValue());
 
         foreach ($packageJsons as $packageJson) {
-            $packageJson->setVersion($nextVersion);
+            $packageJson->setRepositories([]);
             $packageFileInfo = $packageJson->getFileInfo();
 
             if (!$packageFileInfo instanceof SmartFileInfo) {
@@ -38,6 +37,6 @@ final readonly class SetNextPackageVersionReleaseWorker implements ReleaseWorker
 
     public function getDescription(Version $version): string
     {
-        return 'Update "version" in "composer.json" to next version of each individual package.';
+        return 'Remove "repositories" from "composer.json" of each individual package.';
     }
 }
