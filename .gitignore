@@ -2,3 +2,7 @@
 build/*
 vendor/*
 var/*
+src/RunOpenCode/Component/*/vendor/*
+src/RunOpenCode/Component/*/composer.lock
+src/RunOpenCode/Bundle/*/vendor/*
+src/RunOpenCode/Bundle/*/composer.lock

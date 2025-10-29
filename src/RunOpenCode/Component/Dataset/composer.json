@@ -3,6 +3,7 @@
     "description": "Utilities for dealing with datasets and streams of data.",
     "minimum-stability": "stable",
     "license": "proprietary",
+    "version": "0.2",
     "authors": [
         {
             "name": "Nikola Svitlica a.k.a TheCelavi",
@@ -14,13 +15,10 @@
     },
     "autoload": {
         "psr-4": {
-            "RunOpenCode\\Component\\Dataset\\": ""
+            "RunOpenCode\\Component\\Dataset\\": "src/"
         },
         "files": [
-            "functions.php"
-        ],
-        "exclude-from-classmap": [
-            "/Tests/"
+            "src/functions.php"
         ]
     }
 }

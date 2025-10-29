@@ -3,6 +3,7 @@
     "description": "Symfony integration with runopencode/metadata component.",
     "minimum-stability": "stable",
     "license": "proprietary",
+    "version": "0.2",
     "authors": [
         {
             "name": "Nikola Svitlica a.k.a TheCelavi",
@@ -10,8 +11,9 @@
         }
     ],
     "require": {
-        "php": ">=8.4",
         "runopencode/metadata": "^0.2",
+        "php": ">=8.4",
+        "psr/cache": "^3.0",
         "symfony/http-kernel": "^7.0",
         "symfony/cache": "^7.0",
         "symfony/config": "^7.0",
@@ -19,10 +21,16 @@
     },
     "autoload": {
         "psr-4": {
-            "RunOpenCode\\Bundle\\MetadataBundle\\": ""
-        },
-        "exclude-from-classmap": [
-            "/Tests/"
-        ]
-    }
+            "RunOpenCode\\Bundle\\MetadataBundle\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../Component/Metadata",
+            "options": {
+                "symlink": false
+            }
+        }
+    ]
 }

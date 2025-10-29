@@ -17,7 +17,7 @@ final readonly class BranchValidatorWorker implements ReleaseWorkerInterface
     {
         return 'Verify that release is executed against "master" branch';
     }
-    
+
     public function work(Version $version): void
     {
         $process = new Process([

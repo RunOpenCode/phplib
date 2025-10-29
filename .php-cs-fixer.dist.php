@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-$finder = PhpCsFixer\Finder::create()->in(__DIR__ . '/src');
+$finder = PhpCsFixer\Finder::create()->in([
+    __DIR__ . '/src',
+    __DIR__ . '/monorepo'
+]);
 
 $config = new PhpCsFixer\Config();
 

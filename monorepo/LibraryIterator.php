@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Monorepo;
 
 use Symfony\Component\Finder\Finder;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -38,7 +39,7 @@ final readonly class LibraryIterator implements \IteratorAggregate
             foreach ($packagesDirectories as $packageDirectory) {
                 $library    = u($packageDirectory->getBasename())->kebab()->toString();
                 $repository = \sprintf('git@github.com:RunOpenCode/%s.git', $library);
-                
+
                 yield \sprintf('%s/%s', $directory, $packageDirectory->getBasename()) => $repository;
             }
         }

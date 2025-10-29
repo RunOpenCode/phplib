@@ -26,12 +26,12 @@ final readonly class SubsplitReleaseWorker implements ReleaseWorkerInterface
             $version->getVersionString(),
         );
     }
-    
+
     public function work(Version $version): void
     {
         $iterator = LibraryIterator::create();
         $projectRoot = \dirname(__DIR__, 2);
-        
+
         foreach ($iterator as $directory => $repository) {
             $command = \sprintf(
                 'git --git-dir=%s/.git subsplit publish %s:%s --update --heads=master --tags="%s"',

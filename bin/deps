@@ -1,0 +1,68 @@
+#!/usr/bin/env php
+<?php
+
+use Monorepo\DirectoryIterator;
+use Symfony\Component\Console\Attribute\Argument;
+use Symfony\Component\Console\SingleCommandApplication;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\Process;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$result = new SingleCommandApplication()
+        ->setName('Dependency checker.')
+        ->setVersion('1.0.0')
+        ->setDescription('Check dependencies of individual libraries using globally installed `maglnet/composer-require-checker` and `icanhazstring/composer-unused`.')
+        ->setCode(static function (
+                SymfonyStyle $io,
+                #[Argument(description: 'Execute check on targeted library only.', name: 'target')]
+                ?string      $target
+        ): int {
+            $io->title('Checking library dependencies.');
+
+            $libraries = new DirectoryIterator();
+            $steps = [
+                    'Install composer dependencies' => ['composer', 'install', '--no-plugins'],
+                    'Checking required dependencies' => ['composer-require-checker', 'check', 'composer.json', '-vvv'],
+                    'Checking unused dependencies' => ['composer-unused'],
+                    'Removing vendor directory and composer.lock' => ['rm', '-rf', 'vendor', 'composer.lock'],
+            ];
+            $errors = 0;
+
+            foreach ($libraries as $directory => $library) {
+
+                if (null !== $target && $target !== $library) {
+                    continue;
+                }
+
+                $io->section(\sprintf('Processing "%s"...', $library));
+
+                foreach ($steps as $message => $command) {
+                    $io->writeln($message);
+
+                    $install = new Process($command, $directory);
+                    $install->setTty(Process::isTtySupported());
+                    $result = $install->run();
+
+                    if ($result === 0) {
+                        continue;
+                    }
+
+                    $errors++;
+                    $io->warning(\sprintf('Processing library "%s" failed with errors.', $library));
+                }
+
+                $io->newLine(2);
+            }
+
+            if ($errors > 0) {
+                $io->error('Dependency check failed with errors.');
+                return SingleCommandApplication::FAILURE;
+            }
+
+            $io->success('Dependency check completed successfully.');
+            return SingleCommandApplication::SUCCESS;
+        })
+        ->run();
+
+exit($result);

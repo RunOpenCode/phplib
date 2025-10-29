@@ -3,6 +3,7 @@
     "description": "Utility to read/search for class/property/method metadata (attributes).",
     "minimum-stability": "stable",
     "license": "proprietary",
+    "version": "0.2",
     "authors": [
         {
             "name": "Nikola Svitlica a.k.a TheCelavi",
@@ -16,10 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "RunOpenCode\\Component\\Metadata\\": ""
-        },
-        "exclude-from-classmap": [
-            "/Tests/"
-        ]
+            "RunOpenCode\\Component\\Metadata\\": "src/"
+        }
     }
 }

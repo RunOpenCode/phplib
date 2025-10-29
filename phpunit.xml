@@ -18,8 +18,8 @@
 
     <testsuites>
         <testsuite name="RunOpenCode library test suite">
-            <directory>./src/RunOpenCode/Component/*/Tests/</directory>
-            <directory>./src/RunOpenCode/Bundle/*/Tests/</directory>
+            <directory>./src/RunOpenCode/Component/*/tests/</directory>
+            <directory>./src/RunOpenCode/Bundle/*/tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -28,8 +28,8 @@
             <directory>./src/RunOpenCode/</directory>
         </include>
         <exclude>
-            <directory>./src/RunOpenCode/Component/*/Tests/</directory>
-            <directory>./src/RunOpenCode/Bundle/*/Tests/</directory>
+            <directory>./src/RunOpenCode/Component/*/tests/</directory>
+            <directory>./src/RunOpenCode/Bundle/*/tests/</directory>
             <directory>./src/RunOpenCode/Component/*/vendor/</directory>
             <directory>./src/RunOpenCode/Bundle/*/vendor/</directory>
         </exclude>
