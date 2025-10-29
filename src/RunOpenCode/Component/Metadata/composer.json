@@ -1,8 +1,6 @@
 {
     "name": "runopencode/metadata",
     "description": "Utility to read/search for class/property/method metadata (attributes).",
-    "minimum-stability": "dev",
-    "version": "0.2",
     "license": "MIT",
     "authors": [
         {
@@ -19,5 +17,7 @@
         "psr-4": {
             "RunOpenCode\\Component\\Metadata\\": "src/"
         }
-    }
+    },
+    "version": "0.1.8",
+    "minimum-stability": "dev"
 }

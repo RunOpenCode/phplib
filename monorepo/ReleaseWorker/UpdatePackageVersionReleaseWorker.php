@@ -7,50 +7,36 @@ namespace Monorepo\ReleaseWorker;
 use PharIo\Version\Version;
 use Symplify\MonorepoBuilder\ComposerJsonManipulator\FileSystem\JsonFileManager;
 use Symplify\MonorepoBuilder\FileSystem\ComposerJsonProvider;
+use Symplify\MonorepoBuilder\Release\Contract\ReleaseWorker\ReleaseWorkerInterface;
 use Symplify\MonorepoBuilder\Release\Exception\MissingComposerJsonException;
 use Symplify\SmartFileSystem\SmartFileInfo;
 
-final readonly class UpdatePackageVersionReleaseWorker
+final readonly class UpdatePackageVersionReleaseWorker implements ReleaseWorkerInterface
 {
     public function __construct(
         private ComposerJsonProvider $composerJsonProvider,
-        private JsonFileManager $jsonFileManager
+        private JsonFileManager      $jsonFileManager
     ) {
     }
 
     public function work(Version $version): void
     {
-        $rootComposerJson = $this->composerJsonProvider->getPackageComposerJsons();
+        $packageJsons = $this->composerJsonProvider->getPackageComposerJsons();
 
-        $replace = $rootComposerJson->getReplace();
+        foreach ($packageJsons as $packageJson) {
+            $packageJson->setVersion($version->getVersionString());
+            $packageFileInfo = $packageJson->getFileInfo();
 
-        $packageNames = $this->composerJsonProvider->getPackageNames();
-
-        $newReplace = [];
-        foreach (array_keys($replace) as $package) {
-            if (! in_array($package, $packageNames, true)) {
-                continue;
+            if (!$packageFileInfo instanceof SmartFileInfo) {
+                throw new MissingComposerJsonException();
             }
 
-            $newReplace[$package] = $version->getVersionString();
+            $this->jsonFileManager->printJsonToFileInfo($packageJson->getJsonArray(), $packageFileInfo);
         }
-
-        if ($replace === $newReplace) {
-            return;
-        }
-
-        $rootComposerJson->setReplace($newReplace);
-
-        $rootFileInfo = $rootComposerJson->getFileInfo();
-        if (! $rootFileInfo instanceof SmartFileInfo) {
-            throw new MissingComposerJsonException();
-        }
-
-        $this->jsonFileManager->printJsonToFileInfo($rootComposerJson->getJsonArray(), $rootFileInfo);
     }
 
     public function getDescription(Version $version): string
     {
-        return 'Update "replace" version in "composer.json" to new tag to avoid circular dependencies conflicts';
+        return 'Update "version" in "composer.json" to new tag of each individual package.';
     }
 }

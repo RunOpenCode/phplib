@@ -1,8 +1,6 @@
 {
     "name": "runopencode/dataset",
     "description": "Utilities for dealing with datasets and streams of data.",
-    "minimum-stability": "dev",
-    "version": "0.2",
     "license": "MIT",
     "authors": [
         {
@@ -20,5 +18,7 @@
         "files": [
             "src/functions.php"
         ]
-    }
+    },
+    "version": "0.1.8",
+    "minimum-stability": "dev"
 }

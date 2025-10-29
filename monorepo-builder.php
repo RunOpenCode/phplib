@@ -28,6 +28,7 @@ return static function(MBConfig $config): void {
     $config->workers([
         ProjectReleaseWorker\PrepareSubsplitDirectoryWorker::class,
         ProjectReleaseWorker\BranchValidatorWorker::class,
+        ProjectReleaseWorker\UpdatePackageVersionReleaseWorker::class,
         ReleaseWorker\UpdateReplaceReleaseWorker::class,
         ReleaseWorker\SetCurrentMutualDependenciesReleaseWorker::class,
         ReleaseWorker\AddTagToChangelogReleaseWorker::class,
@@ -36,6 +37,6 @@ return static function(MBConfig $config): void {
         ReleaseWorker\SetNextMutualDependenciesReleaseWorker::class,
         ReleaseWorker\UpdateBranchAliasReleaseWorker::class,
         ReleaseWorker\PushNextDevReleaseWorker::class,
-//        ProjectReleaseWorker\SubsplitReleaseWorker::class,
+        ProjectReleaseWorker\SubsplitReleaseWorker::class,
     ]);
 };
