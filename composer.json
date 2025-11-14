@@ -41,7 +41,8 @@
             "Monorepo\\": "monorepo/"
         },
         "files": [
-            "src/RunOpenCode/Component/Dataset/src/functions.php"
+            "src/RunOpenCode/Component/Dataset/src/functions.php",
+            "src/RunOpenCode/Component/Query/src/functions.php"
         ]
     },
     "autoload-dev": {
