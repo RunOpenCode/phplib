@@ -60,6 +60,12 @@ final readonly class PropertyMetadata extends AbstractMetadata implements Proper
         parent::__construct($this->reflection->getAttributes());
     }
 
+    /**
+     * Create property metadata.
+     *
+     * @param class-string     $class    Class for which metadata is being created.
+     * @param non-empty-string $property Property for which metadata is being created.
+     */
     public static function create(string $class, string $property): self
     {
         return new self(new \ReflectionProperty($class, $property));

@@ -16,6 +16,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 final class MetadataBundle extends AbstractBundle
 {
+    protected string $extensionAlias = 'runopencode_metadata';
+
     /**
      * {@inheritdoc}
      */

@@ -142,7 +142,8 @@ final class PropertyMetadataTest extends TestCase
     }
 
     /**
-     * @param class-string<object> $class
+     * @param non-empty-string $name
+     * @param class-string     $class
      */
     private function createPropertyMetadata(string $class, string $name): PropertyMetadataInterface
     {

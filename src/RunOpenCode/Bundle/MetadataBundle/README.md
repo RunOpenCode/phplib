@@ -1,5 +1,5 @@
-Metadata Component
-==================
+Metadata Bundle
+===============
 
 _This is a **read-only** repository of mono-repository sub-split
 from [https://github.com/RunOpenCode/phplib](https://github.com/RunOpenCode/phplib). Do not send PR or report issues

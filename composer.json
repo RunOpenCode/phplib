@@ -13,6 +13,7 @@
         "php": ">=8.4",
         "doctrine/dbal": "^4.0",
         "psr/cache": "^3.0",
+        "psr/container": "^2.0",
         "symfony/cache": "^7.0",
         "symfony/config": "^7.0",
         "symfony/dependency-injection": "^7.0",
@@ -25,6 +26,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.88",
         "matthiasnoback/symfony-dependency-injection-test": "^6.1",
+        "phpmd/phpmd": "3.x-dev",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
@@ -68,5 +70,6 @@
         },
         "sort-packages": true
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
