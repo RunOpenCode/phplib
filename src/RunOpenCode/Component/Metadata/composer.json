@@ -39,6 +39,13 @@
             "options": {
                 "symlink": false
             }
+        },
+        {
+            "type": "path",
+            "url": "../../Bundle/QueryBundle",
+            "options": {
+                "symlink": false
+            }
         }
     ],
     "version": "0.2",
