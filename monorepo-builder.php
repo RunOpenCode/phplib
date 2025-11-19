@@ -10,6 +10,8 @@ use Symplify\MonorepoBuilder\Release\ReleaseWorker;
 use Symplify\MonorepoBuilder\ValueObject\Option;
 
 return static function(MBConfig $config): void {
+    MBConfig::disableDefaultWorkers();
+
     $config->packageDirectories(\array_map(
         static fn(string $directory): string => \sprintf('%s/%s', \rtrim(__DIR__, DIRECTORY_SEPARATOR), $directory),
         LibraryIterator::DIRECTORIES,
@@ -30,16 +32,18 @@ return static function(MBConfig $config): void {
         ProjectReleaseWorker\BranchValidatorWorker::class,
         ProjectReleaseWorker\UpdatePackageVersionReleaseWorker::class,
         ProjectReleaseWorker\RemovePackageRepositoriesReleaseWorker::class,
+        ReleaseWorker\TagVersionReleaseWorker::class,
+        ReleaseWorker\PushTagReleaseWorker::class,
         ReleaseWorker\UpdateReplaceReleaseWorker::class,
         ReleaseWorker\SetCurrentMutualDependenciesReleaseWorker::class,
-//        ReleaseWorker\AddTagToChangelogReleaseWorker::class,
-//        ReleaseWorker\TagVersionReleaseWorker::class,
-//        ReleaseWorker\PushTagReleaseWorker::class,
-//        ReleaseWorker\SetNextMutualDependenciesReleaseWorker::class,
-//        ProjectReleaseWorker\SetNextPackageVersionReleaseWorker::class,
-//        ProjectReleaseWorker\SetPackageRepositoriesReleaseWorker::class,
-//        ReleaseWorker\UpdateBranchAliasReleaseWorker::class,
-//        ReleaseWorker\PushNextDevReleaseWorker::class,
-//        ProjectReleaseWorker\SubsplitReleaseWorker::class,
+        ReleaseWorker\AddTagToChangelogReleaseWorker::class,
+        ReleaseWorker\TagVersionReleaseWorker::class,
+        ReleaseWorker\PushTagReleaseWorker::class,
+        ReleaseWorker\SetNextMutualDependenciesReleaseWorker::class,
+        ProjectReleaseWorker\SetNextPackageVersionReleaseWorker::class,
+        ProjectReleaseWorker\SetPackageRepositoriesReleaseWorker::class,
+        ReleaseWorker\UpdateBranchAliasReleaseWorker::class,
+        ReleaseWorker\PushNextDevReleaseWorker::class,
+        ProjectReleaseWorker\SubsplitReleaseWorker::class,
     ]);
 };
