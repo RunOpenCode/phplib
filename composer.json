@@ -26,7 +26,6 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.88",
         "matthiasnoback/symfony-dependency-injection-test": "^6.1",
-        "phpmd/phpmd": "3.x-dev",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
@@ -60,6 +59,7 @@
         "phpstan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --memory-limit=-1",
         "phpcs": "XDEBUG_MODE=off vendor/bin/php-cs-fixer fix --diff --verbose --show-progress=dots --allow-risky=yes",
         "deps": "bin/deps",
+        "phpmd": "XDEBUG_MODE=off vendor/bin/phpmd src text phpmd.xml | tee build/phpmd/phpmd.txt & vendor/bin/phpmd src xml phpmd.xml --reportfile build/phpmd/phpmd.xml ; vendor/bin/phpmd src html phpmd.xml --reportfile build/phpmd/phpmd.html",
         "phpmetrics": "phpmetrics --report-html=build/metrics src/",
         "rector": "XDEBUG_MODE=off vendor/bin/rector process --ansi",
         "infection": "infection --threads=max"
