@@ -9,9 +9,8 @@ use Symplify\MonorepoBuilder\Config\MBConfig;
 use Symplify\MonorepoBuilder\Release\ReleaseWorker;
 use Symplify\MonorepoBuilder\ValueObject\Option;
 
-MBConfig::disableDefaultWorkers();
-
 return static function(MBConfig $config): void {
+    $config->disableDefaultWorkers();
 
     $config->packageDirectories(\array_map(
         static fn(string $directory): string => \sprintf('%s/%s', \rtrim(__DIR__, DIRECTORY_SEPARATOR), $directory),
@@ -28,21 +27,21 @@ return static function(MBConfig $config): void {
     ]);
 
     // release workers - in order to execute
-    $config->workers([
-        ProjectReleaseWorker\PrepareSubsplitDirectoryWorker::class,
-        ProjectReleaseWorker\BranchValidatorWorker::class,
-        ProjectReleaseWorker\UpdatePackageVersionReleaseWorker::class,
-        ProjectReleaseWorker\RemovePackageRepositoriesReleaseWorker::class,
-        ReleaseWorker\UpdateReplaceReleaseWorker::class,
-        ReleaseWorker\SetCurrentMutualDependenciesReleaseWorker::class,
-        ReleaseWorker\AddTagToChangelogReleaseWorker::class,
-        ReleaseWorker\TagVersionReleaseWorker::class,
-        ReleaseWorker\PushTagReleaseWorker::class,
-        ReleaseWorker\SetNextMutualDependenciesReleaseWorker::class,
-        ProjectReleaseWorker\SetNextPackageVersionReleaseWorker::class,
-        ProjectReleaseWorker\SetPackageRepositoriesReleaseWorker::class,
-        ReleaseWorker\UpdateBranchAliasReleaseWorker::class,
-        ReleaseWorker\PushNextDevReleaseWorker::class,
-        ProjectReleaseWorker\SubsplitReleaseWorker::class,
-    ]);
+//    $config->workers([
+//        ProjectReleaseWorker\PrepareSubsplitDirectoryWorker::class,
+//        ProjectReleaseWorker\BranchValidatorWorker::class,
+//        ProjectReleaseWorker\UpdatePackageVersionReleaseWorker::class,
+//        ProjectReleaseWorker\RemovePackageRepositoriesReleaseWorker::class,
+//        ReleaseWorker\UpdateReplaceReleaseWorker::class,
+//        ReleaseWorker\SetCurrentMutualDependenciesReleaseWorker::class,
+//        ReleaseWorker\AddTagToChangelogReleaseWorker::class,
+//        ReleaseWorker\TagVersionReleaseWorker::class,
+//        ReleaseWorker\PushTagReleaseWorker::class,
+//        ReleaseWorker\SetNextMutualDependenciesReleaseWorker::class,
+//        ProjectReleaseWorker\SetNextPackageVersionReleaseWorker::class,
+//        ProjectReleaseWorker\SetPackageRepositoriesReleaseWorker::class,
+//        ReleaseWorker\UpdateBranchAliasReleaseWorker::class,
+//        ReleaseWorker\PushNextDevReleaseWorker::class,
+//        ProjectReleaseWorker\SubsplitReleaseWorker::class,
+//    ]);
 };
