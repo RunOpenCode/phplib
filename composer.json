@@ -32,7 +32,7 @@
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^12.4",
         "rector/rector": "*",
-        "symplify/monorepo-builder": "^12.2"
+        "symplify/monorepo-builder": "12.2"
     },
     "autoload": {
         "psr-4": {

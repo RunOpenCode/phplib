@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f056e26eaa1ed2b14e617a091ab38e39",
+    "content-hash": "a9182a02d21fa00a2ac3f9133e8e1a3b",
     "packages": [
         {
             "name": "doctrine/dbal",
@@ -6034,16 +6034,16 @@
         },
         {
             "name": "symplify/monorepo-builder",
-            "version": "12.3.1",
+            "version": "12.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/monorepo-builder.git",
-                "reference": "eef024e4c7bbf332ac020309e478a0bdff0c87a6"
+                "reference": "90d9ff9c6effc43d638a0e1f6fe65f0d860cfc2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/monorepo-builder/zipball/eef024e4c7bbf332ac020309e478a0bdff0c87a6",
-                "reference": "eef024e4c7bbf332ac020309e478a0bdff0c87a6",
+                "url": "https://api.github.com/repos/symplify/monorepo-builder/zipball/90d9ff9c6effc43d638a0e1f6fe65f0d860cfc2b",
+                "reference": "90d9ff9c6effc43d638a0e1f6fe65f0d860cfc2b",
                 "shasum": ""
             },
             "require": {
@@ -6100,7 +6100,7 @@
             "description": "Not only Composer tools to build a Monorepo.",
             "support": {
                 "issues": "https://github.com/symplify/monorepo-builder/issues",
-                "source": "https://github.com/symplify/monorepo-builder/tree/12.3.1"
+                "source": "https://github.com/symplify/monorepo-builder/tree/12.2.0"
             },
             "funding": [
                 {
@@ -6112,7 +6112,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-14T02:37:20+00:00"
+            "time": "2025-08-22T08:26:39+00:00"
         },
         {
             "name": "theseer/tokenizer",
