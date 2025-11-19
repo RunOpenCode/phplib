@@ -33,10 +33,6 @@ return static function(MBConfig $config): void {
         ProjectReleaseWorker\BranchValidatorWorker::class,
         ProjectReleaseWorker\UpdatePackageVersionReleaseWorker::class,
         ProjectReleaseWorker\RemovePackageRepositoriesReleaseWorker::class,
-        
-        ReleaseWorker\TagVersionReleaseWorker::class,
-        ReleaseWorker\PushTagReleaseWorker::class,
-
         ReleaseWorker\UpdateReplaceReleaseWorker::class,
         ReleaseWorker\SetCurrentMutualDependenciesReleaseWorker::class,
         ReleaseWorker\AddTagToChangelogReleaseWorker::class,
