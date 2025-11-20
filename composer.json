@@ -56,6 +56,7 @@
     },
     "scripts": {
         "phpunit": "XDEBUG_MODE=coverage vendor/bin/phpunit --colors=always --testdox",
+        "phpunit:debug": "XDEBUG_MODE=debug,coverage vendor/bin/phpunit --colors=always --testdox",
         "phpstan": "XDEBUG_MODE=off vendor/bin/phpstan analyse --memory-limit=-1",
         "phpcs": "XDEBUG_MODE=off vendor/bin/php-cs-fixer fix --diff --verbose --show-progress=dots --allow-risky=yes",
         "deps": "bin/deps",

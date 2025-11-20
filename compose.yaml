@@ -9,7 +9,7 @@ services:
             PHP_XDEBUG_MODE:            ${PHP_XDEBUG_MODE:-debug}
             PHP_XDEBUG_REMOTE_PORT:     ${PHP_XDEBUG_REMOTE_PORT:-9000}
             PHP_XDEBUG_REMOTE_ADDRESS:  ${PHP_XDEBUG_REMOTE_ADDRESS:-host.docker.internal}
-            PHP_XDEBUG_IDEKEY:          ${PHP_XDEBUG_IDEKEY:-serverName=localhost}
+            PHP_IDE_CONFIG:             ${PHP_IDE_CONFIG:-serverName=localhost}
         env_file:
             - path: './.env'
               required: false
