@@ -18,3 +18,4 @@ Table of Contents
    :titlesonly:
 
    metadata/index
+   query/index
