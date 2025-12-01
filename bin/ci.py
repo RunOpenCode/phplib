@@ -31,7 +31,7 @@ def ci(verbose, skip_install, teardown):
 
     commands = {
         'composer install': ('XDEBUG_MODE=off composer install', False),
-        'composer run phpunit': ('composer run phpunit', False),
+        'composer run phpunit': ('composer run phpunit -- --colors=always --testdox', False),
         'composer run phpcs': ('composer run phpcs', False),
         'composer run phpstan': ('composer run phpstan', False),
         'composer run deps': ('composer run phpstan', False),    
