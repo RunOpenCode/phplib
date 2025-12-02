@@ -21,6 +21,7 @@
         "symfony/http-kernel": "^7.0",
         "symfony/process": "^7.3",
         "symfony/string": "^7.0",
+        "thecodingmachine/safe": "^3.3",
         "twig/twig": "^3.0"
     },
     "require-dev": {
