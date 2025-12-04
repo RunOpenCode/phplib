@@ -310,6 +310,26 @@ function tap(iterable $collection, callable $callback): Stream
 }
 
 /**
+ * Create finalize operator.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue> $collection Collection to iterate over.
+ * @param callable(): void       $finalizer  User defined callable to invoke when iterator is depleted or exception is thrown.
+ *
+ * @return Stream<TKey, TValue>
+ *
+ * @see Operator\Finalize
+ */
+function finalize(iterable $collection, callable $finalizer): Stream
+{
+    return new Stream(
+        new Operator\Finalize($collection, $finalizer)
+    );
+}
+
+/**
  * Attach reducer as an aggregator.
  *
  * @template TKey

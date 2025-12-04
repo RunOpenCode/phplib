@@ -22,6 +22,7 @@ use function RunOpenCode\Component\Dataset\sort as dataset_sort;
 use function RunOpenCode\Component\Dataset\take as dataset_take;
 use function RunOpenCode\Component\Dataset\takeUntil as dataset_take_until;
 use function RunOpenCode\Component\Dataset\tap as dataset_tap;
+use function RunOpenCode\Component\Dataset\finalize as dataset_finalize;
 
 /**
  * Dataset iterable stream.
@@ -237,6 +238,20 @@ class Stream extends AbstractStream
     public function tap(callable $callback): self
     {
         return dataset_tap($this, $callback);
+    }
+
+    /**
+     * Applies finalize operator on current stream.
+     *
+     * @param callable(): void $finalizer User defined callable to invoke when iterator is depleted or exception is thrown.
+     *
+     * @return self<TKey, TValue>
+     *
+     * @see Operator\Finalize
+     */
+    public function finalize(callable $finalizer): self
+    {
+        return dataset_finalize($this, $finalizer);
     }
 
     /**
