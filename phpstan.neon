@@ -5,3 +5,5 @@ parameters:
         - src/RunOpenCode/Bundle/*/vendor/*
     paths:
         - src/
+    stubFiles:
+        - stubs/bitset.stub.php

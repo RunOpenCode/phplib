@@ -36,8 +36,8 @@ RUN apt-get install -y --no-install-recommends apt-utils autoconf bash-completio
 RUN docker-php-ext-configure gd --enable-gd --with-webp --with-jpeg --with-xpm --with-freetype \
     && docker-php-ext-install bcmath bz2 gd intl mbstring pdo pdo_mysql  \
     mysqli pcntl posix sockets xsl zip opcache \
-    && pecl install apcu -o -f redis \
-    && docker-php-ext-enable apcu redis
+    && pecl install apcu -o -f redis bitset \
+    && docker-php-ext-enable apcu redis bitset
 
 ADD php.ini.template /usr/local/etc/php/conf.d/custom.ini
 
@@ -68,7 +68,7 @@ RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
     && php /tmp/composer-setup.php  \
     && mv /var/www/html/composer.phar /usr/local/bin/composer.phar  \
     && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer  \
-    && chmod +x /usr/local/bin/composer
+    && chmod +x /usr/local/bin/composer 
 
 #####################################################################################
 #                                                                                   #
