@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Tests\Dbal\Type;
+namespace RunOpenCode\Component\Bitmask\Tests\Dbal\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Component\BitMask\Dbal\Type\AbstractEnumBitMaskType;
-use RunOpenCode\Component\BitMask\Dbal\Type\BitMaskType;
-use RunOpenCode\Component\BitMask\Model\BitMask;
+use RunOpenCode\Component\Bitmask\Dbal\Type\AbstractEnumBitmaskType;
+use RunOpenCode\Component\Bitmask\Dbal\Type\BitmaskType;
+use RunOpenCode\Component\Bitmask\Model\Bitmask;
 
-final class AbstractEnumBitMaskTypeTest extends TestCase
+final class AbstractEnumBitmaskTypeTest extends TestCase
 {
-    private FooEnumBitMaskTypeType $type;
+    private FooEnumBitmaskTypeType $type;
 
     /**
      * {@inheritdoc}
@@ -22,7 +22,7 @@ final class AbstractEnumBitMaskTypeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->type = new FooEnumBitMaskTypeType(new BitMaskType());
+        $this->type = new FooEnumBitmaskTypeType(new BitmaskType());
     }
 
     /**
@@ -53,8 +53,8 @@ final class AbstractEnumBitMaskTypeTest extends TestCase
     public static function get_data(): iterable
     {
         yield 'Null.' => [null, null];
-        yield 'FooEnum::Foo' => [[FooEnum::Foo], BitMask::string('01000000')->toBinary()];
-        yield 'FooEnum::Foo, FooEnum::Bar, FooEnum::Baz' => [[FooEnum::Foo, FooEnum::Bar, FooEnum::Baz], BitMask::string('01010001')->toBinary()];
+        yield 'FooEnum::Foo' => [[FooEnum::Foo], Bitmask::string('01000000')->toBinary()];
+        yield 'FooEnum::Foo, FooEnum::Bar, FooEnum::Baz' => [[FooEnum::Foo, FooEnum::Bar, FooEnum::Baz], Bitmask::string('01010001')->toBinary()];
     }
 
     #[Test]
@@ -75,9 +75,9 @@ final class AbstractEnumBitMaskTypeTest extends TestCase
 }
 
 /**
- * @extends AbstractEnumBitMaskType<FooEnum>
+ * @extends AbstractEnumBitmaskType<FooEnum>
  */
-final class FooEnumBitMaskTypeType extends AbstractEnumBitMaskType
+final class FooEnumBitmaskTypeType extends AbstractEnumBitmaskType
 {
     /**
      * {@inheritdoc}

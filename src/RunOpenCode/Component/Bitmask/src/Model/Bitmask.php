@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Model;
+namespace RunOpenCode\Component\Bitmask\Model;
 
-use RunOpenCode\Component\BitMask\Exception\InvalidArgumentException;
-use RunOpenCode\Component\BitMask\Exception\OutOfBoundsException;
+use RunOpenCode\Component\Bitmask\Exception\InvalidArgumentException;
+use RunOpenCode\Component\Bitmask\Exception\OutOfBoundsException;
 
 /**
  * @implements \IteratorAggregate<non-negative-int, bool>
  */
-final readonly class BitMask implements \IteratorAggregate, \Stringable, \Countable
+final readonly class Bitmask implements \IteratorAggregate, \Stringable, \Countable
 {
     private \BitSet $bitset;
 
@@ -83,7 +83,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
      *
      * @param int $position Position of the bit which value is being updated.
      */
-    public function true(int $position): BitMask
+    public function true(int $position): Bitmask
     {
         if ($position >= $this->bitset->size()) {
             throw new OutOfBoundsException(\sprintf(
@@ -105,7 +105,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
      *
      * @param int $position Position of the bit which value is being updated.
      */
-    public function false(int $position): BitMask
+    public function false(int $position): Bitmask
     {
         if ($position >= $this->bitset->size()) {
             throw new OutOfBoundsException(\sprintf(
@@ -128,7 +128,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
      * @param int  $position Position of the bit which value is being updated.
      * @param bool $value    TRUE for 1, FALSE for 0
      */
-    public function set(int $position, bool $value): BitMask
+    public function set(int $position, bool $value): Bitmask
     {
         if (true === $value) {
             return $this->true($position);
@@ -157,7 +157,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
         return $this->bitset->get($position);
     }
 
-    public function and(BitMask $mask): self
+    public function and(Bitmask $mask): self
     {
         if ($mask->count() !== $this->count()) {
             throw new InvalidArgumentException(\sprintf(
@@ -173,7 +173,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
         return new self($bitset);
     }
 
-    public function andNot(BitMask $mask): self
+    public function andNot(Bitmask $mask): self
     {
         if ($mask->count() !== $this->count()) {
             throw new InvalidArgumentException(\sprintf(
@@ -189,7 +189,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
         return new self($bitset);
     }
 
-    public function or(BitMask $mask): self
+    public function or(Bitmask $mask): self
     {
         if ($mask->count() !== $this->count()) {
             throw new InvalidArgumentException(\sprintf(
@@ -205,7 +205,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
         return new self($bitset);
     }
 
-    public function xor(BitMask $mask): self
+    public function xor(Bitmask $mask): self
     {
         if ($mask->count() !== $this->count()) {
             throw new InvalidArgumentException(\sprintf(
@@ -221,7 +221,7 @@ final readonly class BitMask implements \IteratorAggregate, \Stringable, \Counta
         return new self($bitset);
     }
 
-    public function equals(BitMask $mask): bool
+    public function equals(Bitmask $mask): bool
     {
         if ($mask->count() !== $this->count()) {
             return false;

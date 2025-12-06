@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Tests\Dbal\Type;
+namespace RunOpenCode\Component\Bitmask\Tests\Dbal\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Component\BitMask\Dbal\Type\BitMaskType;
-use RunOpenCode\Component\BitMask\Model\BitMask;
+use RunOpenCode\Component\Bitmask\Dbal\Type\BitmaskType;
+use RunOpenCode\Component\Bitmask\Model\Bitmask;
 
-final class BitMaskTypeTest extends TestCase
+final class BitmaskTypeTest extends TestCase
 {
-    private BitMaskType $type;
+    private BitmaskType $type;
 
     /**
      * {@inheritdoc}
@@ -21,7 +21,7 @@ final class BitMaskTypeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->type = new BitMaskType();
+        $this->type = new BitmaskType();
     }
 
     #[Test]
@@ -32,14 +32,14 @@ final class BitMaskTypeTest extends TestCase
 
     #[Test]
     #[DataProvider('data_provider')]
-    public function convert_to_database_value(BitMask $mask, string $expected): void
+    public function convert_to_database_value(Bitmask $mask, string $expected): void
     {
         $this->assertSame($expected, $this->type->convertToDatabaseValue($mask, $this->createMock(AbstractPlatform::class)));
     }
 
     #[Test]
     #[DataProvider('data_provider')]
-    public function convert_string_to_php_value(BitMask $expected, string $mask): void
+    public function convert_string_to_php_value(Bitmask $expected, string $mask): void
     {
         $this->assertTrue($expected->equals(
             $this->type->convertToPHPValue($mask, $this->createMock(AbstractPlatform::class))
@@ -48,7 +48,7 @@ final class BitMaskTypeTest extends TestCase
 
     #[Test]
     #[DataProvider('data_provider')]
-    public function convert_stream_to_php_value(BitMask $expected, string $mask): void
+    public function convert_stream_to_php_value(Bitmask $expected, string $mask): void
     {
         $stream = \Safe\fopen('php://memory', 'rwb');
 
@@ -72,12 +72,12 @@ final class BitMaskTypeTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{BitMask, string}>
+     * @return iterable<string, array{Bitmask, string}>
      */
     public static function data_provider(): iterable
     {
-        yield '00000000' => [BitMask::string('00000000'), \Safe\base64_decode('AA==', true)];
-        yield '00000100' => [BitMask::string('00000100'), \Safe\base64_decode('IA==', true)];
+        yield '00000000' => [Bitmask::string('00000000'), \Safe\base64_decode('AA==', true)];
+        yield '00000100' => [Bitmask::string('00000100'), \Safe\base64_decode('IA==', true)];
     }
 
     #[Test]

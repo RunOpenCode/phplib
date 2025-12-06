@@ -1,6 +1,6 @@
 {
-    "name": "runopencode/metadata",
-    "description": "Utility to read/search for class/property/method metadata (attributes).",
+    "name": "runopencode/bitmask",
+    "description": "Provides possibility to work with bit masks and to store them into database using doctrine/dbal.",
     "license": "MIT",
     "authors": [
         {
@@ -10,12 +10,13 @@
     ],
     "require": {
         "php": ">=8.4",
-        "psr/cache": "^3.0",
-        "symfony/cache": "^7.0"
+        "ext-bitset": "*",
+        "doctrine/dbal": "^4.0",
+        "thecodingmachine/safe": "^3.3"
     },
     "autoload": {
         "psr-4": {
-            "RunOpenCode\\Component\\Metadata\\": "src/"
+            "RunOpenCode\\Component\\Bitmask\\": "src"
         }
     },
     "config": {

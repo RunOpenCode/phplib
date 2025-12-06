@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Exception;
+namespace RunOpenCode\Component\Bitmask\Exception;
 
 class OutOfBoundsException extends \OutOfBoundsException implements ExceptionInterface
 {

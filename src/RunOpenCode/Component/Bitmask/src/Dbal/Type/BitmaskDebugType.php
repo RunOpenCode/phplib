@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Dbal\Type;
+namespace RunOpenCode\Component\Bitmask\Dbal\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use RunOpenCode\Component\BitMask\Exception\InvalidArgumentException;
-use RunOpenCode\Component\BitMask\Model\BitMask;
+use RunOpenCode\Component\Bitmask\Exception\InvalidArgumentException;
+use RunOpenCode\Component\Bitmask\Model\Bitmask;
 
 /**
  * Bitmask which uses string representation for storing bits.
@@ -21,7 +21,7 @@ use RunOpenCode\Component\BitMask\Model\BitMask;
  * This type is suitable for storing bitmask in database for traceability and debugging
  * purposes, not for executing queries and indexing.
  */
-final class BitMaskDebugType extends Type
+final class BitmaskDebugType extends Type
 {
     public const string NAME = 'bitmask_debug';
 
@@ -36,7 +36,7 @@ final class BitMaskDebugType extends Type
             return null;
         }
 
-        \assert($value instanceof BitMask, InvalidArgumentException::type(BitMask::class, $value));
+        \assert($value instanceof Bitmask, InvalidArgumentException::type(Bitmask::class, $value));
 
         return $value->toString();
     }
@@ -44,9 +44,9 @@ final class BitMaskDebugType extends Type
     /**
      * {@inheritdoc}
      *
-     * @return ($value is null ? null : BitMask)
+     * @return ($value is null ? null : Bitmask)
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?BitMask
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?Bitmask
     {
         if (null === $value) {
             return null;
@@ -54,7 +54,7 @@ final class BitMaskDebugType extends Type
 
         \assert(\is_string($value), InvalidArgumentException::type('string', $value));
 
-        return BitMask::string($value);
+        return Bitmask::string($value);
     }
 
     /**

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Dbal\Type;
+namespace RunOpenCode\Component\Bitmask\Dbal\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use RunOpenCode\Component\BitMask\Exception\InvalidArgumentException;
-use RunOpenCode\Component\BitMask\Model\BitMask;
+use RunOpenCode\Component\Bitmask\Exception\InvalidArgumentException;
+use RunOpenCode\Component\Bitmask\Model\Bitmask;
 
 /**
  * Bitmask which uses binary column type for storing bits.
  */
-final class BitMaskType extends Type
+final class BitmaskType extends Type
 {
     public const string NAME = 'bitmask';
 
@@ -27,7 +27,7 @@ final class BitMaskType extends Type
             return null;
         }
 
-        \assert($value instanceof BitMask, InvalidArgumentException::type(BitMask::class, $value));
+        \assert($value instanceof Bitmask, InvalidArgumentException::type(Bitmask::class, $value));
 
         return $value->toBinary();
     }
@@ -35,9 +35,9 @@ final class BitMaskType extends Type
     /**
      * {@inheritdoc}
      *
-     * @return ($value is null ? null : BitMask)
+     * @return ($value is null ? null : Bitmask)
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?BitMask
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?Bitmask
     {
         if (null === $value) {
             return null;
@@ -45,7 +45,7 @@ final class BitMaskType extends Type
 
         \assert(\is_resource($value) || \is_string($value), InvalidArgumentException::type(['resource', 'string'], $value));
 
-        return BitMask::binary(\is_string($value) ? $value : \Safe\stream_get_contents($value));
+        return Bitmask::binary(\is_string($value) ? $value : \Safe\stream_get_contents($value));
     }
 
     /**

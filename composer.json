@@ -37,7 +37,7 @@
     },
     "autoload": {
         "psr-4": {
-            "RunOpenCode\\Component\\BitMask\\": "src/RunOpenCode/Component/BitMask/src/",
+            "RunOpenCode\\Component\\Bitmask\\": "src/RunOpenCode/Component/Bitmask/src/",
             "RunOpenCode\\Component\\Dataset\\": "src/RunOpenCode/Component/Dataset/src/",
             "RunOpenCode\\Component\\Metadata\\": "src/RunOpenCode/Component/Metadata/src/",
             "RunOpenCode\\Component\\Query\\": "src/RunOpenCode/Component/Query/src/",
@@ -52,7 +52,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "RunOpenCode\\Component\\BitMask\\Tests\\": "src/RunOpenCode/Component/BitMask/tests/",
+            "RunOpenCode\\Component\\Bitmask\\Tests\\": "src/RunOpenCode/Component/Bitmask/tests/",
             "RunOpenCode\\Component\\Dataset\\Tests\\": "src/RunOpenCode/Component/Dataset/tests/",
             "RunOpenCode\\Component\\Metadata\\Tests\\": "src/RunOpenCode/Component/Metadata/tests/",
             "RunOpenCode\\Component\\Query\\Tests\\": "src/RunOpenCode/Component/Query/tests/",

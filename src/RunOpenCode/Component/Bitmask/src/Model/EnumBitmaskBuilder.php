@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Model;
+namespace RunOpenCode\Component\Bitmask\Model;
 
-use RunOpenCode\Component\BitMask\Exception\InvalidArgumentException;
+use RunOpenCode\Component\Bitmask\Exception\InvalidArgumentException;
 
 /**
  * @template T of \BackedEnum
  */
-final class EnumBitMaskBuilder
+final class EnumBitmaskBuilder
 {
-    private BitMask $mask;
+    private Bitmask $mask;
 
     /**
      * @param class-string<T> $enum
@@ -38,15 +38,15 @@ final class EnumBitMaskBuilder
         /** @var non-negative-int $max */
         $bits = $max === 0 ? 1 : (int)\ceil(\log($max + 1, 2));
 
-        $this->mask = BitMask::zeroes((int)\ceil($bits / 8));
+        $this->mask = Bitmask::zeroes((int)\ceil($bits / 8));
     }
 
     /**
      * Get built bitmask.
      */
-    public function get(): BitMask
+    public function get(): Bitmask
     {
-        return BitMask::binary($this->mask->toBinary());
+        return Bitmask::binary($this->mask->toBinary());
     }
 
     /**

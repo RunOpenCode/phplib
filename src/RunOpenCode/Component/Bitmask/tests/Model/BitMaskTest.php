@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Tests\Model;
+namespace RunOpenCode\Component\Bitmask\Tests\Model;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Component\BitMask\Exception\InvalidArgumentException;
-use RunOpenCode\Component\BitMask\Exception\OutOfBoundsException;
-use RunOpenCode\Component\BitMask\Model\BitMask;
+use RunOpenCode\Component\Bitmask\Exception\InvalidArgumentException;
+use RunOpenCode\Component\Bitmask\Exception\OutOfBoundsException;
+use RunOpenCode\Component\Bitmask\Model\Bitmask;
 
-final class BitMaskTest extends TestCase
+final class BitmaskTest extends TestCase
 {
     #[Test]
     #[TestWith([8, '00000000'])]
@@ -19,7 +19,7 @@ final class BitMaskTest extends TestCase
     #[TestWith([32, '00000000000000000000000000000000'])]
     public function zeroes(int $length, string $expected): void
     {
-        $this->assertSame($expected, BitMask::zeroes($length)->toString());
+        $this->assertSame($expected, Bitmask::zeroes($length)->toString());
     }
 
     #[Test]
@@ -29,7 +29,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        BitMask::zeroes($length);
+        Bitmask::zeroes($length);
     }
 
     #[Test]
@@ -38,7 +38,7 @@ final class BitMaskTest extends TestCase
     #[TestWith(['00000001100000000000001000010010', 32])]
     public function string(string $input, int $length): void
     {
-        $bitmask = BitMask::string($input);
+        $bitmask = Bitmask::string($input);
 
         $this->assertSame($input, $bitmask->toString());
         $this->assertCount($length, $bitmask);
@@ -51,7 +51,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        BitMask::string($input);
+        Bitmask::string($input);
     }
 
     #[Test]
@@ -59,7 +59,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        BitMask::string('foo');
+        Bitmask::string('foo');
     }
 
     #[Test]
@@ -67,7 +67,7 @@ final class BitMaskTest extends TestCase
     #[TestWith(['IA==', '00000100'])]
     public function binary(string $encoded, string $expected): void
     {
-        $bitmask = BitMask::binary(\Safe\base64_decode($encoded, true));
+        $bitmask = Bitmask::binary(\Safe\base64_decode($encoded, true));
 
         $this->assertSame($expected, $bitmask->toString());
         $this->assertSame(8, \strlen($expected));
@@ -76,8 +76,8 @@ final class BitMaskTest extends TestCase
     #[Test]
     public function empty(): void
     {
-        $empty = BitMask::string('00000000');
-        $nonEmpty = BitMask::string('00100000');
+        $empty = Bitmask::string('00000000');
+        $nonEmpty = Bitmask::string('00100000');
 
         $this->assertTrue($empty->empty());
         $this->assertFalse($nonEmpty->empty());
@@ -89,13 +89,13 @@ final class BitMaskTest extends TestCase
     #[TestWith(['00000001100000000000001000010010', 5])]
     public function cardinality(string $input, int $expected): void
     {
-        $this->assertSame($expected, BitMask::string($input)->cardinality());
+        $this->assertSame($expected, Bitmask::string($input)->cardinality());
     }
 
     #[Test]
     public function true(): void
     {
-        $bitmask = BitMask::string('00000000');
+        $bitmask = Bitmask::string('00000000');
 
         $this->assertFalse($bitmask->get(7));
 
@@ -110,13 +110,13 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(OutOfBoundsException::class);
 
-        BitMask::string('00000000')->true(10);
+        Bitmask::string('00000000')->true(10);
     }
 
     #[Test]
     public function false(): void
     {
-        $bitmask = BitMask::string('00000001');
+        $bitmask = Bitmask::string('00000001');
 
         $this->assertTrue($bitmask->get(7));
 
@@ -131,13 +131,13 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(OutOfBoundsException::class);
 
-        BitMask::string('00000000')->true(10);
+        Bitmask::string('00000000')->true(10);
     }
 
     #[Test]
     public function set(): void
     {
-        $bitmask = BitMask::string('00000001');
+        $bitmask = Bitmask::string('00000001');
 
         $this->assertTrue($bitmask->get(7));
 
@@ -157,7 +157,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(OutOfBoundsException::class);
 
-        BitMask::string('00000000')->set(10, true);
+        Bitmask::string('00000000')->set(10, true);
     }
 
     #[Test]
@@ -166,7 +166,7 @@ final class BitMaskTest extends TestCase
     #[TestWith(['11111111', '11111111', '11111111'])]
     public function and(string $first, string $second, string $expected): void
     {
-        $this->assertSame($expected, BitMask::string($first)->and(BitMask::string($second))->toString());
+        $this->assertSame($expected, Bitmask::string($first)->and(Bitmask::string($second))->toString());
     }
 
     #[Test]
@@ -174,7 +174,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        BitMask::string('00000000')->and(BitMask::string('0000000000000000'));
+        Bitmask::string('00000000')->and(Bitmask::string('0000000000000000'));
     }
 
     #[Test]
@@ -183,7 +183,7 @@ final class BitMaskTest extends TestCase
     #[TestWith(['11111111', '11111111', '00000000'])]
     public function andNot(string $first, string $second, string $expected): void
     {
-        $this->assertSame($expected, BitMask::string($first)->andNot(BitMask::string($second))->toString());
+        $this->assertSame($expected, Bitmask::string($first)->andNot(Bitmask::string($second))->toString());
     }
 
     #[Test]
@@ -191,7 +191,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        BitMask::string('00000000')->andNot(BitMask::string('0000000000000000'));
+        Bitmask::string('00000000')->andNot(Bitmask::string('0000000000000000'));
     }
 
     #[Test]
@@ -200,7 +200,7 @@ final class BitMaskTest extends TestCase
     #[TestWith(['11110000', '00001111', '11111111'])]
     public function or(string $first, string $second, string $expected): void
     {
-        $this->assertSame($expected, BitMask::string($first)->or(BitMask::string($second))->toString());
+        $this->assertSame($expected, Bitmask::string($first)->or(Bitmask::string($second))->toString());
     }
 
     #[Test]
@@ -208,7 +208,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        BitMask::string('00000000')->or(BitMask::string('0000000000000000'));
+        Bitmask::string('00000000')->or(Bitmask::string('0000000000000000'));
     }
 
     #[Test]
@@ -217,7 +217,7 @@ final class BitMaskTest extends TestCase
     #[TestWith(['11110000', '00001111', '11111111'])]
     public function xor(string $first, string $second, string $expected): void
     {
-        $this->assertSame($expected, BitMask::string($first)->xor(BitMask::string($second))->toString());
+        $this->assertSame($expected, Bitmask::string($first)->xor(Bitmask::string($second))->toString());
     }
 
     #[Test]
@@ -225,7 +225,7 @@ final class BitMaskTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        BitMask::string('00000000')->xor(BitMask::string('0000000000000000'));
+        Bitmask::string('00000000')->xor(Bitmask::string('0000000000000000'));
     }
 
     #[Test]
@@ -233,7 +233,7 @@ final class BitMaskTest extends TestCase
     #[TestWith(['00000100', 'IA=='])]
     public function to_binary(string $input, string $expected): void
     {
-        $this->assertSame($expected, \base64_encode(BitMask::string($input)->toBinary()));
+        $this->assertSame($expected, \base64_encode(Bitmask::string($input)->toBinary()));
     }
 
     #[Test]
@@ -248,6 +248,6 @@ final class BitMaskTest extends TestCase
             5 => false,
             6 => true,
             7 => true,
-        ], \iterator_to_array(BitMask::string('10010011')));
+        ], \iterator_to_array(Bitmask::string('10010011')));
     }
 }

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Component\BitMask\Dbal\Type;
+namespace RunOpenCode\Component\Bitmask\Dbal\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use RunOpenCode\Component\BitMask\Exception\InvalidArgumentException;
-use RunOpenCode\Component\BitMask\Model\BitMask;
+use RunOpenCode\Component\Bitmask\Exception\InvalidArgumentException;
+use RunOpenCode\Component\Bitmask\Model\Bitmask;
 
 /**
  * Prototype for implementing your own bitmask storage for collection of int backed enums.
@@ -17,13 +17,13 @@ use RunOpenCode\Component\BitMask\Model\BitMask;
  *
  * @template T of \BackedEnum
  */
-abstract class AbstractEnumBitMaskType extends Type
+abstract class AbstractEnumBitmaskType extends Type
 {
-    private BitMaskType $inner;
+    private BitmaskType $inner;
 
-    public function __construct(?BitMaskType $inner = null)
+    public function __construct(?BitmaskType $inner = null)
     {
-        $this->inner = $inner ?? new BitMaskType();
+        $this->inner = $inner ?? new BitmaskType();
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class AbstractEnumBitMaskType extends Type
 
         \assert(\is_array($value), InvalidArgumentException::type('array', $value));
 
-        $bitmask = BitMask::zeroes($this->length());
+        $bitmask = Bitmask::zeroes($this->length());
 
         /**
          * @var T $case
@@ -67,7 +67,7 @@ abstract class AbstractEnumBitMaskType extends Type
             return null;
         }
 
-        /** @var BitMask $bitmask */
+        /** @var Bitmask $bitmask */
         $bitmask = $this->inner->convertToPHPValue($value, $platform);
         $enum    = $this->getEnum();
         $result  = [];
