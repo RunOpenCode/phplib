@@ -1,6 +1,6 @@
 {
     "name": "runopencode/bitmask",
-    "description": "Provides possibility to work with bits and to store them into database using doctrine/dbal.",
+    "description": "Provides possibility to work with bit masks and to store them into database using doctrine/dbal.",
     "license": "MIT",
     "authors": [
         {
