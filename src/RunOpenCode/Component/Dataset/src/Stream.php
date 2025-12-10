@@ -23,6 +23,8 @@ use function RunOpenCode\Component\Dataset\take as dataset_take;
 use function RunOpenCode\Component\Dataset\takeUntil as dataset_take_until;
 use function RunOpenCode\Component\Dataset\tap as dataset_tap;
 use function RunOpenCode\Component\Dataset\finalize as dataset_finalize;
+use function RunOpenCode\Component\Dataset\if_empty as dataset_if_empty;
+use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
 
 /**
  * Dataset iterable stream.
@@ -118,6 +120,11 @@ class Stream extends AbstractStream
         return dataset_flatten($this);
     }
 
+    public function ifEmpty(\Exception|callable $action): self
+    {
+        return dataset_if_empty($this, $action);
+    }
+
     /**
      * Applies map operator on current stream.
      *
@@ -151,6 +158,11 @@ class Stream extends AbstractStream
     public function merge(iterable $collection): self
     {
         return dataset_merge($this, $collection);
+    }
+
+    public function overflow(int $capacity, ?\Exception $exception = null): self
+    {
+        return dataset_overflow($this, $capacity, $exception);
     }
 
     /**

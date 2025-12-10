@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Bundle\Dataset\Tests\Aggregator;
+namespace RunOpenCode\Component\Dataset\Tests\Aggregator;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -23,10 +23,12 @@ final class RegistryTest extends TestCase
         $second   = $this->createMock(AggregatorInterface::class);
 
         $first
+            ->expects($this->atLeastOnce())
             ->method(PropertyHook::get('name'))
             ->willReturn('first');
 
         $second
+            ->expects($this->atLeastOnce())
             ->method(PropertyHook::get('name'))
             ->willReturn('second');
 
@@ -49,6 +51,7 @@ final class RegistryTest extends TestCase
         $aggregator = $this->createMock(AggregatorInterface::class);
 
         $aggregator
+            ->expects($this->atLeastOnce())
             ->method(PropertyHook::get('name'))
             ->willReturn('foo');
 
@@ -68,6 +71,7 @@ final class RegistryTest extends TestCase
         $aggregator = $this->createMock(AggregatorInterface::class);
 
         $aggregator
+            ->expects($this->atLeastOnce())
             ->method(PropertyHook::get('name'))
             ->willReturn('foo');
 
@@ -94,10 +98,12 @@ final class RegistryTest extends TestCase
         $second   = $this->createMock(AggregatorInterface::class);
 
         $first
+            ->expects($this->atLeastOnce())
             ->method(PropertyHook::get('name'))
             ->willReturn('first');
 
         $second
+            ->expects($this->atLeastOnce())
             ->method(PropertyHook::get('name'))
             ->willReturn('first');
 
@@ -114,6 +120,7 @@ final class RegistryTest extends TestCase
         $aggregator = $this->createMock(AggregatorInterface::class);
 
         $aggregator
+            ->expects($this->atLeastOnce())
             ->method(PropertyHook::get('name'))
             ->willReturn('foo');
 

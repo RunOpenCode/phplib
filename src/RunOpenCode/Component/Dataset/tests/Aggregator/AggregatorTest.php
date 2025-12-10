@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Bundle\Dataset\Tests\Aggregator;
+namespace RunOpenCode\Component\Dataset\Tests\Aggregator;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;

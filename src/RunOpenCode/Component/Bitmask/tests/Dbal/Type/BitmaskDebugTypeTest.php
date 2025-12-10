@@ -8,12 +8,12 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Component\Bitmask\Dbal\Type\BitmaskType;
+use RunOpenCode\Component\Bitmask\Dbal\Type\BitmaskDebugType;
 use RunOpenCode\Component\Bitmask\Model\Bitmask;
 
-final class BitmaskTypeTest extends TestCase
+final class BitmaskDebugTypeTest extends TestCase
 {
-    private BitmaskType $type;
+    private BitmaskDebugType $type;
 
     /**
      * {@inheritdoc}
@@ -21,51 +21,35 @@ final class BitmaskTypeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->type = new BitmaskType();
+        $this->type = new BitmaskDebugType();
     }
 
     #[Test]
     public function get_name(): void
     {
-        $this->assertSame('bitmask', $this->type->getName());
+        $this->assertSame('bitmask_debug', $this->type->getName());
     }
 
     #[Test]
     #[DataProvider('data_provider')]
     public function convert_to_database_value(Bitmask $mask, string $expected): void
     {
-        $this->assertSame($expected, $this->type->convertToDatabaseValue($mask, $this->createMock(AbstractPlatform::class)));
+        $this->assertSame($expected, $this->type->convertToDatabaseValue($mask, $this->createStub(AbstractPlatform::class)));
     }
 
     #[Test]
     #[DataProvider('data_provider')]
-    public function convert_string_to_php_value(Bitmask $expected, string $mask): void
+    public function convert_to_php_value(Bitmask $expected, string $mask): void
     {
         $this->assertTrue($expected->equals(
-            $this->type->convertToPHPValue($mask, $this->createMock(AbstractPlatform::class))
+            $this->type->convertToPHPValue($mask, $this->createStub(AbstractPlatform::class))
         ));
-    }
-
-    #[Test]
-    #[DataProvider('data_provider')]
-    public function convert_stream_to_php_value(Bitmask $expected, string $mask): void
-    {
-        $stream = \Safe\fopen('php://memory', 'rwb');
-
-        \Safe\fwrite($stream, $mask);
-        \Safe\rewind($stream);
-
-        $this->assertTrue($expected->equals(
-            $this->type->convertToPHPValue($stream, $this->createMock(AbstractPlatform::class))
-        ));
-
-        \fclose($stream);
     }
 
     #[Test]
     public function convert_null_to_null(): void
     {
-        $platform = $this->createMock(AbstractPlatform::class);
+        $platform = $this->createStub(AbstractPlatform::class);
 
         $this->assertNull($this->type->convertToPHPValue(null, $platform)); // @phpstan-ignore-line
         $this->assertNull($this->type->convertToDatabaseValue(null, $platform)); // @phpstan-ignore-line
@@ -76,23 +60,37 @@ final class BitmaskTypeTest extends TestCase
      */
     public static function data_provider(): iterable
     {
-        yield '00000000' => [Bitmask::string('00000000'), \Safe\base64_decode('AA==', true)];
-        yield '00000100' => [Bitmask::string('00000100'), \Safe\base64_decode('IA==', true)];
+        yield '00000000' => [Bitmask::string('00000000'), '00000000'];
+        yield '00000100' => [Bitmask::string('00000100'), '00000100'];
     }
 
     #[Test]
-    public function get_sql_declaration(): void
+    public function get_sql_declaration_when_less_then_255_chars_required(): void
     {
         $platform = $this->createMock(AbstractPlatform::class);
 
         $platform
             ->expects($this->once())
-            ->method('getBinaryTypeDeclarationSQL')
+            ->method('getStringTypeDeclarationSQL')
             ->with([
-                'length' => 3,
-                'fixed' => true,
+                'length' => 24,
             ]);
 
         $this->type->getSqlDeclaration(['length' => 3], $platform);
+    }
+
+    #[Test]
+    public function get_sql_declaration_when_more_then_255_chars_required(): void
+    {
+        $platform = $this->createMock(AbstractPlatform::class);
+
+        $platform
+            ->expects($this->once())
+            ->method('getClobTypeDeclarationSQL')
+            ->with([
+                'length' => 256,
+            ]);
+
+        $this->type->getSqlDeclaration(['length' => 32], $platform);
     }
 }

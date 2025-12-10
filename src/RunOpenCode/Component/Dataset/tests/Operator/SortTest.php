@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RunOpenCode\Bundle\Dataset\Tests\Operator;
+namespace RunOpenCode\Component\Dataset\Tests\Operator;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

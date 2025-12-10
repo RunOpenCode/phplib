@@ -19,7 +19,7 @@ final class ReaderFactoryTest extends TestCase
     #[DataProvider('get_data_for_ignores_cache_pool_in_non_production_environment')]
     public function ignores_cache_pool_in_non_production_environment(string $environment): void
     {
-        $pool   = $this->createMock(CacheItemPoolInterface::class);
+        $pool   = $this->createStub(CacheItemPoolInterface::class);
         $reader = ReaderFactory::create($pool, $environment);
         $used   = (new \ReflectionClass($reader))->getProperty('cache')->getValue($reader);
 
@@ -39,7 +39,7 @@ final class ReaderFactoryTest extends TestCase
     #[Test]
     public function uses_cache_pool_stack_in_production_environment(): void
     {
-        $pool   = $this->createMock(CacheItemPoolInterface::class);
+        $pool   = $this->createStub(CacheItemPoolInterface::class);
         $reader = ReaderFactory::create($pool, 'prod');
         $used   = (new \ReflectionClass($reader))->getProperty('cache')->getValue($reader);
 

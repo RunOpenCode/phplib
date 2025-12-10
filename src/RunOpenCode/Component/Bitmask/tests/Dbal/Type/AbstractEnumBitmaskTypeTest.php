@@ -33,7 +33,7 @@ final class AbstractEnumBitmaskTypeTest extends TestCase
     #[DataProvider('get_data')]
     public function convert_to_database_value(?array $enums, ?string $expected): void
     {
-        $this->assertSame($expected, $this->type->convertToDatabaseValue($enums, $this->createMock(AbstractPlatform::class)));
+        $this->assertSame($expected, $this->type->convertToDatabaseValue($enums, $this->createStub(AbstractPlatform::class)));
     }
 
     /**
@@ -44,7 +44,7 @@ final class AbstractEnumBitmaskTypeTest extends TestCase
     #[DataProvider('get_data')]
     public function convert_to_php_value(?array $expected, ?string $mask): void
     {
-        $this->assertSame($expected, $this->type->convertToPHPValue($mask, $this->createMock(AbstractPlatform::class)));
+        $this->assertSame($expected, $this->type->convertToPHPValue($mask, $this->createStub(AbstractPlatform::class)));
     }
 
     /**

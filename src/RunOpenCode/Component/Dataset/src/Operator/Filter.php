@@ -25,7 +25,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  *
  * $filter = new Filter(
  *    collection: new Dataset(['a' => 1, 'b' => 2, 'c' => 3]),
- *    filter: static fn(int $value, string $key, iterable $collection): bool => $value > 1,
+ *    filter: static fn(int $value, string $key): bool => $value > 1,
  * );
  * ```
  *

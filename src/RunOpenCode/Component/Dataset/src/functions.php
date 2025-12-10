@@ -141,6 +141,13 @@ function flatten(iterable $collection): Stream
     );
 }
 
+function if_empty(iterable $collection, \Exception|callable $action): Stream
+{
+    return new Stream(
+        new Operator\IfEmpty($collection, $action)
+    );
+}
+
 /**
  * Create map operator.
  *
@@ -186,6 +193,13 @@ function merge(iterable $first, iterable $second): Stream
 {
     return new Stream(
         new Operator\Merge($first, $second)
+    );
+}
+
+function overflow(iterable $collection, int $capacity, ?\Exception $exception = null): Stream
+{
+    return new Stream(
+        new Operator\Overflow($collection, $capacity, $exception)
     );
 }
 

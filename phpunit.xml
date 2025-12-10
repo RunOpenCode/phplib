@@ -8,12 +8,15 @@
          failOnDeprecation="true"
          failOnRisky="true"
          failOnWarning="true"
+         displayDetailsOnAllIssues="true"
 >
     <php>
-        <ini name="error_reporting" value="-1" />
-        <ini name="intl.default_locale" value="en" />
-        <ini name="intl.error_level" value="0" />
-        <ini name="memory_limit" value="-1" />
+        <ini name="error_reporting" value="-1"/>
+        <ini name="display_errors" value="1"/>
+        <ini name="display_startup_errors" value="1"/>
+        <ini name="intl.default_locale" value="en"/>
+        <ini name="intl.error_level" value="0"/>
+        <ini name="memory_limit" value="-1"/>
     </php>
 
     <testsuites>
@@ -34,7 +37,7 @@
             <directory>./src/RunOpenCode/Bundle/*/vendor/</directory>
         </exclude>
     </source>
-    
+
     <coverage includeUncoveredFiles="true">
         <report>
             <html outputDirectory="./build/phpunit" lowUpperBound="50" highLowerBound="90"/>
