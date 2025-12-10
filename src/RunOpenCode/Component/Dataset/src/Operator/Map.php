@@ -6,6 +6,7 @@ namespace RunOpenCode\Component\Dataset\Operator;
 
 use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
+use RunOpenCode\Component\Dataset\Stream;
 
 /**
  * Map operator.

@@ -130,7 +130,7 @@ final readonly class Bitmask implements \IteratorAggregate, \Stringable, \Counta
      */
     public function set(int $position, bool $value): Bitmask
     {
-        if (true === $value) {
+        if ($value) {
             return $this->true($position);
         }
 
@@ -141,8 +141,6 @@ final readonly class Bitmask implements \IteratorAggregate, \Stringable, \Counta
      * Get bit value on given position.
      *
      * @param int $position Position of the bit which value is fetched.
-     *
-     * @return bool
      */
     public function get(int $position): bool
     {

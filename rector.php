@@ -18,7 +18,6 @@ return RectorConfig
         privatization: true,
         instanceOf: true,
         earlyReturn: true,
-        strictBooleans: true,
         phpunitCodeQuality: true,
     )
     ->withSkip([

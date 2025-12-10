@@ -60,7 +60,7 @@ final class Overflow extends AbstractStream implements OperatorInterface
                     $this->capacity
                 ));
             }
-            
+
             yield $key => $value;
 
             $counter++;
