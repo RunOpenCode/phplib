@@ -23,7 +23,6 @@ final class MetadataBundle extends AbstractBundle
      */
     public function configure(DefinitionConfigurator $definition): void
     {
-        // @phpstan-ignore-next-line
         $definition
             ->rootNode()
             ->addDefaultsIfNotSet()

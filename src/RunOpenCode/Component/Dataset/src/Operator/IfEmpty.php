@@ -35,15 +35,15 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  *
  * @phpstan-type ActionCallable = callable(): (iterable<TAlternativeKey, TAlternativeValue>|never)
  *
- * @extends AbstractStream<TAlternativeKey, TAlternativeValue>
- * @implements OperatorInterface<TAlternativeKey, TAlternativeValue>
+ * @extends AbstractStream<TKey|TAlternativeKey, TValue|TAlternativeValue>
+ * @implements OperatorInterface<TKey|TAlternativeKey, TValue|TAlternativeValue>
  */
 final class IfEmpty extends AbstractStream implements OperatorInterface
 {
     private \Closure $action;
 
     /**
-     * @param iterable<TKey|TValue>     $collection Collection to iterate over.
+     * @param iterable<TKey, TValue>    $collection Collection to iterate over.
      * @param \Exception|ActionCallable $action     Action to execute if original stream is empty (or exception to throw).
      */
     public function __construct(

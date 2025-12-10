@@ -120,6 +120,18 @@ class Stream extends AbstractStream
         return dataset_flatten($this);
     }
 
+    /**
+     * Applies if empty operator.
+     *
+     * @template TAlternativeKey
+     * @template TAlternativeValue
+     *
+     * @param \Exception|(callable(): iterable<TAlternativeKey, TAlternativeValue>|never) $action Action to undertake if collection is empty, or exception to throw.
+     *
+     * @return Stream<TKey|TAlternativeKey, TValue|TAlternativeValue>
+     *
+     * @see Operator\IfEmpty
+     */
     public function ifEmpty(\Exception|callable $action): self
     {
         return dataset_if_empty($this, $action);
@@ -160,6 +172,16 @@ class Stream extends AbstractStream
         return dataset_merge($this, $collection);
     }
 
+    /**
+     * Applies overflow operator.
+     *
+     * @param positive-int    $capacity  Max number of items to iterate over.
+     * @param \Exception|null $exception Which exception to throw if collection has more then allowed items ({@see \OverflowException} by default).
+     *
+     * @return Stream<TKey, TValue>
+     *
+     * @see Operator\Overflow
+     */
     public function overflow(int $capacity, ?\Exception $exception = null): self
     {
         return dataset_overflow($this, $capacity, $exception);

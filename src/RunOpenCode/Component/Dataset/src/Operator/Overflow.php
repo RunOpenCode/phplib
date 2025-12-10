@@ -33,17 +33,17 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  */
 final class Overflow extends AbstractStream implements OperatorInterface
 {
+    /**
+     * @param iterable<TKey, TValue> $collection Collection to iterate over.
+     * @param positive-int           $capacity Max number of items to iterate over.
+     * @param \Exception|null        $exception Which exception to throw if collection has more then allowed items ({@see \OverflowException} by default).
+     */
     public function __construct(
         private readonly iterable    $collection,
         private readonly int         $capacity,
         private readonly ?\Exception $exception = null,
     ) {
         parent::__construct($collection);
-
-        \assert($this->capacity > 0, new \InvalidArgumentException(\sprintf(
-            'Capacity must be greater than 0, %d given',
-            $this->capacity
-        )));
     }
 
     /**

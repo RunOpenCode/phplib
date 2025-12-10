@@ -141,6 +141,21 @@ function flatten(iterable $collection): Stream
     );
 }
 
+/**
+ * Create if empty operator.
+ *
+ * @template TKey
+ * @template TValue
+ * @template TAlternativeKey
+ * @template TAlternativeValue
+ *
+ * @param iterable<TKey, TValue>                                                      $collection Collection to iterate over.
+ * @param \Exception|(callable(): iterable<TAlternativeKey, TAlternativeValue>|never) $action     Action to undertake if collection is empty, or exception to throw.
+ *
+ * @return Stream<TKey|TAlternativeKey, TValue|TAlternativeValue>
+ *
+ * @see Operator\IfEmpty
+ */
 function if_empty(iterable $collection, \Exception|callable $action): Stream
 {
     return new Stream(
@@ -196,6 +211,20 @@ function merge(iterable $first, iterable $second): Stream
     );
 }
 
+/**
+ * Create overflow operator.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue> $collection Collection to iterate over.
+ * @param positive-int           $capacity   Max number of items to iterate over.
+ * @param \Exception|null        $exception  Which exception to throw if collection has more then allowed items ({@see \OverflowException} by default).
+ *
+ * @return Stream<TKey, TValue>
+ *
+ * @see Operator\Overflow
+ */
 function overflow(iterable $collection, int $capacity, ?\Exception $exception = null): Stream
 {
     return new Stream(
