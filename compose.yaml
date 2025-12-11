@@ -4,7 +4,7 @@ services:
         build:
             context: './docker/php'
             args:
-                SYSTEM_TIMEZONE:        ${SYSTEM_TIMEZONE:-Europe/Belgrade}
+                SYSTEM_TIMEZONE:        ${SYSTEM_TIMEZONE:-UTC}
         environment:
             PHP_XDEBUG_MODE:            ${PHP_XDEBUG_MODE:-debug}
             PHP_XDEBUG_REMOTE_PORT:     ${PHP_XDEBUG_REMOTE_PORT:-9000}
