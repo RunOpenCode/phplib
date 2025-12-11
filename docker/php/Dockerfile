@@ -99,4 +99,6 @@ RUN composer global config --no-plugins allow-plugins.infection/extension-instal
 #                                                                                   #
 #####################################################################################
 
+RUN git config --global --add safe.directory /var/www/html
+
 WORKDIR /var/www/html
