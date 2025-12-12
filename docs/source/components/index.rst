@@ -17,5 +17,6 @@ Table of Contents
    :maxdepth: 2
    :titlesonly:
 
+   dataset/index
    metadata/index
    query/index
