@@ -28,7 +28,7 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
             return $this->getIterator();
         }
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -45,7 +45,7 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
 
     /**
      * Provides you with total number of iterated elements.
-     * 
+     *
      * @var non-negative-int
      */
     public private(set) int $count = 0;

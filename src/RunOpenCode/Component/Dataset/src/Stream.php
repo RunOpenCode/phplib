@@ -6,14 +6,16 @@ namespace RunOpenCode\Component\Dataset;
 
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
+use RunOpenCode\Component\Dataset\Model\Buffer;
 
 use function RunOpenCode\Component\Dataset\aggregate as dataset_aggregate;
-use function RunOpenCode\Component\Dataset\batch as dataset_batch;
+use function RunOpenCode\Component\Dataset\buffer_count as dataset_buffer_count;
+use function RunOpenCode\Component\Dataset\buffer_while as dataset_buffer_while;
 use function RunOpenCode\Component\Dataset\collect as dataset_collect;
-use function RunOpenCode\Component\Dataset\compress_join as dataset_compress_join;
 use function RunOpenCode\Component\Dataset\distinct as dataset_distinct;
 use function RunOpenCode\Component\Dataset\filter as dataset_filter;
 use function RunOpenCode\Component\Dataset\flatten as dataset_flatten;
+use function RunOpenCode\Component\Dataset\flush as dataset_flush;
 use function RunOpenCode\Component\Dataset\map as dataset_map;
 use function RunOpenCode\Component\Dataset\merge as dataset_merge;
 use function RunOpenCode\Component\Dataset\reduce as dataset_reduce;
@@ -64,39 +66,31 @@ class Stream extends AbstractStream
     }
 
     /**
-     * Applies batch operator on current stream.
+     * Applies buffer count operator on current stream.
      *
-     * @template TModifiedKey
-     * @template TModifiedValue
+     * @param positive-int $count How many items to buffer.
      *
-     * @param callable(iterable<array{TKey, TValue}> $batch, int $batchNumber): iterable<TModifiedKey, TModifiedValue> $onBatch User defined callable to be called on each batch.
-     * @param positive-int                                                                                             $size    Size of the batch buffer.
+     * @return self<int, Buffer<TKey, TValue>>
      *
-     * @return self<TModifiedKey, TModifiedValue>
-     *
-     * @see Operator\Batch
+     * @see Operator\BufferCount
      */
-    public function batch(callable $onBatch, int $size = 1000): self
+    public function bufferCount(int $count): self
     {
-        return dataset_batch($this, $onBatch, $size);
+        return dataset_buffer_count($this, $count);
     }
 
     /**
-     * Applies compress join operator on current stream.
+     * Applies buffer while operator on current stream.
      *
-     * @template TModifiedKey
-     * @template TModifiedValue
+     * @param callable(Buffer<TKey, TValue>, TValue=, TKey=): bool $predicate  Callable predicate function to evaluate.
      *
-     * @param callable(array{TValue, TValue}, array{TKey, TKey}=, list<array{TKey, TValue}>=): bool $predicate Callable predicate function to evaluate.
-     * @param callable(list<array{TKey, TValue}>): iterable<TModifiedKey, TModifiedValue>           $join      Callable join function to produce joined records.
+     * @return Stream<int, Buffer<TKey, TValue>>
      *
-     * @return self<TModifiedKey, TModifiedValue>
-     *
-     * @see Operator\CompressJoin
+     * @see Operator\BufferWhile
      */
-    public function compressJoin(callable $predicate, callable $join): self
+    public function bufferWhile(callable $predicate): self
     {
-        return dataset_compress_join($this, $predicate, $join);
+        return dataset_buffer_while($this, $predicate);
     }
 
     /**
@@ -128,15 +122,39 @@ class Stream extends AbstractStream
     }
 
     /**
+     * Applies finalize operator on current stream.
+     *
+     * @param callable(): void $finalizer User defined callable to invoke when iterator is depleted or exception is thrown.
+     *
+     * @return self<TKey, TValue>
+     *
+     * @see Operator\Finalize
+     */
+    public function finalize(callable $finalizer): self
+    {
+        return dataset_finalize($this, $finalizer);
+    }
+
+    /**
      * Applies flatten operator on current stream.
      *
-     * @return self<int, mixed>
+     * @return self<mixed, mixed>
      *
      * @see Operator\Flatten
      */
-    public function flatten(): self
+    public function flatten(bool $preserveKeys = false): self
     {
-        return dataset_flatten($this);
+        return dataset_flatten($this, $preserveKeys);
+    }
+
+    /**
+     * Iterate through stream without yielding items.
+     *
+     * @return self<TKey, TValue>
+     */
+    public function flush(): self
+    {
+        return dataset_flush($this);
     }
 
     /**
@@ -291,20 +309,6 @@ class Stream extends AbstractStream
     public function tap(callable $callback): self
     {
         return dataset_tap($this, $callback);
-    }
-
-    /**
-     * Applies finalize operator on current stream.
-     *
-     * @param callable(): void $finalizer User defined callable to invoke when iterator is depleted or exception is thrown.
-     *
-     * @return self<TKey, TValue>
-     *
-     * @see Operator\Finalize
-     */
-    public function finalize(callable $finalizer): self
-    {
-        return dataset_finalize($this, $finalizer);
     }
 
     /**

@@ -8,6 +8,7 @@ use RunOpenCode\Component\Dataset\Aggregator\Aggregator;
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 use RunOpenCode\Component\Dataset\Contract\StreamInterface;
+use RunOpenCode\Component\Dataset\Model\Buffer;
 use RunOpenCode\Component\Dataset\Reducer\Callback;
 
 /**
@@ -60,48 +61,42 @@ function stream(iterable $collection): Stream
 }
 
 /**
- * Create batch operator.
+ * Create buffer count operator.
  *
  * @template TKey
  * @template TValue
- * @template TModifiedKey
- * @template TModifiedValue
  *
- * @param iterable<TKey, TValue>                                                                                   $collection Collection to iterate over.
- * @param callable(iterable<array{TKey, TValue}> $batch, int $batchNumber): iterable<TModifiedKey, TModifiedValue> $onBatch    User defined callable to be called on each batch.
- * @param positive-int                                                                                             $size       Size of the batch buffer.
+ * @param iterable<TKey, TValue> $collection Collection to iterate over.
+ * @param positive-int           $count      How many items to buffer.
  *
- * @return Stream<TModifiedKey, TModifiedValue>
+ * @return Stream<int, Buffer<TKey, TValue>>
  *
- * @see Operator\Batch
+ * @see Operator\BufferCount
  */
-function batch(iterable $collection, callable $onBatch, int $size = 1000): Stream
+function buffer_count(iterable $collection, int $count): Stream
 {
     return new Stream(
-        new Operator\Batch($collection, $onBatch, $size)
+        new Operator\BufferCount($collection, $count)
     );
 }
 
 /**
- * Create compress join operator.
+ * Create buffer while operator.
  *
  * @template TKey
  * @template TValue
- * @template TModifiedKey
- * @template TModifiedValue
  *
- * @param iterable<TKey, TValue>                                                                $collection Collection to iterate over.
- * @param callable(array{TValue, TValue}, array{TKey, TKey}=, list<array{TKey, TValue}>=): bool $predicate  Callable predicate function to evaluate.
- * @param callable(list<array{TKey, TValue}>): iterable<TModifiedKey, TModifiedValue>           $join       Callable join function to produce joined records.
+ * @param iterable<TKey, TValue>                               $collection Collection to iterate over.
+ * @param callable(Buffer<TKey, TValue>, TValue=, TKey=): bool $predicate  Callable predicate function to evaluate.
  *
- * @return Stream<TModifiedKey, TModifiedValue>
+ * @return Stream<int, Buffer<TKey, TValue>>
  *
- * @see Operator\CompressJoin
+ * @see Operator\BufferWhile
  */
-function compress_join(iterable $collection, callable $predicate, callable $join): Stream
+function buffer_while(iterable $collection, callable $predicate): Stream
 {
     return new Stream(
-        new Operator\CompressJoin($collection, $predicate, $join)
+        new Operator\BufferWhile($collection, $predicate)
     );
 }
 
@@ -146,22 +141,66 @@ function filter(iterable $collection, callable $filter): Stream
 }
 
 /**
- * Create flatten operator.
+ * Create finalize operator.
  *
+ * @template TKey
  * @template TValue
- * @template TValues of iterable<TValue>
  *
- * @param iterable<mixed, TValues> $collection Collection to iterate over.
+ * @param iterable<TKey, TValue> $collection Collection to iterate over.
+ * @param callable(): void       $finalizer  User defined callable to invoke when iterator is depleted or exception is thrown.
  *
- * @return Stream<int, TValue>
+ * @return Stream<TKey, TValue>
  *
- * @see Operator\Flatten
+ * @see Operator\Finalize
  */
-function flatten(iterable $collection): Stream
+function finalize(iterable $collection, callable $finalizer): Stream
 {
     return new Stream(
-        new Operator\Flatten($collection)
+        new Operator\Finalize($collection, $finalizer)
     );
+}
+
+/**
+ * Create flatten operator.
+ *
+ * @template TKey
+ * @template TValue
+ * @template TValues of iterable<TKey, TValue>
+ *
+ * @param iterable<mixed, TValues> $collection   Collection to iterate over.
+ * @param bool                     $preserveKeys Should keys be preserved from the flattened collections, false by default.
+ *
+ * @return ($preserveKeys is true ? Stream<TKey, TValue> : Stream<int, TValue>)
+ *
+ * @see                      Operator\Flatten
+ *
+ * @phpstan-ignore-next-line return.unusedType
+ */
+function flatten(iterable $collection, bool $preserveKeys = false): Stream
+{
+    // @phpstan-ignore-next-line return.type
+    return new Stream(
+        new Operator\Flatten($collection, $preserveKeys)
+    );
+}
+
+/**
+ * Iterate through stream without yielding items.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue> $collection Collection to iterate.
+ *
+ * @return Stream<TKey, TValue> Flushed stream.
+ */
+function flush(iterable $collection): Stream
+{
+    $stream = new Stream($collection);
+
+    \iterator_to_array($stream, false);
+
+    return $stream;
 }
 
 /**
@@ -375,25 +414,6 @@ function tap(iterable $collection, callable $callback): Stream
     );
 }
 
-/**
- * Create finalize operator.
- *
- * @template TKey
- * @template TValue
- *
- * @param iterable<TKey, TValue> $collection Collection to iterate over.
- * @param callable(): void       $finalizer  User defined callable to invoke when iterator is depleted or exception is thrown.
- *
- * @return Stream<TKey, TValue>
- *
- * @see Operator\Finalize
- */
-function finalize(iterable $collection, callable $finalizer): Stream
-{
-    return new Stream(
-        new Operator\Finalize($collection, $finalizer)
-    );
-}
 
 /**
  * Attach reducer as an aggregator.
