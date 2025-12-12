@@ -10,6 +10,7 @@ use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 use function RunOpenCode\Component\Dataset\aggregate as dataset_aggregate;
 use function RunOpenCode\Component\Dataset\batch as dataset_batch;
 use function RunOpenCode\Component\Dataset\collect as dataset_collect;
+use function RunOpenCode\Component\Dataset\compress_join as dataset_compress_join;
 use function RunOpenCode\Component\Dataset\distinct as dataset_distinct;
 use function RunOpenCode\Component\Dataset\filter as dataset_filter;
 use function RunOpenCode\Component\Dataset\flatten as dataset_flatten;
@@ -78,6 +79,24 @@ class Stream extends AbstractStream
     public function batch(callable $onBatch, int $size = 1000): self
     {
         return dataset_batch($this, $onBatch, $size);
+    }
+
+    /**
+     * Applies compress join operator on current stream.
+     *
+     * @template TModifiedKey
+     * @template TModifiedValue
+     *
+     * @param callable(array{TValue, TValue}, array{TKey, TKey}=, list<array{TKey, TValue}>=): bool $predicate Callable predicate function to evaluate.
+     * @param callable(list<array{TKey, TValue}>): iterable<TModifiedKey, TModifiedValue>           $join      Callable join function to produce joined records.
+     *
+     * @return self<TModifiedKey, TModifiedValue>
+     *
+     * @see Operator\CompressJoin
+     */
+    public function compressJoin(callable $predicate, callable $join): self
+    {
+        return dataset_compress_join($this, $predicate, $join);
     }
 
     /**

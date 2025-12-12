@@ -54,6 +54,35 @@ final class StreamTest extends TestCase
     }
 
     #[Test]
+    public function compressJoin(): void
+    {
+        $dataset = [
+            1 => [10, 2],
+            2 => [10, 3],
+            3 => [10, 4],
+            4 => [20, 1],
+            5 => [20, 2],
+            6 => [30, 5],
+        ];
+
+        $data = new Stream($dataset)
+            ->compressJoin(
+                static fn(array $values): bool => $values[0][0] === $values[1][0],
+                static fn(array $buffer): iterable => [
+                    $buffer[0][1][0] => \array_map(static fn(array $record): int => $record[1][1], $buffer),
+                ],
+            )
+            ->collect(ArrayCollector::class)
+            ->value;
+
+        $this->assertSame([
+            10 => [2, 3, 4],
+            20 => [1, 2],
+            30 => [5],
+        ], $data);
+    }
+
+    #[Test]
     public function distinct(): void
     {
         $dataset = [

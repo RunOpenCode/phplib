@@ -83,6 +83,29 @@ function batch(iterable $collection, callable $onBatch, int $size = 1000): Strea
 }
 
 /**
+ * Create compress join operator.
+ *
+ * @template TKey
+ * @template TValue
+ * @template TModifiedKey
+ * @template TModifiedValue
+ *
+ * @param iterable<TKey, TValue>                                                                $collection Collection to iterate over.
+ * @param callable(array{TValue, TValue}, array{TKey, TKey}=, list<array{TKey, TValue}>=): bool $predicate  Callable predicate function to evaluate.
+ * @param callable(list<array{TKey, TValue}>): iterable<TModifiedKey, TModifiedValue>           $join       Callable join function to produce joined records.
+ *
+ * @return Stream<TModifiedKey, TModifiedValue>
+ *
+ * @see Operator\CompressJoin
+ */
+function compress_join(iterable $collection, callable $predicate, callable $join): Stream
+{
+    return new Stream(
+        new Operator\CompressJoin($collection, $predicate, $join)
+    );
+}
+
+/**
  * Create distinct operator.
  *
  * @template TKey
