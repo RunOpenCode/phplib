@@ -32,4 +32,20 @@ final class FlattenTest extends TestCase
             6,
         ], \iterator_to_array($operator));
     }
+
+    #[Test]
+    public function flattens_preserving_keys(): void
+    {
+        $operator = flatten([
+            'foo' => ['a' => 2, 'b' => 3],
+            'bar' => ['c' => 10, 'd' => 20],
+        ], true);
+
+        $this->assertSame([
+            'a' => 2,
+            'b' => 3,
+            'c' => 10,
+            'd' => 20,
+        ], \iterator_to_array($operator));
+    }
 }

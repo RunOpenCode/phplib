@@ -13,8 +13,8 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * Flatten operator iterates over given collection of iterables and yields
  * each item from each iterable in a single flat sequence.
  *
- * Keys from inner iterables are not preserved, new keys are generated
- * in a continuous manner starting from 0.
+ * By default, keys from inner iterables are not preserved, which can be
+ * overridden in constructor.
  *
  * Example usage:
  *
@@ -22,23 +22,27 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Flatten;
  *
  * $flatten = new Flatten(
- *   collection: new Dataset(['a' => [1, 2], 'b' => [3, 4], 'c' => [5]]),
+ *   collection: new Dataset(['first' => ['a' => 1, 'b' => 3], 'second' => ['c' => 5]]),
  * );
- * // The resulting sequence will be: 0 => 1, 1 => 2, 2 => 3, 3 => 4, 4 => 5
+ * // The resulting sequence will be: 0 => 1, 1 => 3, 2 => 5
+ * // With `preserveKeys` set to true, resulting sequence would be: 'a' => 1, 'b' => 3, 'c' => 5
  * ```
  *
+ * @template TKey
  * @template TValue
  *
- * @extends AbstractStream<int, TValue>
- * @implements OperatorInterface<int, TValue>
+ * @extends AbstractStream<int|TKey, TValue>
+ * @implements OperatorInterface<int|TKey, TValue>
  */
 final class Flatten extends AbstractStream implements OperatorInterface
 {
     /**
-     * @param iterable<mixed, iterable<TValue>> $collection Collection to iterate over.
+     * @param iterable<mixed, iterable<TKey, TValue>> $collection   Collection to iterate over.
+     * @param bool                                    $preserveKeys Should keys be preserved from the flattened collections, false by default.
      */
     public function __construct(
         private readonly iterable $collection,
+        private readonly bool     $preserveKeys = false,
     ) {
         parent::__construct($this->collection);
     }
@@ -49,7 +53,12 @@ final class Flatten extends AbstractStream implements OperatorInterface
     protected function iterate(): \Traversable
     {
         foreach ($this->collection as $items) {
-            foreach ($items as $value) {
+            foreach ($items as $key => $value) {
+                if ($this->preserveKeys) {
+                    yield $key => $value;
+                    continue;
+                }
+
                 yield $value;
             }
         }

@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Component\Dataset\Collector\ArrayCollector;
 use RunOpenCode\Component\Dataset\Exception\LogicException;
+use RunOpenCode\Component\Dataset\Model\Buffer;
 use RunOpenCode\Component\Dataset\Reducer\Average;
 use RunOpenCode\Component\Dataset\Reducer\Count;
 use RunOpenCode\Component\Dataset\Reducer\Max;
@@ -27,59 +28,71 @@ final class StreamTest extends TestCase
     }
 
     #[Test]
-    public function batch(): void
+    public function buffer_count(): void
     {
         $dataset = [
             'a' => 2,
             'b' => 10,
             'c' => 5,
             'd' => 1,
+            'e' => 7,
         ];
 
-        $data = new Stream($dataset)
-            ->batch(function(iterable $batch): iterable {
-                foreach ($batch as [$key, $value]) {
-                    yield \sprintf('processed_%s', $key) => $value * 2;
-                }
-            }, 2)
-            ->collect(ArrayCollector::class)
-            ->value;
+        $stream = new Stream($dataset)
+            ->bufferCount(2)
+            ->map(static function(Buffer $buffer): iterable {
+                return new Stream($buffer)
+                    ->map(
+                        static fn(int $value): int => $value * 2,
+                        static fn(string $key): string => \sprintf('processed_%s', $key)
+                    );
+            })
+            ->aggregate('count', Count::class)
+            ->flatten(true);
 
         $this->assertSame([
             'processed_a' => 4,
             'processed_b' => 20,
             'processed_c' => 10,
             'processed_d' => 2,
-        ], $data);
+            'processed_e' => 14,
+        ], \iterator_to_array($stream));
+
+        $this->assertSame(3, $stream->aggregators['count']->value);
     }
 
     #[Test]
-    public function compressJoin(): void
+    public function buffer_while(): void
     {
         $dataset = [
-            1 => [10, 2],
-            2 => [10, 3],
-            3 => [10, 4],
-            4 => [20, 1],
-            5 => [20, 2],
-            6 => [30, 5],
+            'a' => 2,
+            'b' => 2,
+            'c' => 2,
+            'd' => 3,
+            'e' => 3,
         ];
 
-        $data = new Stream($dataset)
-            ->compressJoin(
-                static fn(array $values): bool => $values[0][0] === $values[1][0],
-                static fn(array $buffer): iterable => [
-                    $buffer[0][1][0] => \array_map(static fn(array $record): int => $record[1][1], $buffer),
-                ],
-            )
-            ->collect(ArrayCollector::class)
-            ->value;
+        $stream = new Stream($dataset)
+            ->bufferWhile(static fn(Buffer $buffer, int $value): bool => $value === $buffer->last()->value()) // @phpstan-ignore-line
+            ->aggregate('count', Count::class)
+            ->map(static function(Buffer $buffer): iterable {
+                return new Stream($buffer)
+                    ->map(
+                        static fn(int $value): int => $value * 2,
+                        static fn(string $key): string => \sprintf('processed_%s', $key)
+                    );
+            })
+            ->flatten(true);
 
         $this->assertSame([
-            10 => [2, 3, 4],
-            20 => [1, 2],
-            30 => [5],
-        ], $data);
+            'processed_a' => 4,
+            'processed_b' => 4,
+            'processed_c' => 4,
+            'processed_d' => 6,
+            'processed_e' => 6,
+        ], \iterator_to_array($stream));
+
+        $this->assertSame(2, $stream->aggregators['count']->value);
     }
 
     #[Test]
@@ -388,6 +401,24 @@ final class StreamTest extends TestCase
         $this->assertSame(1, new Stream($dataset)->reduce(Min::class));
         $this->assertSame(18, new Stream($dataset)->reduce(Sum::class));
         $this->assertSame(36, new Stream($dataset)->reduce(static fn(?int $carry, int $value, string $key): int => $value * 2 + ($carry ?? 0)));
+    }
+
+    #[Test]
+    public function flush(): void
+    {
+        $dataset = [
+            'a' => 2,
+            'b' => 10,
+            'c' => 5,
+            'd' => 1,
+        ];
+
+        $stream = Stream::create($dataset)
+                        ->aggregate('count', Count::class)
+                        ->flush();
+
+        $this->assertSame(4, $stream->aggregators['count']->value);
+        $this->assertTrue($stream->closed);
     }
 
     #[Test]
