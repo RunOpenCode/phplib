@@ -33,7 +33,23 @@ interface StreamInterface extends \IteratorAggregate
     }
 
     /**
-     * Check if stream has been iterated through.
+     * Get aggregated values collected during iteration process.
+     *
+     * @var array<non-empty-string, mixed>
+     */
+    public array $aggregated {
+        get;
+    }
+
+    /**
+     * Check if stream has been iterated.
+     *
+     * Do note that this denotes only if iteration started, not
+     * if stream has been fully iterated.
+     *
+     * This information may be used to determine if stream can
+     * be iterated or not as implementation assumes that all
+     * streams can not be rewound.
      */
     public bool $closed {
         get;

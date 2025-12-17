@@ -2,29 +2,28 @@
 Dataset component
 =================
 
-This library is heavily inspired by `Java Stream API`_ for dealing with 
-collections in functionali(ish), declarative way. In some way, it is inspired 
-with `ReactiveX`_ as well, only with much, much simpler approach and with less
-features, of course.
+This library is heavily inspired by the `Java Stream API`_ for working with
+collections in a functional(ish), declarative way. In some aspects, it is also
+inspired by `ReactiveX`_, but with a much simpler approach and far fewer 
+features.
 
 If your problem can be described as:
 
-   I have a data stream from some source (file, database query result, etc.) and
-   I want to iterate through its records and do some processing with small 
-   memory footprint.
+   I have a data stream from some source (file, database query result, etc.), 
+   and I want to iterate over its records and process them using a small memory
+   footprint.
 
-this is the library which can help you achieve that goal by using declarative
-approach.
+then this library can help you achieve that goal using a declarative approach.
 
-There are several PHP implementations of same idea, however, this implementation
-focuses on PHP ``iterable`` assuming that underlying implementation is most 
-probably instance of `Generator`_. Of course, it will work with ``array`` data 
-type, or anything which implements ``\Traversable``, however, power of this
-library is in its focus of simple declarative data stream processing with small 
-memory footprint.
+There are several PHP implementations of this idea; however, this implementation
+focuses on PHP iterable values, assuming that the underlying implementation
+is most likely an instance of `Generator`_. Of course, it also works with the
+``array`` data type or anything that implements ``\Traversable``. The real
+strength of this library lies in its focus on simple, declarative data stream
+processing with minimal memory usage.
 
 If you need full fledged `ReactiveX`_ in PHP, please take a look at the official
-implementation of the specification at `RxPHP`_.
+implementation of the specification: `RxPHP`_.
 
 .. _Java Stream API: https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
 .. _ReactiveX: https://reactivex.io
@@ -35,13 +34,14 @@ Features
 --------
 
 * Declarative approach to process data streams.
-* Designed to work with any ``iterable`` using as less as possible memory.
-* Provides bunch of operators, reducers and collectors, which can be easily 
+* Designed to work with any ``iterable`` while using as little memory as 
+  possible.
+* Provides a set of operators, reducers, and collectors that can be easily
   extended or added as needed.
 * Focused on small memory consumption during processing.
-* Introduces concept of **aggregators** allowing you to simultaneously process
-  stream and reduce (aggregate) values during processing without breaking the 
-  data stream.
+* Introduces the concept of **aggregators**, allowing you to process a stream 
+  and reduce (aggregate) values simultaneously without interrupting the data 
+  stream.
 
 Table of Contents
 -----------------
@@ -60,10 +60,11 @@ Table of Contents
 Quick example
 -------------
 
-A simple example of using this library for listing online transactions is given 
-below. Assume that we want to display list of online transactions executed in
-some time period, and we want to show total amount for each individual currency
-as well as in total, this would be a way to do that using this library:
+A simple example of using this library to list online transactions is shown
+below. Assume that we want to display a list of online transactions executed
+within a certain time period, and we also want to calculate the total amount for
+each currency as well as the overall total. This is how it can be done using 
+this library:
 
 .. code-block:: php
    :linenos:
@@ -120,29 +121,28 @@ as well as in total, this would be a way to do that using this library:
        }
    }
 
-**Explanation of the code:** On line no 35 we fetch data from database. PHP
-returns iterable which is pointer on the first row of the returned dataset, 
-which means that no rows are loaded into memory of the PHP virtual machine.
+**Explanation of the code:** On line 35 we fetch data from database. PHP returns 
+an iterable that points to the first row of the result set, which means that no
+rows are loaded into the PHP virtual machine's memory upfront.
 
 Line 41 wraps that iterable into instance of 
-``RunOpenCode\Component\Dataset\Stream`` and then we apply operations which we 
-want to conduct against the stream during its iteration.
+``RunOpenCode\Component\Dataset\Stream``. We then apply the operations that
+should be executed while iterating over the stream.
 
-Line 42 applies aggregator which will sum all transactions executed using
-``EUR`` as currency, line 43 does that for ``USD``.
+Line 42 applies aggregator that sums all transactions executed in ``EUR``. Line 
+43 does the same for ``USD``.
 
-Line 44 will add new column to the row, ``converted`` which will convert all 
-amounts to ``EUR`` using given conversion rate.
+Line 44 adds a new column to each row, ``converted`` which will convert all 
+amounts to ``EUR`` using the provided conversion rate.
 
-Lastly, lines 48 and 49 will apply aggregator which will provide us with total 
-sum of all transactions in ``EUR`` as well as average transaction amount in 
-``EUR``.
+Finally, lines 48 and 49 apply aggregators that calculate the total sum of all
+transactions in ``EUR`` as well as the average transaction amount in ``EUR``.
 
-**None of the processing is executed, until you iterate stream**. Iterable is
-just wrapped with processing logic, to execute it, you need to iterate it. You
-will probably do that in some templating language. However, example below will
-just use ``echo`` to demonstrate concept:
+**None of the processing is executed, until the stream is iterated**. The 
+iterable is only wrapped with processing logic. To execute it, you must iterate 
+over it. In practice, this will often be done in a templating engine.
 
+The example below uses ``echo`` to demonstrate the concept:
 
 .. code-block:: php
    :linenos:
@@ -162,9 +162,9 @@ just use ``echo`` to demonstrate concept:
    }
 
    // Since we iterated, our aggregated values are available too.
-   echo \sprint('Total in EUR: %d', $stream->aggregators['total_converted']);
+   echo \sprintf('Total in EUR: %d', $stream->aggregated['total_converted']);
    echo "\n";
-   echo \sprint('Average in EUR: %d', $stream->aggregators['average_converted']);
+   echo \sprintf('Average in EUR: %d', $stream->aggregated['average_converted']);
 
 So, during this process, memory footprint is almost as low as amount of memory
 required for storing one row.

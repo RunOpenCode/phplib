@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset\Collector;
 
-use RunOpenCode\Component\Dataset\Contract\AggregatorInterface;
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
 use RunOpenCode\Component\Dataset\Contract\StreamInterface;
 use RunOpenCode\Component\Dataset\Exception\LogicException;
@@ -38,9 +37,13 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
     /**
      * {@inheritdoc}
      */
-    public array $aggregators {
+    public array $aggregated {
         get {
-            return $this->aggregators ?? [];
+            if (!$this->closed) {
+                throw new LogicException('Collector must be iterated first.');
+            }
+
+            return $this->aggregated;
         }
     }
 
@@ -54,10 +57,6 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
      */
     public ?int $previous {
         get {
-            if (!$this->closed) {
-                throw new LogicException('Collector must be fully iterated first.');
-            }
-
             if ($this->offset <= 0) {
                 return null;
             }
@@ -71,7 +70,7 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
      */
     public ?int $next {
         get {
-            if (!$this->closed) {
+            if (!$this->exhausted) {
                 throw new LogicException('Collector must be fully iterated first.');
             }
 
@@ -90,15 +89,20 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
     /**
      * Indicates whether there are more items available after current collection is fully iterated.
      */
-    private bool $hasMore {
+    public bool $hasMore {
         get {
-            if (!$this->closed) {
+            if (!$this->exhausted) {
                 throw new LogicException('Collector must be fully iterated first.');
             }
 
             return $this->hasMore;
         }
     }
+
+    /**
+     * Denotes if collection has been fully iterated.
+     */
+    private bool $exhausted = false;
 
     /**
      * @param iterable<TKey, TValue> $collection Collection to collect.
@@ -116,29 +120,30 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
      */
     public function getIterator(): \Traversable
     {
-        $iteration    = 0;
-        $this->closed = true;
+        $iteration        = 0;
+        $this->closed     = true;
+        $this->aggregated = [];
 
         foreach ($this->collection as $key => $value) {
             $iteration++;
 
             if (null !== $this->limit && $iteration === $this->limit) {
                 yield $key => $value;
-                $this->aggregators = \array_map(
-                    static fn(AggregatorInterface $aggregator): mixed => $aggregator->value,
-                    $this->collection instanceof StreamInterface ? $this->collection->aggregators : [],
-                );
+                $this->aggregated = $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
                 continue;
             }
 
             if (null !== $this->limit && $iteration > $this->limit) {
-                $this->hasMore = true;
+                $this->hasMore   = true;
+                $this->exhausted = true;
                 return;
             }
 
+            $this->aggregated = $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
             yield $key => $value;
         }
 
-        $this->hasMore = false;
+        $this->hasMore   = false;
+        $this->exhausted = true;
     }
 }

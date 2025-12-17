@@ -19,7 +19,7 @@ final class DistinctTest extends TestCase
             'b' => [10],
             'c' => [2],
             'd' => [10],
-        ], static fn(array $value, string $key): string => (string)$value[0]);
+        ], static fn(array $value, string $key): string => (string)$value[0]); // @phpstan-ignore-line
 
         $this->assertSame([
             'a' => [2],

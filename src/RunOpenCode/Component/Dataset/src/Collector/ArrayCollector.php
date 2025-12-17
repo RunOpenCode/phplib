@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset\Collector;
 
-use RunOpenCode\Component\Dataset\Contract\AggregatorInterface;
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
 use RunOpenCode\Component\Dataset\Contract\StreamInterface;
 use RunOpenCode\Component\Dataset\Exception\LogicException;
@@ -32,7 +31,9 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
     /**
      * {@inheritdoc}
      */
-    public private(set) array $aggregators;
+    public array $aggregated {
+        get => $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
+    }
 
     /**
      * {@inheritdoc}
@@ -47,11 +48,7 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
     public function __construct(
         public readonly iterable $collection,
     ) {
-        $this->value       = iterable_to_array($this->collection);
-        $this->aggregators = $this->collection instanceof StreamInterface ? \array_map(
-            static fn(AggregatorInterface $aggregator): mixed => $aggregator->value,
-            $this->collection->aggregators,
-        ) : [];
+        $this->value = iterable_to_array($this->collection);
     }
 
     /**

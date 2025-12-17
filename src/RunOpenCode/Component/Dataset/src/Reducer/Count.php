@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset\Reducer;
 
-use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
-use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
  * Reducer which counts number of items.
@@ -14,47 +12,42 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * @template TKey
  * @template TValue
  *
- * @extends AbstractStream<TKey, TValue>
+ * @phpstan-type FilterCallable = callable(TValue, TKey): bool
+ *
  * @implements ReducerInterface<TKey, TValue, int>
  */
-final class Count extends AbstractStream implements ReducerInterface
+final class Count implements ReducerInterface
 {
     /**
      * {@inheritdoc}
      */
-    public mixed $value {
-        get => $this->closed ? $this->value : throw new LogicException('Stream is not closed (iterated).');
-    }
-
-    private \Closure $callback;
+    public private(set) mixed $value = 0;
 
     /**
-     * @param iterable<TKey, TValue>            $collection Collection of values to reduce.
-     * @param callable(TValue, TKey): bool|null $filter     Optional filter callback to count only items that match the filter.
+     * Filter callable.
+     */
+    private readonly \Closure $filter;
+
+    /**
+     * Create new count reducer.
+     *
+     * @param FilterCallable|null $filter Optional filter callback to count only items that match the filter.
      */
     public function __construct(
-        private readonly iterable $collection,
-        ?callable                 $filter = null,
+        ?callable $filter = null,
     ) {
-        parent::__construct($this->collection);
-        $this->callback = $filter ? $filter(...) : static fn(): bool => true;
+        $this->filter = $filter ? $filter(...) : static fn(): bool => true;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function iterate(): \Traversable
+    public function next(mixed $value, mixed $key): void
     {
-        $this->value = 0;
-
-        foreach ($this->collection as $key => $value) {
-            if (!($this->callback)($value, $key)) {
-                yield $key => $value;
-                continue;
-            }
-
-            $this->value++;
-            yield $key => $value;
+        if (false === ($this->filter)($value, $key)) {
+            return;
         }
+
+        $this->value++;
     }
 }

@@ -32,14 +32,12 @@ use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
 /**
  * Dataset iterable stream.
  *
- * You may extend this class to add your own custom operators.
- *
  * @template TKey
  * @template TValue
  *
  * @extends AbstractStream<TKey, TValue>
  */
-class Stream extends AbstractStream
+final class Stream extends AbstractStream
 {
     /**
      * @param iterable<TKey, TValue> $collection
@@ -82,7 +80,7 @@ class Stream extends AbstractStream
     /**
      * Applies buffer while operator on current stream.
      *
-     * @param callable(Buffer<TKey, TValue>, TValue=, TKey=): bool $predicate  Callable predicate function to evaluate.
+     * @param callable(Buffer<TKey, TValue>, TValue=, TKey=): bool $predicate Callable predicate function to evaluate.
      *
      * @return Stream<int, Buffer<TKey, TValue>>
      *
@@ -96,7 +94,7 @@ class Stream extends AbstractStream
     /**
      * Applies distinct operator on current stream.
      *
-     * @param callable(TValue, TKey): string|null $identity User defined callable to determine item identity. If null, strict comparison (===) is used.
+     * @param callable(TValue, TKey=): string|null $identity User defined callable to determine item identity. If null, strict comparison (===) is used.
      *
      * @return self<TKey, TValue>
      *
@@ -110,7 +108,7 @@ class Stream extends AbstractStream
     /**
      * Applies filter operator on current stream.
      *
-     * @param callable(TValue, TKey): bool $filter User defined callable to filter items.
+     * @param callable(TValue, TKey=): bool $filter User defined callable to filter items.
      *
      * @return self<TKey, TValue>
      *
@@ -180,8 +178,8 @@ class Stream extends AbstractStream
      * @template TModifiedKey
      * @template TModifiedValue
      *
-     * @param callable(TValue, TKey): TModifiedValue    $valueTransform User defined callable to be called on each item.
-     * @param callable(TKey, TValue): TModifiedKey|null $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
+     * @param callable(TValue, TKey=): TModifiedValue    $valueTransform User defined callable to be called on each item.
+     * @param callable(TKey, TValue=): TModifiedKey|null $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
      *
      * @return self<($keyTransform is null ? TKey : TModifiedKey), TModifiedValue>
      *
@@ -315,13 +313,13 @@ class Stream extends AbstractStream
      * @template TReducedValue
      * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
      *
-     * @param non-empty-string       $name    Name of the aggregation.
-     * @param class-string<TReducer> $reducer Reducer to user for aggregation.
-     * @param mixed                  ...$args Arguments passed to reducer.
+     * @param non-empty-string                                                             $name    Name of the aggregation.
+     * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer Reducer to user for aggregation.
+     * @param mixed                                                                        ...$args Arguments passed to reducer.
      *
      * @return self<TKey, TValue>
      */
-    public function aggregate(string $name, string $reducer, mixed ...$args): self
+    public function aggregate(string $name, callable|string $reducer, mixed ...$args): self
     {
         return dataset_aggregate($name, $this, $reducer, ...$args);
     }
@@ -350,8 +348,8 @@ class Stream extends AbstractStream
      * @template TReducedValue
      * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
      *
-     * @param class-string<TReducer>|callable(TReducedValue|null, TValue, TKey): TReducedValue $reducer Reducer class name or callable.
-     * @param mixed                                                                            ...$args Arguments passed to reducer.
+     * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer Reducer to use.
+     * @param mixed                                                                        ...$args Arguments passed to reducer.
      *
      * @return TReducedValue
      *

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset\Reducer;
 
-use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
-use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
  * Reducer which calculates sum of values from a collection of values.
@@ -16,56 +14,48 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * @template TKey
  * @template TValue
  *
- * @phpstan-type ValueExtractor = callable(TValue, TKey): (int|float|null)
+ * @phpstan-type ExtractorCallable = callable(TValue, TKey): (int|float|null)
  *
- * @extends AbstractStream<TKey, TValue>
  * @implements ReducerInterface<TKey, TValue, int|float|null>
  */
-final class Sum extends AbstractStream implements ReducerInterface
+final class Sum implements ReducerInterface
 {
     /**
      * {@inheritdoc}
      */
-    public mixed $value {
-        get => $this->closed ? $this->value : throw new LogicException('Stream is not closed (iterated).');
-    }
+    public private(set) mixed $value;
 
     private \Closure $extractor;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection of values to reduce.
-     * @param ValueExtractor|null    $extractor  Optional value extractor. If not provided, values are used as is.
+     * @param int|float|null         $initial   Initial value.
+     * @param ExtractorCallable|null $extractor Optional reducible value extractor.
      */
     public function __construct(
-        private readonly iterable $collection,
-        ?callable                 $extractor = null
+        int|float|null $initial = null,
+        ?callable      $extractor = null,
     ) {
-        parent::__construct($this->collection);
-        $this->extractor = (
-            $extractor ??
-            static fn(mixed $value): int|float|null => \is_numeric($value) ? $value + 0 : null
-        )(...);
+        $this->value     = $initial;
+        $this->extractor = null !== $extractor ? $extractor(...) : static fn(mixed $value): mixed => $value;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function iterate(): \Traversable
+    public function next(mixed $value, mixed $key): void
     {
-        $this->value = null;
+        /** @var int|float|null $value */
+        $value = ($this->extractor)($value, $key);
 
-        foreach ($this->collection as $key => $value) {
-            /** @var int|float|null $extracted */
-            $extracted = ($this->extractor)($value, $key);
-
-            if (null === $extracted) {
-                yield $key => $value;
-                continue;
-            }
-
-            $this->value = $extracted + ($this->value ?? 0);
-
-            yield $key => $value;
+        if (null === $value) {
+            return;
         }
+
+        if (null === $this->value) {
+            $this->value = $value;
+            return;
+        }
+
+        $this->value += $value;
     }
 }

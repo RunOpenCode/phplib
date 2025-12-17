@@ -25,7 +25,7 @@ interface CollectorInterface
      *
      * @var array<non-empty-string, mixed>
      */
-    public array $aggregators {
+    public array $aggregated {
         get;
     }
 

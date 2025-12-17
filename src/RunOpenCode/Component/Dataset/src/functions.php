@@ -9,9 +9,10 @@ use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 use RunOpenCode\Component\Dataset\Contract\StreamInterface;
 use RunOpenCode\Component\Dataset\Model\Buffer;
-use RunOpenCode\Component\Dataset\Reducer\Callback;
 
 /**
+ * Transform iterable to array.
+ *
  * @template TKey of array-key
  * @template TValue
  *
@@ -29,6 +30,8 @@ function iterable_to_array(iterable $iterable, bool $preserveKeys = true): array
 }
 
 /**
+ * Transform iterable to list.
+ *
  * @template TKey
  * @template TValue
  *
@@ -106,8 +109,8 @@ function buffer_while(iterable $collection, callable $predicate): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>              $collection Collection to iterate over.
- * @param callable(TValue, TKey): string|null $identity   User defined callable to determine item identity. If null, strict comparison (===) is used.
+ * @param iterable<TKey, TValue>                 $collection Collection to iterate over.
+ * @param (callable(TValue, TKey=): string)|null $identity   User defined callable to determine item identity. If null, strict comparison (===) is used.
  *
  * @return Stream<TKey, TValue>
  *
@@ -126,8 +129,8 @@ function distinct(iterable $collection, ?callable $identity = null): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>       $collection Collection to iterate over.
- * @param callable(TValue, TKey): bool $filter     User defined callable to filter items.
+ * @param iterable<TKey, TValue>        $collection Collection to iterate over.
+ * @param callable(TValue, TKey=): bool $filter     User defined callable to filter items.
  *
  * @return Stream<TKey, TValue>
  *
@@ -233,9 +236,9 @@ function if_empty(iterable $collection, \Exception|callable $action): Stream
  * @template TModifiedKey
  * @template TModifiedValue
  *
- * @param iterable<TKey, TValue>                    $collection     Collection to iterate over.
- * @param callable(TValue, TKey): TModifiedValue    $valueTransform User defined callable to be called on each item.
- * @param callable(TKey, TValue): TModifiedKey|null $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
+ * @param iterable<TKey, TValue>                     $collection     Collection to iterate over.
+ * @param callable(TValue, TKey=): TModifiedValue    $valueTransform User defined callable to be called on each item.
+ * @param callable(TKey, TValue=): TModifiedKey|null $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
  *
  * @return Stream<($keyTransform is null ? TModifiedKey : TKey), TModifiedValue>
  *
@@ -414,7 +417,6 @@ function tap(iterable $collection, callable $callback): Stream
     );
 }
 
-
 /**
  * Attach reducer as an aggregator.
  *
@@ -423,23 +425,22 @@ function tap(iterable $collection, callable $callback): Stream
  * @template TReducedValue
  * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
  *
- * @param non-empty-string       $name       Name of the aggregator.
- * @param iterable<TKey, TValue> $collection Collection to collect from.
- * @param class-string<TReducer> $reducer    Reducer to attach
- * @param mixed                  ...$args    Arguments passed to reducer.
+ * @param non-empty-string                                                             $name       Name of the aggregator.
+ * @param iterable<TKey, TValue>                                                       $collection Collection to collect from.
+ * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer    Reducer to attach.
+ * @param mixed                                                                        ...$args    Arguments passed to reducer.
  *
  * @return Stream<TKey, TValue>
  */
-function aggregate(string $name, iterable $collection, string $reducer, mixed ...$args): Stream
+function aggregate(string $name, iterable $collection, callable|string $reducer, mixed ...$args): Stream
 {
-    /** @var TReducer $reducer */
-    $reducer = new \ReflectionClass($reducer)->newInstanceArgs(\array_merge(
-        [$collection],
-        $args
-    ));
+    /** @var TReducer $instance */
+    $instance = \is_string($reducer) && \is_a($reducer, ReducerInterface::class, true)
+        ? new \ReflectionClass($reducer)->newInstanceArgs($args)
+        : new Reducer\Callback($reducer, ...$args);
 
     return new Stream(
-        new Aggregator($name, $reducer),
+        new Aggregator($name, new Operator\Reduce($collection, $instance)),
     );
 }
 
@@ -475,9 +476,9 @@ function collect(iterable $collection, string $collector, mixed ...$args): Colle
  * @template TReducedValue
  * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
  *
- * @param iterable<TKey, TValue>                                                           $collection Collection to collect from.
- * @param class-string<TReducer>|callable(TReducedValue|null, TValue, TKey): TReducedValue $reducer    Reducer class name or callable.
- * @param mixed                                                                            ...$args    Arguments passed to reducer.
+ * @param iterable<TKey, TValue>                                                       $collection Collection to collect from.
+ * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer    Reducer to use.
+ * @param mixed                                                                        ...$args    Arguments passed to reducer.
  *
  * @return TReducedValue
  *
@@ -485,15 +486,14 @@ function collect(iterable $collection, string $collector, mixed ...$args): Colle
  */
 function reduce(iterable $collection, callable|string $reducer, mixed ...$args): mixed
 {
-    $isClassString = \is_string($reducer) && \is_a($reducer, ReducerInterface::class, true);
-    $reducer       = $isClassString ? new \ReflectionClass($reducer)->newInstanceArgs(\array_merge(
-        [$collection],
-        $args
-    )) : new Callback($collection, $reducer, ...$args);
+    /** @var TReducer $instance */
+    $instance = \is_string($reducer) && \is_a($reducer, ReducerInterface::class, true)
+        ? new \ReflectionClass($reducer)->newInstanceArgs($args)
+        : new Reducer\Callback($reducer, ...$args);
 
-    foreach ($reducer as $_) {
-        // noop.
-    }
+    $operator = new Operator\Reduce($collection, $instance);
 
-    return $reducer->value;
+    flush($operator);
+
+    return $operator->value;
 }

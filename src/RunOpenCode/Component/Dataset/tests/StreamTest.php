@@ -58,7 +58,7 @@ final class StreamTest extends TestCase
             'processed_e' => 14,
         ], \iterator_to_array($stream));
 
-        $this->assertSame(3, $stream->aggregators['count']->value);
+        $this->assertSame(3, $stream->aggregated['count']);
     }
 
     #[Test]
@@ -92,7 +92,7 @@ final class StreamTest extends TestCase
             'processed_e' => 6,
         ], \iterator_to_array($stream));
 
-        $this->assertSame(2, $stream->aggregators['count']->value);
+        $this->assertSame(2, $stream->aggregated['count']);
     }
 
     #[Test]
@@ -380,9 +380,9 @@ final class StreamTest extends TestCase
             'f' => 4,
         ], $dataset->value);
 
-        $this->assertSame(12, $dataset->aggregators['middle_sum']);
-        $this->assertSame(16, $dataset->aggregators['inner_sum']);
-        $this->assertSame(28, $dataset->aggregators['total_sum']);
+        $this->assertSame(12, $dataset->aggregated['middle_sum']);
+        $this->assertSame(16, $dataset->aggregated['inner_sum']);
+        $this->assertSame(28, $dataset->aggregated['total_sum']);
     }
 
     #[Test]
@@ -400,7 +400,7 @@ final class StreamTest extends TestCase
         $this->assertSame(10, new Stream($dataset)->reduce(Max::class));
         $this->assertSame(1, new Stream($dataset)->reduce(Min::class));
         $this->assertSame(18, new Stream($dataset)->reduce(Sum::class));
-        $this->assertSame(36, new Stream($dataset)->reduce(static fn(?int $carry, int $value, string $key): int => $value * 2 + ($carry ?? 0)));
+        $this->assertSame(36, new Stream($dataset)->reduce(static fn(?int $carry, int $value, string $key): int => $value * 2 + ($carry ?? 0))); // @phpstan-ignore-line
     }
 
     #[Test]
@@ -417,7 +417,7 @@ final class StreamTest extends TestCase
                         ->aggregate('count', Count::class)
                         ->flush();
 
-        $this->assertSame(4, $stream->aggregators['count']->value);
+        $this->assertSame(4, $stream->aggregated['count']);
         $this->assertTrue($stream->closed);
     }
 

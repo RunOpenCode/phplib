@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace RunOpenCode\Component\Dataset\Collector;
 
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
+use RunOpenCode\Component\Dataset\Contract\StreamInterface;
+use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
  * Collect as original iterable.
  *
  * Allows you to iterate through whole dataset providing you the access to
- * aggregators when collection is fully iterated.
+ * aggregators when collection is iterated.
  *
  * @template TKey
  * @template TValue
@@ -32,9 +34,13 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
     /**
      * {@inheritdoc}
      */
-    public array $aggregators {
+    public array $aggregated {
         get {
-            return $this->aggregators ?? [];
+            if (!$this->closed) {
+                throw new LogicException('Collector must be iterated first.');
+            }
+
+            return $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
         }
     }
 

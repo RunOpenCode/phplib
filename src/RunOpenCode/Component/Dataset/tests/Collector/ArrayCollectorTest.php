@@ -78,9 +78,9 @@ final class ArrayCollectorTest extends TestCase
             ->aggregate('average', Average::class)
             ->collect(ArrayCollector::class);
 
-        $this->assertSame(2, $collector->aggregators['count']);
-        $this->assertSame(12, $collector->aggregators['sum']);
-        $this->assertEqualsWithDelta(6, $collector->aggregators['average'], 0.0001);
+        $this->assertSame(2, $collector->aggregated['count']);
+        $this->assertSame(12, $collector->aggregated['sum']);
+        $this->assertEqualsWithDelta(6, $collector->aggregated['average'], 0.0001);
     }
 
     #[Test]
