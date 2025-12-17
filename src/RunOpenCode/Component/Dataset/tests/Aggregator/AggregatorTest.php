@@ -6,10 +6,11 @@ namespace RunOpenCode\Component\Dataset\Tests\Aggregator;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Component\Dataset\Aggregator\Aggregator;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
+use RunOpenCode\Component\Dataset\Operator\Reduce;
+use RunOpenCode\Component\Dataset\Reducer\Callback;
 
 use function RunOpenCode\Component\Dataset\iterable_to_array;
 
@@ -20,12 +21,15 @@ final class AggregatorTest extends TestCase
     {
         /** @var ReducerInterface<int, string, mixed>&MockObject $reducer */
         $reducer    = $this->createMock(ReducerInterface::class);
-        $aggregator = new Aggregator('foo', $reducer);
+        $aggregator = new Aggregator('foo', new Reduce([
+            'foo',
+            'bar',
+            'baz',
+        ], $reducer));
 
         $reducer
-            ->expects($this->once())
-            ->method('getIterator')
-            ->willReturn(new \ArrayIterator(['foo', 'bar', 'baz']));
+            ->expects($this->exactly(3))
+            ->method('next');
 
         $this->assertSame([
             'foo',
@@ -37,15 +41,15 @@ final class AggregatorTest extends TestCase
     #[Test]
     public function provides_value(): void
     {
-        /** @var ReducerInterface<int, string, int>&MockObject $reducer */
-        $reducer    = $this->createMock(ReducerInterface::class);
-        $aggregator = new Aggregator('foo', $reducer);
+        $reducer    = new Callback(static fn(string $carry, string $value): string => \sprintf('%s/%s', $carry, $value), '');
+        $aggregator = new Aggregator('foo', new Reduce([
+            'foo',
+            'bar',
+            'baz',
+        ], $reducer));
 
-        $reducer
-            ->expects($this->once())
-            ->method(PropertyHook::get('value'))
-            ->willReturn(42);
+        iterable_to_array($aggregator); // @phpstan-ignore-line
 
-        $this->assertSame(42, $aggregator->value);
+        $this->assertSame('/foo/bar/baz', $aggregator->value);
     }
 }

@@ -39,7 +39,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * @template TKey
  * @template TValue
  *
- * @phpstan-type IdentityCallable = callable(TValue, TKey): string
+ * @phpstan-type IdentityCallable = callable(TValue, TKey=): string
  *
  * @extends AbstractStream<TKey, TValue>
  * @implements OperatorInterface<TKey, TValue>

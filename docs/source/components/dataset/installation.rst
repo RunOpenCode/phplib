@@ -9,5 +9,5 @@ following command in your terminal:
 
     composer require runopencode/dataset
 
-Nothing more is required, no additional initialization and/or configration. Just
-use the library classes.
+Nothing more is required, no additional initialization and/or configuration. 
+Just use the library classes/functions.

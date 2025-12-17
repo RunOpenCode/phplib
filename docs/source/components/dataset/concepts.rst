@@ -2,9 +2,9 @@
 Concepts
 ========
 
-Library defines couple of building blocks for processing streams of data. It is 
-advisable to introduce yourself with concepts defined in this document and then
-read about how to use and extend the library.
+The library defines several building blocks for processing data streams. It is
+recommended that you familiarize yourself with the concepts described in this
+document before reading about how to use and extend the library.
 
 .. contents::
    :depth: 1
@@ -17,36 +17,33 @@ Stream source
 
 .. _iterable: https://www.php.net/manual/en/language.types.iterable.php 
 
-Stream source (or collection) is any iterable which can be iterated through, 
-which means either an ``array`` or instance of ``\Traversable``. In short, 
-any iterable_. 
+A stream source (or collection) is any iterable that can be iterated over, which
+means either an ``array`` or an instance of ``\Traversable``. In short, it is
+any iterable_.
 
-Each stream source emits some value, indexed by key. Key is usually associated 
-with ``int`` or ``string`` as we rely on arrays in PHP a lot. However, library 
-assumes any ``iterable``, which includes, but not limits to:
+Each stream source emits values indexed by a key. The key is usually an ``int`` 
+or ``string``, as PHP arrays are commonly used. However, the library assumes any
+``iterable``, including, but not limited to:
  
-* ``\Generator``, which may emit anything as a key, 
+* ``\Generator``, which may emit values with any type of key,
 * ``\WeakMap``, which emits objects as a key,
-* and so on...
+* and so on.
 
-Common denominator for stream source is that it is not rewindable. Generators, 
-per example, can not be rewind, you can not iterate them twice. For that reason, 
-even if you use an arrays (or any rewindable stream source), library assumes
-that stream source is not rewindable.
+The common characteristic of a stream source is that it is not rewindable.
+Generators, for example, cannot be rewound; you cannot iterate over them twice.
+For this reason, even when using arrays (or any other rewindable stream source),
+the library assumes that the stream source is not rewindable.
 
 Data stream, or stream wrapper
 ------------------------------
 
-Data stream (or stream wrapper) is ``RunOpenCode\Component\Dataset\Stream`` 
-class which wraps stream source providing stream processing using operators,
-reducers and collectors.
+A data stream (or stream wrapper) is the 
+``RunOpenCode\Component\Dataset\Stream`` class, which wraps a stream source and
+provides stream processing using operators, reducers, collectors, and 
+aggregators (which will be discussed later in the document).
 
-Class is deliberately not final and allow extension in order for you to be able
-to integrate your own custom operators, reducers and collectors - should you 
-need to do so.
-
-Using object oriented approach, with instance of data stream, you may apply
-various operations on your source of data utilizing fluent API.
+Using an object-oriented approach, you can apply various operations to your data
+source through the fluent API provided by the data stream instance.
 
 .. code-block:: php
    :linenos:
@@ -57,14 +54,14 @@ various operations on your source of data utilizing fluent API.
 
    Stream::create(/* ... */)
        ->map(/* ... */)
-       ->batch(/* ... */)
+       ->tap(/* ... */)
        ->takeUntil(/* ... */)
        ->finally(/* ... */);
 
 .. _pipe operator: https://wiki.php.net/rfc/pipe-operator-v3
 
-Having in mind PHP 8.5, library provides a functions as well to support
-functional approach using `pipe operator`_:
+With PHP 8.5 in mind, the library also provides functions to support a
+functional approach using the `pipe operator`_.
 
 .. code-block:: php
    :linenos:
@@ -73,44 +70,43 @@ functional approach using `pipe operator`_:
 
    use function RunOpenCode\Component\Dataset\stream;
    use function RunOpenCode\Component\Dataset\map;
-   use function RunOpenCode\Component\Dataset\batch;
+   use function RunOpenCode\Component\Dataset\tap;
    use function RunOpenCode\Component\Dataset\takeUntil;
    use function RunOpenCode\Component\Dataset\finally;
 
    stream(/* ... */)
       |> map(/* ... */)
-      |> batch(/* ... */)
+      |> tap(/* ... */)
       |> takeUntil(/* ... */)
       |> finally(/* ... */);
 
-Data stream is, of course, iterable and none of the operators are applied until
-stream is being iterated.
+A data stream is, of course, iterable, and none of the operators are applied
+until the stream is iterated.
 
 Operators
 ---------
 
-You use operators to execute some "operations" against the stream of data. 
-Operators operate on yielded value, one by one, and they yield result of their 
-operations.
+Operators are used to perform specific operations on a data stream. They process
+each yielded value one by one and yield the result of their operation.
 
-Library delivers a set of commonly used operators, such as ``map()``, 
-``filter()``, ``take()``, etc. However, you may expand set of operators by 
-writing your own.
+The library provides a set of commonly used operators, such as ``map()``,
+``filter()``, ``take()``, and others. However, you can extend the available set
+of operators by implementing your own.
 
-General idea is that with operators, you execute various operations reading 
-from and/or modifying original stream. 
+The general idea behind operators is to execute various operations that read
+from and/or modify the original stream as it is being iterated.
 
 Reducers
 --------
 
-Reducers iterate over the stream of data and reduce all of them into one single
-value of any kind. Common examples of reducers are ``sum()``, ``average()``, 
-``min()``, ``max()``, etc. which are delivered with this library.
+Reducers iterate over a data stream and reduce all elements into a single value
+of any kind. Common examples of reducers include ``sum()``, ``average()``, 
+``min()``, ``max()``, all of which are provided by this library.
 
-However, reducers are design to be iterable as well, and may be applied as 
-aggregators (which is a new concept defined by this library) which enables you
-to apply reducer on stream and get both reduced value as well as iterate through
-stream.
+However, reducers are designed to be iterable as well and can be applied as
+aggregators (a concept introduced by this library, explained later in this 
+document). This allows you to apply a reducer to a stream while still being able
+to iterate over it and obtain the reduced value at the same time.
 
 .. code-block:: php
    :linenos:
@@ -126,17 +122,17 @@ stream.
 Collectors
 ----------
 
-When operators (and aggregators) are applied on stream, you can get to stream 
-data just by iterating.
+When operators (and aggregators) are applied to a stream, you can access the
+stream data simply by iterating over it.
 
-Sometimes you want to collect all of that data into some data structure to 
-continue with processing using some other method.
+Sometimes, however, you may want to collect all the data into a specific data
+structure for further processing using other methods.
 
-Library, in that matter, supports such concept and provides common collectors 
-such as ``RunOpenCode\Component\Dataset\Collector\ArrayCollector`` which 
-collects everything into array, or 
-``RunOpenCode\Component\Dataset\Collector\ListCollector`` which collects 
-everything into numeric ordered array and so on.
+The library supports this concept and provides common collectors, such as
+``RunOpenCode\Component\Dataset\Collector\ArrayCollector``, which collects all
+items into an array, or 
+``RunOpenCode\Component\Dataset\Collector\ListCollector``, which collects items
+into a numerically ordered array, and more.
 
 .. code-block:: php
    :linenos:
@@ -161,16 +157,16 @@ everything into numeric ordered array and so on.
 Aggregators
 -----------
 
-Aggregators are concept introduced with this library. General idea is that you
-can both iterate stream with applied operators and calculate reduced value 
-simultaneously.
+Aggregators are a concept introduced by this library. The general idea is that 
+you can iterate over a stream with applied operators while simultaneously 
+calculating a reduced value in a single pass.
 
-This is useful when, per example, you are rendering a table of financial data 
-and at the bottom of table you want to render total and/or average sum, or 
-similar.
+This is useful, for example, when rendering a table of financial data and you
+want to display totals, averages, or similar summary values at the bottom of the
+table.
 
-Aggregators are "attached" reducers to a stream and can be accessed when stream
-is fully iterated.
+Aggregators are essentially "attached" reducers to a stream and can be accessed
+once the stream has been fully iterated.
 
 .. code-block:: php
    :linenos:
@@ -188,8 +184,7 @@ is fully iterated.
        echo "\n";
    }
 
-   echo $stream->aggregators('sum');
+   echo $stream->aggregated['sum'];
 
-Knowing the concepts applied within this library, you may proceed with further 
-reading of documentation for this library.
- 
+With an understanding of the concepts used in this library, you can now proceed
+with the rest of the documentation.

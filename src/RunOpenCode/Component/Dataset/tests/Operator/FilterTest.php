@@ -19,7 +19,7 @@ final class FilterTest extends TestCase
             'b' => 10,
             'c' => 5,
             'd' => 1,
-        ], static fn(int $value, string $key): bool => $value > 2 && 'c' !== $key);
+        ], static fn(int $value, string $key): bool => $value > 2 && 'c' !== $key); // @phpstan-ignore-line
 
         $this->assertSame([
             'b' => 10,

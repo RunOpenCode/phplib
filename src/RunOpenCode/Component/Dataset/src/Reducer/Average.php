@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset\Reducer;
 
-use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
-use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
  * Reducer which calculates average of values from a collection of values.
@@ -17,69 +15,63 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * @template TKey
  * @template TValue
  *
- * @phpstan-type ValueExtractor = callable(TValue, TKey): (int|float|null)
+ * @phpstan-type ExtractorCallable = callable(TValue, TKey): (int|float|null)
  *
- * @extends AbstractStream<TKey, TValue>
  * @implements ReducerInterface<TKey, TValue, float|null>
  */
-final class Average extends AbstractStream implements ReducerInterface
+final class Average implements ReducerInterface
 {
     /**
      * {@inheritdoc}
      */
     public mixed $value {
-        get {
-            if (!$this->closed) {
-                throw new LogicException('Stream is not closed (iterated).');
-            }
-
-            return null !== $this->value ? (float)$this->value : 0;
-        }
+        get => 0 !== $this->count && null !== $this->total ? $this->total / $this->count : null;
     }
 
-    private \Closure $extractor;
+    /**
+     * Extractor to extract reducible value.
+     */
+    private readonly \Closure $extractor;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection of values to reduce.
-     * @param ValueExtractor|null    $extractor  Optional value extractor. If not provided, values are used as is.
-     * @param bool                   $countNull  Whether null values should be counted when calculating average.
+     * Current total of aggregated values.
+     */
+    private float|null $total;
+
+    /**
+     * Current count of aggregated values.
+     */
+    private int $count = 0;
+
+    /**
+     * Create new average reducer.
+     *
+     * @param int|float|null         $initial   Initial value to start with.
+     * @param ExtractorCallable|null $extractor Optional function to extract reducible value.
+     * @param bool                   $countNull Should NULL values be accounted for, ignored by default.
      */
     public function __construct(
-        private readonly iterable $collection,
-        ?callable                 $extractor = null,
-        private readonly bool     $countNull = false,
+        int|float|null        $initial = null,
+        ?callable             $extractor = null,
+        private readonly bool $countNull = false,
     ) {
-        parent::__construct($collection);
-        $this->extractor = (
-            $extractor ??
-            static fn(mixed $value): int|float|null => \is_numeric($value) ? $value + 0 : null
-        )(...);
+        $this->extractor = null !== $extractor ? $extractor(...) : static fn(mixed $value): mixed => $value;
+        $this->total     = null !== $initial ? (float)$initial : null;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function iterate(): \Traversable
+    public function next(mixed $value, mixed $key): void
     {
-        $total = 0;
-        $count = 0;
+        /** @var int|float|null $value */
+        $value       = ($this->extractor)($value, $key);
+        $this->count += null !== $value || $this->countNull ? 1 : 0;
 
-        foreach ($this->collection as $key => $value) {
-            /** @var int|float|null $extracted */
-            $extracted = ($this->extractor)($value, $key);
-
-            if (null === $extracted) {
-                $count       = $this->countNull ? $count + 1 : $count;
-                $this->value = (0 === $count) ? 0 : ($total / $count);
-                yield $key => $value;
-                continue;
-            }
-
-            $total += $extracted;
-            $count++;
-            $this->value = $total / $count;
-
-            yield $key => $value;
+        if (null === $value) {
+            return;
         }
+
+        $this->total = ($this->total ?? 0.0) + (float)$value;
     }
 }
