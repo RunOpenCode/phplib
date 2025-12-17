@@ -38,6 +38,18 @@ abstract class AbstractStream implements StreamInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    final public array $aggregated {
+        get {
+            return \array_map(
+                static fn(AggregatorInterface $aggregator): mixed => $aggregator->value,
+                $this->registry->aggregators,
+            );
+        }
+    }
+
+    /**
      * Check if stream has been iterated through.
      */
     final public bool $closed = false {

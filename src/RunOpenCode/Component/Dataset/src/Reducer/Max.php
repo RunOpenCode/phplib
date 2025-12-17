@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset\Reducer;
 
-use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
-use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
  * Reducer which calculates maximum value from a collection of values.
@@ -17,60 +15,55 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * @template TValue
  * @template TReducedValue
  *
- * @phpstan-type ValueExtractor = callable(TValue, TKey): TReducedValue|null
+ * @phpstan-type ExtractorCallable = callable(TValue, TKey): TReducedValue|null
+ * @phpstan-type ComparatorCallable = callable(TReducedValue, TReducedValue): (0|1|-1)
  *
- * @extends AbstractStream<TKey, TValue>
  * @implements ReducerInterface<TKey, TValue, TReducedValue|null>
  */
-final class Max extends AbstractStream implements ReducerInterface
+final class Max implements ReducerInterface
 {
     /**
      * {@inheritdoc}
      */
-    public mixed $value {
-        get => $this->closed ? $this->value : throw new LogicException('Stream is not closed (iterated).');
-    }
+    public private(set) mixed $value;
 
-    private readonly \Closure $extractor;
+    private \Closure $extractor;
+
+    private \Closure $comparator;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection of values to reduce.
-     * @param ValueExtractor|null    $extractor  Optional value extractor. If not provided, values are used as is.
+     * Create new max reducer.
+     *
+     * @param TReducedValue|null      $initial    Initial value to start with.
+     * @param ExtractorCallable|null  $extractor  Optional reducible value extractor.
+     * @param ComparatorCallable|null $comparator Optional comparator.
      */
     public function __construct(
-        private readonly iterable $collection,
-        ?callable                 $extractor = null
+        mixed     $initial = null,
+        ?callable $extractor = null,
+        ?callable $comparator = null,
     ) {
-        parent::__construct($this->collection);
-        $this->extractor = (
-            $extractor ??
-            static fn(mixed $value): mixed => $value
-        )(...);
+        $this->value      = $initial;
+        $this->extractor  = null !== $extractor ? $extractor(...) : static fn(mixed $value): mixed => $value;
+        $this->comparator = null !== $comparator ? $comparator(...) : static fn(mixed $first, mixed $second): int => $first <=> $second;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function iterate(): \Traversable
+    public function next(mixed $value, mixed $key): void
     {
-        $this->value = null;
-        $current     = null;
+        $value = ($this->extractor)($value, $key);
 
-        foreach ($this->collection as $key => $value) {
-            /** @var TReducedValue|null $extracted */
-            $extracted = ($this->extractor)($value, $key);
-
-            if (null === $extracted) {
-                yield $key => $value;
-                continue;
-            }
-
-            if (null === $current || $extracted > $current) {
-                $current     = $extracted;
-                $this->value = $current;
-            }
-
-            yield $key => $value;
+        if (null === $value) {
+            return;
         }
+
+        if (null === $this->value) {
+            $this->value = $value;
+            return;
+        }
+
+        $this->value = 1 === ($this->comparator)($value, $this->value) ? $value : $this->value;
     }
 }

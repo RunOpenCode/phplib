@@ -40,8 +40,8 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * @template TKey
  * @template TValue
  *
- * @phpstan-type KeyComparator = callable(TKey, TKey): int
- * @phpstan-type ValueComparator = callable(TValue, TValue): int
+ * @phpstan-type KeyComparatorCallable = callable(TKey, TKey): int
+ * @phpstan-type ValueComparatorCallable = callable(TValue, TValue): int
  *
  * @extends AbstractStream<TKey, TValue>
  * @implements OperatorInterface<TKey, TValue>
@@ -51,9 +51,9 @@ final class Sort extends AbstractStream implements OperatorInterface
     private readonly \Closure $sorter;
 
     /**
-     * @param iterable<TKey, TValue>                                   $collection Collection to iterate over.
-     * @param ($byKeys is true ? ValueComparator : KeyComparator)|null $comparator User defined callable to compare two items. If null, spaceship operator (<=>) is used.
-     * @param bool                                                     $byKeys     If `byKeys` is true, keys will be compared instead of values.
+     * @param iterable<TKey, TValue>                                                   $collection Collection to iterate over.
+     * @param ($byKeys is true ? ValueComparatorCallable : KeyComparatorCallable)|null $comparator User defined callable to compare two items. If null, spaceship operator (<=>) is used.
+     * @param bool                                                                     $byKeys     If `byKeys` is true, keys will be compared instead of values.
      */
     public function __construct(
         private readonly iterable $collection,

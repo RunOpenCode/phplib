@@ -42,7 +42,7 @@ final class BufferCountTest extends TestCase
             'processed_e' => 14,
         ], \iterator_to_array($stream));
 
-        $this->assertSame(3, $stream->aggregators['count']->value);
+        $this->assertSame(3, $stream->aggregated['count']);
     }
 
     #[Test]
@@ -65,7 +65,7 @@ final class BufferCountTest extends TestCase
             'processed_a' => 4,
         ], \iterator_to_array($stream));
 
-        $this->assertSame(1, $stream->aggregators['count']->value);
+        $this->assertSame(1, $stream->aggregated['count']);
     }
 
     #[Test]
@@ -75,6 +75,6 @@ final class BufferCountTest extends TestCase
 
         $this->assertSame([], \iterator_to_array($stream));
 
-        $this->assertSame(0, $stream->aggregators['count']->value);
+        $this->assertSame(0, $stream->aggregated['count']);
     }
 }

@@ -6,42 +6,35 @@ namespace RunOpenCode\Component\Dataset\Tests\Reducer;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use RunOpenCode\Component\Dataset\Exception\LogicException;
 use RunOpenCode\Component\Dataset\Reducer\Sum;
+
+use function RunOpenCode\Component\Dataset\reduce;
 
 final class SumTest extends TestCase
 {
     #[Test]
     public function sums_values(): void
     {
-        $reducer = new Sum([
+        $dataset = [
             'a' => 1,
             'b' => 2,
             'c' => null,
-        ]);
+        ];
 
-        $this->assertEquals([
-            'a' => 1,
-            'b' => 2,
-            'c' => null,
-        ], \iterator_to_array($reducer));
-        $this->assertEquals(3, $reducer->value);
+        $this->assertEquals(
+            3,
+            reduce($dataset, Sum::class),
+        );
     }
 
     #[Test]
     public function sums_extracted_values(): void
     {
-        $reducer = new Sum([1, 2, 3], static fn(int $value, int $key): int => $value * $key);
+        $dataset = [1, 2, 3];
 
-        $this->assertSame([1, 2, 3], \iterator_to_array($reducer));
-        $this->assertEquals(8, $reducer->value);
-    }
-
-    #[Test]
-    public function get_value_throws_exception_when_not_iterated(): void
-    {
-        $this->expectException(LogicException::class);
-
-        new Sum([])->value;
+        $this->assertEquals(
+            8,
+            reduce($dataset, Sum::class, extractor: static fn(int $value, int $key): int => $value * $key),
+        );
     }
 }

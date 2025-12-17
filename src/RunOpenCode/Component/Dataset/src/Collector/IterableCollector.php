@@ -32,9 +32,9 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
     /**
      * {@inheritdoc}
      */
-    public array $aggregators {
+    public array $aggregated {
         get {
-            return $this->aggregators ?? [];
+            return $this->aggregated ?? [];
         }
     }
 

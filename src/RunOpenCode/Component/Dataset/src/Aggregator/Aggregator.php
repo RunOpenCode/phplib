@@ -6,7 +6,7 @@ namespace RunOpenCode\Component\Dataset\Aggregator;
 
 use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\AggregatorInterface;
-use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
+use RunOpenCode\Component\Dataset\Operator\Reduce;
 
 /**
  * Aggregator.
@@ -34,12 +34,12 @@ final class Aggregator extends AbstractStream implements AggregatorInterface
     /**
      * Create new instance of aggregator.
      *
-     * @param non-empty-string                              $name    Name of the aggregator.
-     * @param ReducerInterface<TKey, TValue, TReducedValue> $reducer Reducer instance.
+     * @param non-empty-string                    $name    Name of the aggregator.
+     * @param Reduce<TKey, TValue, TReducedValue> $reducer Instance of reduce operator.
      */
     public function __construct(
-        public readonly string            $name,
-        private readonly ReducerInterface $reducer
+        public readonly string  $name,
+        private readonly Reduce $reducer
     ) {
         parent::__construct($this->reducer);
     }

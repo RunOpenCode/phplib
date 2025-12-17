@@ -32,7 +32,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * @template TKey
  * @template TValue
  *
- * @phpstan-type FilterCallable = callable(TValue, TKey): bool
+ * @phpstan-type FilterCallable = callable(TValue, TKey=): bool
  *
  * @extends AbstractStream<TKey, TValue>
  * @implements OperatorInterface<TKey, TValue>

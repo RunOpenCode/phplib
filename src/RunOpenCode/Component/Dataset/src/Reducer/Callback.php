@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset\Reducer;
 
-use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
-use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
  * Reducer which uses custom callback function to reduce items to value.
@@ -15,49 +13,41 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * @template TValue
  * @template TReducedValue = mixed
  *
- * @phpstan-type ReducerCallable = callable(TReducedValue, TValue, TKey): TReducedValue
+ * @phpstan-type ReducerCallable = callable(TReducedValue, TValue, TKey=): TReducedValue
  *
- * @extends AbstractStream<TKey, TValue>
  * @implements ReducerInterface<TKey, TValue, TReducedValue>
  */
-final class Callback extends AbstractStream implements ReducerInterface
+final class Callback implements ReducerInterface
 {
     /**
      * {@inheritdoc}
      */
-    public mixed $value {
-        get => $this->closed ? $this->value : throw new LogicException('Stream is not closed (iterated).');
-    }
+    public private(set) mixed $value;
 
+    /**
+     * Reducer function to apply.
+     */
     private readonly \Closure $callback;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection of values to reduce.
-     * @param ReducerCallable        $callback   Callback function used to reduce values.
-     * @param mixed                  $initial    Initial value.
+     * Create new callback reducer.
+     *
+     * @param ReducerCallable $callback Callback function used to reduce values.
+     * @param mixed           $initial  Initial value.
      */
     public function __construct(
-        private readonly iterable $collection,
-        callable                  $callback,
-        private readonly mixed    $initial = null
+        callable $callback,
+        mixed    $initial = null
     ) {
-        parent::__construct($collection);
         $this->callback = $callback(...);
+        $this->value    = $initial;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function iterate(): \Traversable
+    public function next(mixed $value, mixed $key): void
     {
-        $this->value = $this->initial;
-        $carry       = $this->initial;
-
-        foreach ($this->collection as $key => $value) {
-            $carry       = ($this->callback)($carry, $value, $key);
-            $this->value = $carry;
-
-            yield $key => $value;
-        }
+        $this->value = ($this->callback)($this->value, $value, $key);
     }
 }

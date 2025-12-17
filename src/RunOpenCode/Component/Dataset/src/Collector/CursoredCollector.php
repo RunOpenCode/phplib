@@ -38,9 +38,9 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
     /**
      * {@inheritdoc}
      */
-    public array $aggregators {
+    public array $aggregated {
         get {
-            return $this->aggregators ?? [];
+            return $this->aggregated ?? [];
         }
     }
 
@@ -124,7 +124,7 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
 
             if (null !== $this->limit && $iteration === $this->limit) {
                 yield $key => $value;
-                $this->aggregators = \array_map(
+                $this->aggregated = \array_map(
                     static fn(AggregatorInterface $aggregator): mixed => $aggregator->value,
                     $this->collection instanceof StreamInterface ? $this->collection->aggregators : [],
                 );

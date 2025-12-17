@@ -32,7 +32,7 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
     /**
      * {@inheritdoc}
      */
-    public private(set) array $aggregators;
+    public private(set) array $aggregated;
 
     /**
      * {@inheritdoc}
@@ -48,7 +48,7 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
         public readonly iterable $collection,
     ) {
         $this->value       = iterable_to_array($this->collection);
-        $this->aggregators = $this->collection instanceof StreamInterface ? \array_map(
+        $this->aggregated = $this->collection instanceof StreamInterface ? \array_map(
             static fn(AggregatorInterface $aggregator): mixed => $aggregator->value,
             $this->collection->aggregators,
         ) : [];

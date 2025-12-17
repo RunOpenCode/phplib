@@ -6,7 +6,6 @@ namespace RunOpenCode\Component\Dataset\Operator;
 
 use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
-use RunOpenCode\Component\Dataset\Stream;
 
 /**
  * Map operator.
@@ -35,8 +34,8 @@ use RunOpenCode\Component\Dataset\Stream;
  * @template TModifiedKey
  * @template TModifiedValue
  *
- * @phpstan-type MapValueTransform = callable(TValue, TKey): TModifiedValue
- * @phpstan-type MapKeyTransform = callable(TKey, TValue): TModifiedKey
+ * @phpstan-type ValueTransformCallable = callable(TValue, TKey=): TModifiedValue
+ * @phpstan-type KeyTransformCallable = callable(TKey, TValue=): TModifiedKey
  *
  * @extends AbstractStream<TModifiedKey, TModifiedValue>
  * @implements OperatorInterface<TModifiedKey, TModifiedValue>
@@ -48,9 +47,9 @@ final class Map extends AbstractStream implements OperatorInterface
     private readonly \Closure $keyTransform;
 
     /**
-     * @param iterable<TKey, TValue> $collection     Collection to iterate over.
-     * @param MapValueTransform      $valueTransform User defined callable to transform item values.
-     * @param MapKeyTransform|null   $keyTransform   User defined callable to transform item keys. If null, original keys are preserved.
+     * @param iterable<TKey, TValue>    $collection     Collection to iterate over.
+     * @param ValueTransformCallable    $valueTransform User defined callable to transform item values.
+     * @param KeyTransformCallable|null $keyTransform   User defined callable to transform item keys. If null, original keys are preserved.
      */
     public function __construct(
         private readonly iterable $collection,

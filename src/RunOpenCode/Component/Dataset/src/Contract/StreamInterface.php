@@ -33,6 +33,15 @@ interface StreamInterface extends \IteratorAggregate
     }
 
     /**
+     * Get aggregated values collected during iteration process.
+     *
+     * @var array<non-empty-string, mixed>
+     */
+    public array $aggregated {
+        get;
+    }
+
+    /**
      * Check if stream has been iterated through.
      */
     public bool $closed {
