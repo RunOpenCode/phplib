@@ -6,15 +6,18 @@ namespace RunOpenCode\Component\Dataset\Operator;
 
 use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
+use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
  * Map operator.
  *
  * Map operator iterates over given collection and yields transformed items.
  *
- * User must provide a callable to transform each item value. Additionally,
- * user may provide a callable to transform each item key. If key transform
- * callable is not provided, original keys are preserved.
+ * User must provide a callable to transform each item value, or callable to
+ * transform each item key, or both.
+ *
+ * Where transforming function is not provided, original values will be
+ * preserved.
  *
  * Example usage:
  *
@@ -47,18 +50,22 @@ final class Map extends AbstractStream implements OperatorInterface
     private readonly \Closure $keyTransform;
 
     /**
-     * @param iterable<TKey, TValue>    $collection     Collection to iterate over.
-     * @param ValueTransformCallable    $valueTransform User defined callable to transform item values.
-     * @param KeyTransformCallable|null $keyTransform   User defined callable to transform item keys. If null, original keys are preserved.
+     * @param iterable<TKey, TValue>      $collection     Collection to iterate over.
+     * @param ValueTransformCallable|null $valueTransform User defined callable to transform item values. If null, original values are preserved.
+     * @param KeyTransformCallable|null   $keyTransform   User defined callable to transform item keys. If null, original keys are preserved.
      */
     public function __construct(
         private readonly iterable $collection,
-        callable                  $valueTransform,
+        ?callable                 $valueTransform = null,
         ?callable                 $keyTransform = null
     ) {
+        if (null === $valueTransform && null === $keyTransform) {
+            throw new LogicException('At least one transforming function must be provided, either for key or for value.');
+        }
+
         parent::__construct($this->collection);
-        $this->valueTransform = $valueTransform(...);
-        $this->keyTransform   = ($keyTransform ?? static fn($key, $value): mixed => $key)(...);
+        $this->valueTransform = ($valueTransform ?? static fn(mixed $value, mixed $key): mixed => $value)(...);
+        $this->keyTransform   = ($keyTransform ?? static fn(mixed $key, mixed $value): mixed => $key)(...);
     }
 
     /**

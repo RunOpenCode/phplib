@@ -236,18 +236,18 @@ function if_empty(iterable $collection, \Exception|callable $action): Stream
  * @template TModifiedKey
  * @template TModifiedValue
  *
- * @param iterable<TKey, TValue>                     $collection     Collection to iterate over.
- * @param callable(TValue, TKey=): TModifiedValue    $valueTransform User defined callable to be called on each item.
- * @param callable(TKey, TValue=): TModifiedKey|null $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
+ * @param iterable<TKey, TValue>                       $collection     Collection to iterate over.
+ * @param callable(TValue, TKey=): TModifiedValue|null $valueTransform User defined callable to be called on each item. If null, original values are preserved.
+ * @param callable(TKey, TValue=): TModifiedKey|null   $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
  *
- * @return Stream<($keyTransform is null ? TModifiedKey : TKey), TModifiedValue>
+ * @return Stream<($keyTransform is null ? TKey : TModifiedKey), ($valueTransform is null ? TValue : TModifiedValue)>
  *
  * @see Operator\Map
  */
-function map(iterable $collection, callable $valueTransform, ?callable $keyTransform = null): Stream
+function map(iterable $collection, ?callable $valueTransform = null, ?callable $keyTransform = null): Stream
 {
     /**
-     * @var StreamInterface<($keyTransform is null ? TKey : TModifiedKey), TModifiedValue> $map
+     * @var StreamInterface<($keyTransform is null ? TKey : TModifiedKey), ($valueTransform is null ? TValue : TModifiedValue)> $map
      */
     $map = new Operator\Map($collection, $valueTransform, $keyTransform);
 
