@@ -160,6 +160,23 @@ final class StreamTest extends TestCase
         ], $data);
     }
 
+    public function left_join(): void
+    {
+        $left  = [1 => 'a', 2 => 'b', 3 => 'c'];
+        $right = [1 => 'x', 2 => 'y'];
+
+        $joined = new Stream($left)
+            ->leftJoin($right)
+            ->collect(ArrayCollector::class)
+            ->value;
+
+        $this->assertSame([
+            1 => ['a', ['x']],
+            2 => ['b', ['y']],
+            3 => ['c', []],
+        ], $joined);
+    }
+
     #[Test]
     public function map(): void
     {

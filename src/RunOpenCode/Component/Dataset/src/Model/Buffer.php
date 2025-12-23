@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RunOpenCode\Component\Dataset\Model;
 
 use RunOpenCode\Component\Dataset\Exception\LogicException;
+use RunOpenCode\Component\Dataset\Stream;
 
 /**
  * Buffer of iterated items from collection.
@@ -28,6 +29,18 @@ final readonly class Buffer implements \IteratorAggregate, \Countable
     public function __construct(private \ArrayObject $items)
     {
         // noop.
+    }
+
+    /**
+     * Create stream from buffer.
+     *
+     * @return Stream<TKey, TValue>
+     *
+     * @phpstan-ignore-next-line generics.variance
+     */
+    public function stream(): Stream
+    {
+        return new Stream($this);
     }
 
     /**
