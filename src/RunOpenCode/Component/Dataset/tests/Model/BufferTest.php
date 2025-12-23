@@ -97,4 +97,18 @@ final class BufferTest extends TestCase
             'b' => 2,
         ], \iterator_to_array($buffer));
     }
+
+    #[Test]
+    public function streams(): void
+    {
+        $buffer = new Buffer(new \ArrayObject([
+            ['a', 1],
+            ['b', 2],
+        ]));
+
+        $this->assertSame([
+            'a' => 1,
+            'b' => 2,
+        ], \iterator_to_array($buffer->stream()));
+    }
 }

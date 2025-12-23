@@ -13,6 +13,7 @@ Available operators
    finalize
    flatten
    if_empty
+   left_join
    map
    merge
    overflow
