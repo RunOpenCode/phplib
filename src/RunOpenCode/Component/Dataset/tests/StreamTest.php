@@ -160,6 +160,7 @@ final class StreamTest extends TestCase
         ], $data);
     }
 
+    #[Test]
     public function left_join(): void
     {
         $left  = [1 => 'a', 2 => 'b', 3 => 'c'];
@@ -317,7 +318,7 @@ final class StreamTest extends TestCase
     }
 
     #[Test]
-    public function takeUntil(): void
+    public function take_until(): void
     {
         $dataset = [
             'a' => 2,

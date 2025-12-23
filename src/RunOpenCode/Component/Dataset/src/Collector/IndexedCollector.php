@@ -95,7 +95,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
                 continue;
             }
 
-            throw new UnsupportedException('Only object, string and integer keys are supported.');
+            throw new UnsupportedException('Only object and scalar keys are supported.');
         }
     }
 
@@ -117,7 +117,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
         return match (true) {
             \is_string($offset) || \is_int($offset) => \array_key_exists($offset, $this->scalarIndex),
             \is_object($offset) => $this->objectIndex->contains($offset),
-            default => throw new UnsupportedException('Only object, string and integer keys are supported.'),
+            default => throw new UnsupportedException('Only object and scalar keys are supported.'),
         };
     }
 
@@ -137,7 +137,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
         return match (true) {
             \is_string($offset) || \is_int($offset) => $this->scalarIndex[$offset],
             \is_object($offset) => $this->objectIndex[$offset],
-            default => throw new UnsupportedException('Only object, string and integer keys are supported.'),
+            default => throw new UnsupportedException('Only object and scalar keys are supported.'),
         };
     }
 
