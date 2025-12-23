@@ -7,7 +7,7 @@ namespace RunOpenCode\Component\Dataset\Reducer;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 
 /**
- * Reducer which calculates sum of values from a collection of values.
+ * Reducer which calculates sum of values from a stream of values.
  *
  * Null values are ignored.
  *

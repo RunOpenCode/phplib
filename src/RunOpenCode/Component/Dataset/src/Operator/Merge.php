@@ -10,7 +10,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 /**
  * Merge operator.
  *
- * Merge operator iterates over two given collections and yields all items from both collections.
+ * Merges two streaming sources into a single stream, yielding items from both sources.
  *
  * Example usage:
  *
@@ -18,8 +18,8 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Merge;
  *
  * $merged = new Merge(
- *   first: new Dataset(['a' => 1, 'b' => 2]),
- *   second: new Dataset(['c' => 3, 'd' => 4]),
+ *   first: ['a' => 1, 'b' => 2],
+ *   second: ['c' => 3, 'd' => 4],
  * );
  *
  * // The resulting sequence will be: 'a' => 1, 'b' => 2, 'c' => 3, 'd' => 4
@@ -36,8 +36,8 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 final class Merge extends AbstractStream implements OperatorInterface
 {
     /**
-     * @param iterable<TKey1, TValue1> $first  First collection to iterate over.
-     * @param iterable<TKey2, TValue2> $second Second collection to iterate over.
+     * @param iterable<TKey1, TValue1> $first  First stream source to iterate over.
+     * @param iterable<TKey2, TValue2> $second Second stream source to iterate over.
      */
     public function __construct(
         private readonly iterable $first,

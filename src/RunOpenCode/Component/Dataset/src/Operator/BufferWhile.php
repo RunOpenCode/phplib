@@ -11,7 +11,7 @@ use RunOpenCode\Component\Dataset\Model\Buffer;
 /**
  * Buffer while operator.
  *
- * Iterates over given collection and creates a buffer of items as long as given
+ * Iterates over given data stream and creates a buffer of items as long as given
  * predicate function is satisfied.
  *
  * Yields created instances of {@see Buffer} for batch processing.
@@ -20,8 +20,8 @@ use RunOpenCode\Component\Dataset\Model\Buffer;
  * @template TValue
  *
  * @phpstan-type TStorage = \ArrayObject<int, array{TKey, TValue}>
- * @phpstan-type PredicateCallable = callable(TBuffer, TValue=, TKey=): bool
  * @phpstan-type TBuffer = Buffer<TKey, TValue>
+ * @phpstan-type PredicateCallable = callable(TBuffer, TValue=, TKey=): bool
  *
  * @extends AbstractStream<int, TBuffer>
  * @implements OperatorInterface<int, TBuffer>
@@ -31,14 +31,15 @@ final class BufferWhile extends AbstractStream implements OperatorInterface
     private readonly \Closure $predicate;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection to iterate over.
-     * @param PredicateCallable      $predicate  Callable predicate function to evaluate.
+     * @param iterable<TKey, TValue> $source    Stream source to iterate over.
+     * @param PredicateCallable      $predicate Predicate function to evaluate if current item should be placed into existing buffer, or
+     *                                          existing buffer should be yielded and new one should be created with current item.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         callable                  $predicate,
     ) {
-        parent::__construct($collection);
+        parent::__construct($source);
         $this->predicate = $predicate(...);
     }
 
@@ -51,7 +52,7 @@ final class BufferWhile extends AbstractStream implements OperatorInterface
         $items  = new \ArrayObject();
         $buffer = new Buffer($items);
 
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             if (0 === \count($items)) {
                 $items[] = [$key, $value];
                 continue;

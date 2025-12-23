@@ -20,7 +20,7 @@ final class TapTest extends TestCase
             'a' => 1,
             'b' => 2,
             'c' => 3,
-        ], static function(int $value, string $key) use (&$log): void {
+        ], static function(int $value, string $key) use (&$log): void { // @phpstan-ignore-line
             $log[] = \sprintf('Key: %s, Value: %d', $key, $value);
         });
 

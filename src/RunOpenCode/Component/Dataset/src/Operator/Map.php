@@ -11,13 +11,10 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
 /**
  * Map operator.
  *
- * Map operator iterates over given collection and yields transformed items.
+ * Map operator iterates over given stream source and applies transformation
+ * functions one keys/values before yielding.
  *
- * User must provide a callable to transform each item value, or callable to
- * transform each item key, or both.
- *
- * Where transforming function is not provided, original values will be
- * preserved.
+ * Operator may be used to transform only keys, or only values, or both.
  *
  * Example usage:
  *
@@ -25,7 +22,7 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * use RunOpenCode\Component\Dataset\Operator\Map;
  *
  * $map = new Map(
- *   collection: new Dataset(['a' => 1, 'b' => 2, 'c' => 3]),
+ *   source: ['a' => 1, 'b' => 2, 'c' => 3],
  *   valueTransform: static fn(int $value, string $key): int => $value * 2,
  *   keyTransform: static fn(string $key, int $value): string => \strtoupper($key),
  * );
@@ -50,20 +47,20 @@ final class Map extends AbstractStream implements OperatorInterface
     private readonly \Closure $keyTransform;
 
     /**
-     * @param iterable<TKey, TValue>      $collection     Collection to iterate over.
-     * @param ValueTransformCallable|null $valueTransform User defined callable to transform item values. If null, original values are preserved.
-     * @param KeyTransformCallable|null   $keyTransform   User defined callable to transform item keys. If null, original keys are preserved.
+     * @param iterable<TKey, TValue>      $source         Stream source to iterate over.
+     * @param ValueTransformCallable|null $valueTransform Optional transformation function for transforming values.
+     * @param KeyTransformCallable|null   $keyTransform   Optional transformation function for transforming keys.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         ?callable                 $valueTransform = null,
         ?callable                 $keyTransform = null
     ) {
         if (null === $valueTransform && null === $keyTransform) {
-            throw new LogicException('At least one transforming function must be provided, either for key or for value.');
+            throw new LogicException('At least one transformation function must be provided, either for keys or for values.');
         }
 
-        parent::__construct($this->collection);
+        parent::__construct($this->source);
         $this->valueTransform = ($valueTransform ?? static fn(mixed $value, mixed $key): mixed => $value)(...);
         $this->keyTransform   = ($keyTransform ?? static fn(mixed $key, mixed $value): mixed => $key)(...);
     }
@@ -73,7 +70,7 @@ final class Map extends AbstractStream implements OperatorInterface
      */
     public function iterate(): \Traversable
     {
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             yield ($this->keyTransform)($key, $value) => ($this->valueTransform)($value, $key);
         }
     }

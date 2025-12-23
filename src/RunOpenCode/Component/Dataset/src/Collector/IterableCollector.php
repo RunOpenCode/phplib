@@ -9,10 +9,10 @@ use RunOpenCode\Component\Dataset\Contract\StreamInterface;
 use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
- * Collect as original iterable.
+ * Collect as original stream.
  *
- * Allows you to iterate through whole dataset providing you the access to
- * aggregators when collection is iterated.
+ * Allows you to iterate through whole stream providing you the access to
+ * aggregators when stream is iterated.
  *
  * @template TKey
  * @template TValue
@@ -40,7 +40,7 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
                 throw new LogicException('Collector must be iterated first.');
             }
 
-            return $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
+            return $this->source instanceof StreamInterface ? $this->source->aggregated : [];
         }
     }
 
@@ -57,10 +57,10 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
     public private(set) int $count = 0;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection to collect.
+     * @param iterable<TKey, TValue> $source Stream source to collect.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         public readonly int       $offset = 0,
         public readonly ?int      $limit = null,
     ) {
@@ -74,7 +74,7 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
     {
         $this->closed = true;
 
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             yield $key => $value;
             $this->count++;
         }

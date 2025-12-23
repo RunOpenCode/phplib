@@ -10,13 +10,8 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 /**
  * Filter operator.
  *
- * Filter operator iterates over given collection and yields only those items
+ * Filter operator iterates over given stream source and yields only those items
  * for which user defined callable returns true.
- *
- * User defined callable receives three arguments:
- * - current item value
- * - current item key
- * - original collection being iterated
  *
  * Example usage:
  *
@@ -24,7 +19,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Filter;
  *
  * $filter = new Filter(
- *    collection: new Dataset(['a' => 1, 'b' => 2, 'c' => 3]),
+ *    source: ['a' => 1, 'b' => 2, 'c' => 3],
  *    filter: static fn(int $value, string $key): bool => $value > 1,
  * );
  * ```
@@ -42,14 +37,14 @@ final class Filter extends AbstractStream implements OperatorInterface
     private readonly \Closure $filter;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection to iterate over.
-     * @param FilterCallable         $filter     User defined callable to filter items.
+     * @param iterable<TKey, TValue> $source Stream source to iterate over.
+     * @param FilterCallable         $filter User defined callable to filter items.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         callable                  $filter,
     ) {
-        parent::__construct($this->collection);
+        parent::__construct($this->source);
         $this->filter = $filter(...);
     }
 
@@ -58,7 +53,7 @@ final class Filter extends AbstractStream implements OperatorInterface
      */
     protected function iterate(): \Traversable
     {
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             if (!($this->filter)($value, $key)) {
                 continue;
             }

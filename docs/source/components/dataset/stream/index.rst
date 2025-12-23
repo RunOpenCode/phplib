@@ -56,7 +56,7 @@ manner:
 
 .. _pipe operator: https://wiki.php.net/rfc/pipe-operator-v3
 
-f you are using PHP 8.5 or higher, you can leverage the `pipe operator`_ and 
+If you are using PHP 8.5 or higher, you can leverage the `pipe operator`_ and 
 write stream-processing code in a functional style using functions.
 
 .. code-block:: php
@@ -138,7 +138,7 @@ as:
 
    <?php 
 
-   finally(takeUntil(tap(map(new Stream([])))));
+   finally(takeUntil(tap(map(new Stream(...)))));
 
 The return value of each applied operator or aggregator is a new stream
 instance, which results in a chain of streams. If we take the previous example

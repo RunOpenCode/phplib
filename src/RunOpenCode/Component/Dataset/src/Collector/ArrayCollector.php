@@ -12,7 +12,7 @@ use RunOpenCode\Component\Dataset\Exception\OutOfBoundsException;
 use function RunOpenCode\Component\Dataset\iterable_to_array;
 
 /**
- * Collect iterable into array.
+ * Collect stream into array.
  *
  * @template TKey of array-key
  * @template TValue
@@ -32,7 +32,7 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
      * {@inheritdoc}
      */
     public array $aggregated {
-        get => $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
+        get => $this->source instanceof StreamInterface ? $this->source->aggregated : [];
     }
 
     /**
@@ -43,12 +43,12 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
     }
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection to collect.
+     * @param iterable<TKey, TValue> $source Stream source to collect.
      */
     public function __construct(
-        public readonly iterable $collection,
+        public readonly iterable $source,
     ) {
-        $this->value = iterable_to_array($this->collection);
+        $this->value = iterable_to_array($this->source);
     }
 
     /**

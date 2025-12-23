@@ -10,7 +10,7 @@ use RunOpenCode\Component\Dataset\Contract\StreamInterface;
 use RunOpenCode\Component\Dataset\Exception\LogicException;
 
 /**
- * Prototype for dataset streams.
+ * Prototype for streams.
  *
  * @template TKey
  * @template TValue

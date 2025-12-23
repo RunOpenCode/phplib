@@ -7,7 +7,7 @@ namespace RunOpenCode\Component\Dataset\Reducer;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 
 /**
- * Reducer which calculates maximum value from a collection of values.
+ * Reducer which calculates maximum value from a stream of values.
  *
  * Null values are ignored.
  *

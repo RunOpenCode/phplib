@@ -10,7 +10,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 /**
  * Flatten operator.
  *
- * Flatten operator iterates over given collection of iterables and yields
+ * Flatten operator iterates over given stream of iterables and yields
  * each item from each iterable in a single flat sequence.
  *
  * By default, keys from inner iterables are not preserved, which can be
@@ -22,7 +22,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Flatten;
  *
  * $flatten = new Flatten(
- *   collection: new Dataset(['first' => ['a' => 1, 'b' => 3], 'second' => ['c' => 5]]),
+ *   source: ['first' => ['a' => 1, 'b' => 3], 'second' => ['c' => 5]],
  * );
  * // The resulting sequence will be: 0 => 1, 1 => 3, 2 => 5
  * // With `preserveKeys` set to true, resulting sequence would be: 'a' => 1, 'b' => 3, 'c' => 5
@@ -37,14 +37,14 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 final class Flatten extends AbstractStream implements OperatorInterface
 {
     /**
-     * @param iterable<mixed, iterable<TKey, TValue>> $collection   Collection to iterate over.
-     * @param bool                                    $preserveKeys Should keys be preserved from the flattened collections, false by default.
+     * @param iterable<mixed, iterable<TKey, TValue>> $source       Stream of streams to iterate over.
+     * @param bool                                    $preserveKeys Should keys be preserved from the flattened stream, false by default.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         private readonly bool     $preserveKeys = false,
     ) {
-        parent::__construct($this->collection);
+        parent::__construct($this->source);
     }
 
     /**
@@ -52,7 +52,7 @@ final class Flatten extends AbstractStream implements OperatorInterface
      */
     protected function iterate(): \Traversable
     {
-        foreach ($this->collection as $items) {
+        foreach ($this->source as $items) {
             foreach ($items as $key => $value) {
                 if ($this->preserveKeys) {
                     yield $key => $value;

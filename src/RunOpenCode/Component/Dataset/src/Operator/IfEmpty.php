@@ -6,52 +6,52 @@ namespace RunOpenCode\Component\Dataset\Operator;
 
 use RunOpenCode\Component\Dataset\AbstractStream;
 use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
+use RunOpenCode\Component\Dataset\Exception\StreamEmptyException;
 
 /**
  * IfEmpty operator.
  *
- * IfEmpty operator tracks number of yielded items. If stream was empty, it
- * will yield provided callable and yield from it as alternative source of
+ * IfEmpty operator tracks the number of yielded items. If the stream is empty, it
+ * will invoke the provided callable and yield from it as an alternative source of
  * data.
  *
- * If exception is provided instead of callable, that exception will be thrown
- * instead.
+ * If exception is provided instead of alternative source of data, that exception
+ * will be thrown.
  *
  * Example usage:
  *
  * ```php
  * use RunOpenCode\Component\Dataset\Operator\IfEmpty;
  *
- * $at = new IfEmpty(
- *    collection: new Dataset([]),
- *    action: static fn(): iterable => new Dataset(['a' => 1, 'b' => 2, 'c' => 3]),
+ * $stream = new IfEmpty(
+ *    source: [],
+ *    action: static fn(): iterable => ['a' => 1, 'b' => 2, 'c' => 3],
  * );
  * ```
  *
  * @template TKey
  * @template TValue
- * @template TAlternativeKey
- * @template TAlternativeValue
  *
- * @phpstan-type ActionCallable = callable(): (iterable<TAlternativeKey, TAlternativeValue>|never)
+ * @phpstan-type FallbackSourceCallable = callable(): iterable<TKey, TValue>
  *
- * @extends AbstractStream<TKey|TAlternativeKey, TValue|TAlternativeValue>
- * @implements OperatorInterface<TKey|TAlternativeKey, TValue|TAlternativeValue>
+ * @extends AbstractStream<TKey, TValue>
+ * @implements OperatorInterface<TKey, TValue>
  */
 final class IfEmpty extends AbstractStream implements OperatorInterface
 {
-    private \Closure $action;
+    private \Closure $fallback;
 
     /**
-     * @param iterable<TKey, TValue>    $collection Collection to iterate over.
-     * @param \Exception|ActionCallable $action     Action to execute if original stream is empty (or exception to throw).
+     * @param iterable<TKey, TValue>                 $source   Stream source to iterate over.
+     * @param FallbackSourceCallable|\Throwable|null $fallback Fallback stream source, or exception to throw.
      */
     public function __construct(
-        private readonly iterable $collection,
-        \Exception|callable       $action,
+        private readonly iterable $source,
+        callable|\Throwable|null  $fallback,
     ) {
-        parent::__construct($collection);
-        $this->action = $action instanceof \Exception ? static fn(): never => throw $action : $action(...);
+        parent::__construct($source);
+        $fallback       = $fallback ?? new StreamEmptyException();
+        $this->fallback = $fallback instanceof \Throwable ? static fn(): \Throwable => throw $fallback : $fallback(...);
     }
 
     /**
@@ -61,13 +61,13 @@ final class IfEmpty extends AbstractStream implements OperatorInterface
     {
         $counter = 0;
 
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             yield $key => $value;
             $counter++;
         }
 
         if (0 === $counter) {
-            yield from ($this->action)();
+            yield from ($this->fallback)();
         }
     }
 }

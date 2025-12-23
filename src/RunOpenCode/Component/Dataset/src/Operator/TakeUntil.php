@@ -10,8 +10,8 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 /**
  * Take until operator.
  *
- * Take operator iterates over given collection and yields only the first N items
- * until condition is met.
+ * The take operator processes a stream source and yields items until the predicate
+ * callable indicates that iteration should stop.
  *
  * Example usage:
  *
@@ -19,7 +19,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Take;
  *
  * $takeUntil = new TakeUntil(
- *   collection: new Dataset(['a' => 1, 'b' => 2, 'c' => 3]),
+ *   collection: ['a' => 1, 'b' => 2, 'c' => 3],
  *   predicate: static fn(int $value, string $key): bool => $value > 2,
  * );
  * // $takeUntil will yield ['a' => 1, 'b' => 2]
@@ -28,7 +28,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * @template TKey
  * @template TValue
  *
- * @phpstan-type PredicateCallable = callable(TValue, TKey): bool
+ * @phpstan-type PredicateCallable = callable(TValue, TKey=): bool
  *
  * @extends AbstractStream<TKey, TValue>
  * @implements OperatorInterface<TKey, TValue>
@@ -38,14 +38,14 @@ final class TakeUntil extends AbstractStream implements OperatorInterface
     private readonly \Closure $predicate;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection to iterate over.
-     * @param callable               $predicate  Callable predicate function to evaluate.
+     * @param iterable<TKey, TValue> $source    Stream source to iterate over.
+     * @param callable               $predicate Predicate callable to evaluate stop condition.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         callable                  $predicate,
     ) {
-        parent::__construct($collection);
+        parent::__construct($source);
         $this->predicate = $predicate(...);
     }
 
@@ -54,8 +54,8 @@ final class TakeUntil extends AbstractStream implements OperatorInterface
      */
     protected function iterate(): \Traversable
     {
-        foreach ($this->collection as $key => $value) {
-            if (($this->predicate)($value, $key, $this->collection)) {
+        foreach ($this->source as $key => $value) {
+            if (($this->predicate)($value, $key, $this->source)) {
                 break;
             }
 

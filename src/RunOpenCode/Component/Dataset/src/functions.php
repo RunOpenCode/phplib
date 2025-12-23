@@ -6,8 +6,10 @@ namespace RunOpenCode\Component\Dataset;
 
 use RunOpenCode\Component\Dataset\Aggregator\Aggregator;
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
+use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 use RunOpenCode\Component\Dataset\Contract\StreamInterface;
+use RunOpenCode\Component\Dataset\Exception\StreamOverflowException;
 use RunOpenCode\Component\Dataset\Model\Buffer;
 
 /**
@@ -49,18 +51,18 @@ function iterable_to_list(iterable $iterable): array
 }
 
 /**
- * Create batch operator.
+ * Create new stream.
  *
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate over.
+ * @param iterable<TKey, TValue> $source Stream source to iterate over.
  *
  * @return Stream<TKey, TValue>
  */
-function stream(iterable $collection): Stream
+function stream(iterable $source): Stream
 {
-    return new Stream($collection);
+    return new Stream($source);
 }
 
 /**
@@ -69,17 +71,17 @@ function stream(iterable $collection): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate over.
- * @param positive-int           $count      How many items to buffer.
+ * @param iterable<TKey, TValue> $source Stream source to iterate over.
+ * @param positive-int           $count  Number of items to store into buffer.
  *
  * @return Stream<int, Buffer<TKey, TValue>>
  *
  * @see Operator\BufferCount
  */
-function buffer_count(iterable $collection, int $count): Stream
+function buffer_count(iterable $source, int $count): Stream
 {
     return new Stream(
-        new Operator\BufferCount($collection, $count)
+        new Operator\BufferCount($source, $count)
     );
 }
 
@@ -89,17 +91,18 @@ function buffer_count(iterable $collection, int $count): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>                               $collection Collection to iterate over.
- * @param callable(Buffer<TKey, TValue>, TValue=, TKey=): bool $predicate  Callable predicate function to evaluate.
+ * @param iterable<TKey, TValue>                               $source    Stream source to iterate over.
+ * @param callable(Buffer<TKey, TValue>, TValue=, TKey=): bool $predicate Predicate function to evaluate if current item should be placed into existing buffer, or
+ *                                                                        existing buffer should be yielded and new one should be created with current item.
  *
  * @return Stream<int, Buffer<TKey, TValue>>
  *
  * @see Operator\BufferWhile
  */
-function buffer_while(iterable $collection, callable $predicate): Stream
+function buffer_while(iterable $source, callable $predicate): Stream
 {
     return new Stream(
-        new Operator\BufferWhile($collection, $predicate)
+        new Operator\BufferWhile($source, $predicate)
     );
 }
 
@@ -109,17 +112,17 @@ function buffer_while(iterable $collection, callable $predicate): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>                 $collection Collection to iterate over.
- * @param (callable(TValue, TKey=): string)|null $identity   User defined callable to determine item identity. If null, strict comparison (===) is used.
+ * @param iterable<TKey, TValue>                 $source   Stream source to iterate over.
+ * @param (callable(TValue, TKey=): string)|null $identity User defined callable to determine item identity. If null, strict comparison (===) is used.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Distinct
  */
-function distinct(iterable $collection, ?callable $identity = null): Stream
+function distinct(iterable $source, ?callable $identity = null): Stream
 {
     return new Stream(
-        new Operator\Distinct($collection, $identity)
+        new Operator\Distinct($source, $identity)
     );
 }
 
@@ -129,17 +132,17 @@ function distinct(iterable $collection, ?callable $identity = null): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>        $collection Collection to iterate over.
- * @param callable(TValue, TKey=): bool $filter     User defined callable to filter items.
+ * @param iterable<TKey, TValue>        $source Stream source to iterate over.
+ * @param callable(TValue, TKey=): bool $filter User defined callable to filter items.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Filter
  */
-function filter(iterable $collection, callable $filter): Stream
+function filter(iterable $source, callable $filter): Stream
 {
     return new Stream(
-        new Operator\Filter($collection, $filter)
+        new Operator\Filter($source, $filter)
     );
 }
 
@@ -149,17 +152,18 @@ function filter(iterable $collection, callable $filter): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate over.
- * @param callable(): void       $finalizer  User defined callable to invoke when iterator is depleted or exception is thrown.
+ * @param iterable<TKey, TValue> $source    Stream source to iterate over.
+ * @param callable(): void       $finalizer User defined callable to invoke when iterator is depleted, or exception is
+ *                                          thrown, or operator instance is garbage collected.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Finalize
  */
-function finalize(iterable $collection, callable $finalizer): Stream
+function finalize(iterable $source, callable $finalizer): Stream
 {
     return new Stream(
-        new Operator\Finalize($collection, $finalizer)
+        new Operator\Finalize($source, $finalizer)
     );
 }
 
@@ -168,22 +172,21 @@ function finalize(iterable $collection, callable $finalizer): Stream
  *
  * @template TKey
  * @template TValue
- * @template TValues of iterable<TKey, TValue>
  *
- * @param iterable<mixed, TValues> $collection   Collection to iterate over.
- * @param bool                     $preserveKeys Should keys be preserved from the flattened collections, false by default.
+ * @param iterable<mixed, iterable<TKey, TValue>> $source       Stream of streams to iterate over.
+ * @param bool                                    $preserveKeys Should keys be preserved from the flattened stream, false by default.
  *
  * @return ($preserveKeys is true ? Stream<TKey, TValue> : Stream<int, TValue>)
  *
- * @see                      Operator\Flatten
+ * @see Operator\Flatten
  *
- * @phpstan-ignore-next-line return.unusedType
+ * @phpstan-ignore-next-line
  */
-function flatten(iterable $collection, bool $preserveKeys = false): Stream
+function flatten(iterable $source, bool $preserveKeys = false): Stream
 {
     // @phpstan-ignore-next-line return.type
     return new Stream(
-        new Operator\Flatten($collection, $preserveKeys)
+        new Operator\Flatten($source, $preserveKeys)
     );
 }
 
@@ -193,13 +196,13 @@ function flatten(iterable $collection, bool $preserveKeys = false): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate.
+ * @param iterable<TKey, TValue> $source Stream source to iterate.
  *
- * @return Stream<TKey, TValue> Flushed stream.
+ * @return Stream<TKey, TValue> Flushed and closed stream.
  */
-function flush(iterable $collection): Stream
+function flush(iterable $source): Stream
 {
-    $stream = new Stream($collection);
+    $stream = new Stream($source);
 
     \iterator_to_array($stream, false);
 
@@ -207,24 +210,22 @@ function flush(iterable $collection): Stream
 }
 
 /**
- * Create if empty operator.
+ * Create "if empty" operator.
  *
  * @template TKey
  * @template TValue
- * @template TAlternativeKey
- * @template TAlternativeValue
  *
- * @param iterable<TKey, TValue>                                                      $collection Collection to iterate over.
- * @param \Exception|(callable(): iterable<TAlternativeKey, TAlternativeValue>|never) $action     Action to undertake if collection is empty, or exception to throw.
+ * @param iterable<TKey, TValue>                               $source   Stream source to iterate over.
+ * @param \Throwable|(callable(): iterable<TKey, TValue>)|null $fallback Fallback stream source, or exception to throw.
  *
- * @return Stream<TKey|TAlternativeKey, TValue|TAlternativeValue>
+ * @return Stream<TKey, TValue>
  *
  * @see Operator\IfEmpty
  */
-function if_empty(iterable $collection, \Exception|callable $action): Stream
+function if_empty(iterable $source, \Throwable|callable|null $fallback): Stream
 {
     return new Stream(
-        new Operator\IfEmpty($collection, $action)
+        new Operator\IfEmpty($source, $fallback)
     );
 }
 
@@ -236,20 +237,20 @@ function if_empty(iterable $collection, \Exception|callable $action): Stream
  * @template TModifiedKey
  * @template TModifiedValue
  *
- * @param iterable<TKey, TValue>                       $collection     Collection to iterate over.
- * @param callable(TValue, TKey=): TModifiedValue|null $valueTransform User defined callable to be called on each item. If null, original values are preserved.
- * @param callable(TKey, TValue=): TModifiedKey|null   $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
+ * @param iterable<TKey, TValue>                       $source         Stream source to iterate over.
+ * @param callable(TValue, TKey=): TModifiedValue|null $valueTransform Optional transformation function for transforming values.
+ * @param callable(TKey, TValue=): TModifiedKey|null   $keyTransform   Optional transformation function for transforming keys.
  *
  * @return Stream<($keyTransform is null ? TKey : TModifiedKey), ($valueTransform is null ? TValue : TModifiedValue)>
  *
  * @see Operator\Map
  */
-function map(iterable $collection, ?callable $valueTransform = null, ?callable $keyTransform = null): Stream
+function map(iterable $source, ?callable $valueTransform = null, ?callable $keyTransform = null): Stream
 {
     /**
      * @var StreamInterface<($keyTransform is null ? TKey : TModifiedKey), ($valueTransform is null ? TValue : TModifiedValue)> $map
      */
-    $map = new Operator\Map($collection, $valueTransform, $keyTransform);
+    $map = new Operator\Map($source, $valueTransform, $keyTransform);
 
     return new Stream($map);
 }
@@ -262,8 +263,8 @@ function map(iterable $collection, ?callable $valueTransform = null, ?callable $
  * @template TKey2
  * @template TValue2
  *
- * @param iterable<TKey1, TValue1> $first  First collection to iterate over.
- * @param iterable<TKey2, TValue2> $second Second collection to iterate over.
+ * @param iterable<TKey1, TValue1> $first  First stream source to iterate over.
+ * @param iterable<TKey2, TValue2> $second Second stream source to iterate over.
  *
  * @return Stream<TKey1|TKey2, TValue1|TValue2>
  *
@@ -282,18 +283,18 @@ function merge(iterable $first, iterable $second): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate over.
- * @param positive-int           $capacity   Max number of items to iterate over.
- * @param \Exception|null        $exception  Which exception to throw if collection has more then allowed items ({@see \OverflowException} by default).
+ * @param iterable<TKey, TValue>                                           $source   Collection to iterate over.
+ * @param positive-int                                                     $capacity Maximum number of items to iterate over.
+ * @param \Throwable|(callable(StreamOverflowException=): \Throwable)|null $throw    Exception to throw if stream yielded more items then capacity allows.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Overflow
  */
-function overflow(iterable $collection, int $capacity, ?\Exception $exception = null): Stream
+function overflow(iterable $source, int $capacity, \Throwable|callable|null $throw = null): Stream
 {
     return new Stream(
-        new Operator\Overflow($collection, $capacity, $exception)
+        new Operator\Overflow($source, $capacity, $throw)
     );
 }
 
@@ -303,16 +304,16 @@ function overflow(iterable $collection, int $capacity, ?\Exception $exception = 
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate over in reverse order.
+ * @param iterable<TKey, TValue> $source Stream source to iterate over in reverse order.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Reverse
  */
-function reverse(iterable $collection): Stream
+function reverse(iterable $source): Stream
 {
     return new Stream(
-        new Operator\Reverse($collection)
+        new Operator\Reverse($source)
     );
 }
 
@@ -322,17 +323,17 @@ function reverse(iterable $collection): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate over.
- * @param positive-int           $count      Number of items to skip.
+ * @param iterable<TKey, TValue> $source Stream source to iterate over.
+ * @param positive-int           $count  Number of items to skip.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Skip
  */
-function skip(iterable $collection, int $count): Stream
+function skip(iterable $source, int $count): Stream
 {
     return new Stream(
-        new Operator\Skip($collection, $count)
+        new Operator\Skip($source, $count)
     );
 }
 
@@ -342,7 +343,7 @@ function skip(iterable $collection, int $count): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>                                                                  $collection Collection to iterate over.
+ * @param iterable<TKey, TValue>                                                                  $source     Stream source to iterate over.
  * @param ($byKeys is false ? (callable(TValue, TValue): int) : (callable(TKey, TKey): int))|null $comparator User defined callable to compare two items. If null, spaceship operator (<=>) is used.
  * @param bool                                                                                    $byKeys     If `byKeys` is true, keys will be compared instead of values.
  *
@@ -350,10 +351,10 @@ function skip(iterable $collection, int $count): Stream
  *
  * @see Operator\Sort
  */
-function sort(iterable $collection, ?callable $comparator = null, bool $byKeys = false): Stream
+function sort(iterable $source, ?callable $comparator = null, bool $byKeys = false): Stream
 {
     return new Stream(
-        new Operator\Sort($collection, $comparator, $byKeys)
+        new Operator\Sort($source, $comparator, $byKeys)
     );
 }
 
@@ -363,17 +364,17 @@ function sort(iterable $collection, ?callable $comparator = null, bool $byKeys =
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $collection Collection to iterate over.
- * @param positive-int           $count      Number of items to yield.
+ * @param iterable<TKey, TValue> $source Stream source to iterate over.
+ * @param positive-int           $count  Number of items to yield.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Take
  */
-function take(iterable $collection, int $count): Stream
+function take(iterable $source, int $count): Stream
 {
     return new Stream(
-        new Operator\Take($collection, $count)
+        new Operator\Take($source, $count)
     );
 }
 
@@ -383,17 +384,17 @@ function take(iterable $collection, int $count): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>       $collection Collection to iterate over.
- * @param callable(TValue, TKey): bool $predicate  User defined callable to evaluate.
+ * @param iterable<TKey, TValue>        $source    Stream source to iterate over.
+ * @param callable(TValue, TKey=): bool $predicate Predicate callable to evaluate stop condition.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\TakeUntil
  */
-function takeUntil(iterable $collection, callable $predicate): Stream
+function takeUntil(iterable $source, callable $predicate): Stream
 {
     return new Stream(
-        new Operator\TakeUntil($collection, $predicate)
+        new Operator\TakeUntil($source, $predicate)
     );
 }
 
@@ -403,17 +404,38 @@ function takeUntil(iterable $collection, callable $predicate): Stream
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue>       $collection Collection to iterate over.
- * @param callable(TValue, TKey): void $callback   User defined callable to execute for each item.
+ * @param iterable<TKey, TValue>        $source   Stream source to iterate over.
+ * @param callable(TValue, TKey=): void $callback Callable to execute for each item.
  *
  * @return Stream<TKey, TValue>
  *
  * @see Operator\Tap
  */
-function tap(iterable $collection, callable $callback): Stream
+function tap(iterable $source, callable $callback): Stream
 {
     return new Stream(
-        new Operator\Tap($collection, $callback)
+        new Operator\Tap($source, $callback)
+    );
+}
+
+/**
+ * Create custom operator.
+ *
+ * @template TInputKey
+ * @template TInputValue
+ * @template TOutputKey
+ * @template TOutputValue
+ *
+ * @param iterable<TInputKey, TInputValue>                          $source       Stream source to iterate over.
+ * @param class-string<OperatorInterface<TOutputKey, TOutputValue>> $operator     Operator to apply.
+ * @param mixed                                                     ...$arguments Arguments for operator.
+ *
+ * @return Stream<TOutputKey, TOutputValue>
+ */
+function operator(iterable $source, string $operator, mixed ...$arguments): Stream
+{
+    return new Stream(
+        new $operator($source, ...$arguments)
     );
 }
 
@@ -425,14 +447,14 @@ function tap(iterable $collection, callable $callback): Stream
  * @template TReducedValue
  * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
  *
- * @param non-empty-string                                                             $name       Name of the aggregator.
- * @param iterable<TKey, TValue>                                                       $collection Collection to collect from.
- * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer    Reducer to attach.
- * @param mixed                                                                        ...$args    Arguments passed to reducer.
+ * @param non-empty-string                                                             $name    Name of the aggregator.
+ * @param iterable<TKey, TValue>                                                       $source  Stream source from which to aggregate values.
+ * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer Reducer to attach.
+ * @param mixed                                                                        ...$args Arguments passed to reducer.
  *
  * @return Stream<TKey, TValue>
  */
-function aggregate(string $name, iterable $collection, callable|string $reducer, mixed ...$args): Stream
+function aggregate(string $name, iterable $source, callable|string $reducer, mixed ...$args): Stream
 {
     /** @var TReducer $instance */
     $instance = \is_string($reducer) && \is_a($reducer, ReducerInterface::class, true)
@@ -440,7 +462,7 @@ function aggregate(string $name, iterable $collection, callable|string $reducer,
         : new Reducer\Callback($reducer, ...$args);
 
     return new Stream(
-        new Aggregator($name, new Operator\Reduce($collection, $instance)),
+        new Aggregator($name, new Operator\Reduce($source, $instance)),
     );
 }
 
@@ -452,46 +474,46 @@ function aggregate(string $name, iterable $collection, callable|string $reducer,
  * @template TCollectedValue
  * @template TCollector of CollectorInterface<TCollectedValue>
  *
- * @param iterable<TKey, TValue>   $collection Collection to collect from.
- * @param class-string<TCollector> $collector  Collector class name.
- * @param mixed                    ...$args    Arguments passed to collector.
+ * @param iterable<TKey, TValue>   $source    Stream source to collect from.
+ * @param class-string<TCollector> $collector Collector class name.
+ * @param mixed                    ...$args   Arguments passed to collector.
  *
  * @return TCollector
  *
  * @see Contract\CollectorInterface
  */
-function collect(iterable $collection, string $collector, mixed ...$args): CollectorInterface
+function collect(iterable $source, string $collector, mixed ...$args): CollectorInterface
 {
     return new \ReflectionClass($collector)->newInstanceArgs(\array_merge(
-        [$collection],
+        [$source],
         $args
     ));
 }
 
 /**
- * Reduce values from dataset using specified reducer.
+ * Reduce values from stream source using specified reducer.
  *
  * @template TKey
  * @template TValue
  * @template TReducedValue
  * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
  *
- * @param iterable<TKey, TValue>                                                       $collection Collection to collect from.
- * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer    Reducer to use.
- * @param mixed                                                                        ...$args    Arguments passed to reducer.
+ * @param iterable<TKey, TValue>                                                       $source  Stream source to reduce.
+ * @param class-string<TReducer>|callable(TReducedValue, TValue, TKey=): TReducedValue $reducer Reducer to use.
+ * @param mixed                                                                        ...$args Arguments passed to reducer.
  *
  * @return TReducedValue
  *
  * @see Contract\ReducerInterface
  */
-function reduce(iterable $collection, callable|string $reducer, mixed ...$args): mixed
+function reduce(iterable $source, callable|string $reducer, mixed ...$args): mixed
 {
     /** @var TReducer $instance */
     $instance = \is_string($reducer) && \is_a($reducer, ReducerInterface::class, true)
         ? new \ReflectionClass($reducer)->newInstanceArgs($args)
         : new Reducer\Callback($reducer, ...$args);
 
-    $operator = new Operator\Reduce($collection, $instance);
+    $operator = new Operator\Reduce($source, $instance);
 
     flush($operator);
 

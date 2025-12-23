@@ -11,10 +11,11 @@ use RunOpenCode\Component\Dataset\Model\Buffer;
 /**
  * Buffer count operator.
  *
- * Iterates over given collection and creates a buffer of items with number of items
- * up to given capacity.
+ * Buffers the stream of data until buffer reaches predefined number of items (or
+ * stream is exhausted) and yields instance of {@see Buffer}.
  *
- * Yields created instances of {@see Buffer} for batch processing.
+ * Memory consumption depends on the size of the buffer; however, the operator is
+ * still considered memory-safe.
  *
  * @template TKey
  * @template TValue
@@ -25,14 +26,14 @@ use RunOpenCode\Component\Dataset\Model\Buffer;
 final class BufferCount extends AbstractStream implements OperatorInterface
 {
     /**
-     * @param iterable<TKey, TValue> $collection Collection to iterate over.
-     * @param positive-int           $count      How many items to buffer.
+     * @param iterable<TKey, TValue> $source Stream source to iterate over.
+     * @param positive-int           $count  Number of items to store into buffer.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         private readonly int      $count = 1000,
     ) {
-        parent::__construct($collection);
+        parent::__construct($source);
     }
 
     /**
@@ -43,7 +44,7 @@ final class BufferCount extends AbstractStream implements OperatorInterface
         /** @var \ArrayObject<int, array{TKey, TValue}> $items */
         $items = new \ArrayObject();
 
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             $items[] = [$key, $value];
 
             if (\count($items) === $this->count) {
