@@ -278,6 +278,27 @@ function merge(iterable $first, iterable $second): Stream
 }
 
 /**
+ * Create left join operator.
+ *
+ * @template TKey
+ * @template TLeftValue
+ * @template TRightValue
+ *
+ * @param iterable<TKey, TLeftValue>  $source Stream source to iterate over on the left side of the left join operation.
+ * @param iterable<TKey, TRightValue> $join   Stream source to iterate over on the right side of the left join operation.
+ *
+ * @return Stream<TKey, array{TLeftValue, iterable<TRightValue>}>
+ *
+ * @see Operator\LeftJoin
+ */
+function left_join(iterable $source, iterable $join): Stream
+{
+    return new Stream(
+        new Operator\LeftJoin($source, $join)
+    );
+}
+
+/**
  * Create overflow operator.
  *
  * @template TKey

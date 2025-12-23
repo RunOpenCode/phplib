@@ -30,6 +30,7 @@ use function RunOpenCode\Component\Dataset\finalize as dataset_finalize;
 use function RunOpenCode\Component\Dataset\if_empty as dataset_if_empty;
 use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
 use function RunOpenCode\Component\Dataset\operator as dataset_operator;
+use function RunOpenCode\Component\Dataset\left_join as dataset_left_join;
 
 /**
  * Iterable data stream.
@@ -177,14 +178,14 @@ final class Stream extends AbstractStream
      * @template TModifiedKey
      * @template TModifiedValue
      *
-     * @param callable(TValue, TKey=): TModifiedValue    $valueTransform User defined callable to be called on each item.
-     * @param callable(TKey, TValue=): TModifiedKey|null $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
+     * @param callable(TValue, TKey=): TModifiedValue|null $valueTransform User defined callable to be called on each item.
+     * @param callable(TKey, TValue=): TModifiedKey|null   $keyTransform   User defined callable to be called on each item key. If null, original keys are preserved.
      *
-     * @return self<($keyTransform is null ? TKey : TModifiedKey), TModifiedValue>
+     * @return self<($keyTransform is null ? TKey : TModifiedKey), ($valueTransform is null ? TValue : TModifiedValue)>
      *
      * @see Operator\Map
      */
-    public function map(callable $valueTransform, ?callable $keyTransform = null): self
+    public function map(?callable $valueTransform = null, ?callable $keyTransform = null): self
     {
         return dataset_map($this, $valueTransform, $keyTransform);
     }
@@ -204,6 +205,22 @@ final class Stream extends AbstractStream
     public function merge(iterable $collection): self
     {
         return dataset_merge($this, $collection);
+    }
+
+    /**
+     * Applies left join operator on current stream.
+     *
+     * @template TJoinValue
+     *
+     * @param iterable<TKey, TJoinValue> $join Stream source to iterate over on the right side of the left join operation.
+     *
+     * @return self<TKey, array{TValue, iterable<TJoinValue>}>
+     *
+     * @see Operator\LeftJoin
+     */
+    public function leftJoin(iterable $join): Stream
+    {
+        return dataset_left_join($this, $join);
     }
 
     /**
