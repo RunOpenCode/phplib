@@ -50,8 +50,8 @@ final class Finalize extends AbstractStream implements OperatorInterface
      *                                          is thrown, or operator instance is garbage collected.
      */
     public function __construct(
-        iterable $source,
-        callable $finalizer,
+        private readonly iterable $source,
+        callable                  $finalizer,
     ) {
         parent::__construct($source);
         $this->finalizer = $finalizer(...);
@@ -65,7 +65,7 @@ final class Finalize extends AbstractStream implements OperatorInterface
         $this->finalized = true;
 
         try {
-            yield from $this;
+            yield from $this->source;
         } finally {
             ($this->finalizer)();
         }

@@ -12,7 +12,7 @@ use RunOpenCode\Component\Dataset\Exception\LogicException;
  * Map operator.
  *
  * Map operator iterates over given stream source and applies transformation
- * functions one keys/values before yielding.
+ * functions on keys/values before yielding.
  *
  * Operator may be used to transform only keys, or only values, or both.
  *

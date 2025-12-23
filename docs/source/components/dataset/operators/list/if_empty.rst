@@ -14,10 +14,11 @@ will be thrown.
 
 .. php:class:: IfEmpty
 
-   .. php:method:: __construct(iterable<TKey, TValue> $source, \Throwable|callable(): iterable<TKey, TValue> $fallback)
+   .. php:method:: __construct(iterable<TKey, TValue> $source, \Throwable|callable()|null: iterable<TKey, TValue> $fallback = null)
 
       :param $source: ``iterable<TKey, TValue>`` Stream source to iterate over.
-      :param $fallback: ``\Throwable|callable(): iterable<TKey, TValue>`` Fallback stream source, or exception to throw.
+      :param $fallback: ``\Throwable|callable()|null: iterable<TKey, TValue>`` Fallback stream source, or exception to 
+                        throw, or ``null`` to use the default empty-stream exception.
 
 
    .. php:method:: getIterator()

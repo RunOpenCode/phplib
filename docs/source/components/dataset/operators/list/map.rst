@@ -3,7 +3,7 @@ map()
 =====
 
 Map operator iterates over given stream source and applies transformation
-functions one keys/values before yielding.
+functions on keys/values before yielding.
 
 Operator may be used to transform only keys, or only values, or both.
 
@@ -12,7 +12,7 @@ Operator may be used to transform only keys, or only values, or both.
 
 .. php:class:: Map
 
-   .. php:method:: __construct(iterable<TKey, TValue> $source, ?callable(TValue, TKey=): TModifiedValue $valueTransform = null, ?callable(TKey, TValue=): TModifiedKey = null)
+   .. php:method:: __construct(iterable<TKey, TValue> $source, ?callable(TValue, TKey=): TModifiedValue $valueTransform = null, ?callable(TKey, TValue=): TModifiedKey $keyTransform = null)
 
       :param $source: ``iterable<TKey, TValue>`` Stream source to iterate over.
       :param $valueTransform: ``?callable(TValue, TKey=): TModifiedValue`` Optional transformation function for transforming values.
@@ -43,8 +43,11 @@ indexed by identifier.
    $dataset = $database->execute('SELECT ...');
 
    new Stream($dataset)
-       ->map(function(array $row): Entity {
-           return Entity::fromArray($row);
-       }, function(int $key, array $row): string {
-           return $row['id'];
-       });
+       ->map(
+           valueTransform: static function(array $row): Entity {
+               return Entity::fromArray($row);
+           }, 
+           keyTransform: static function(int $key, array $row): string {
+               return $row['id'];
+           }
+       );

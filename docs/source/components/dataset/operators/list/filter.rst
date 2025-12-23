@@ -10,10 +10,10 @@ for which user defined callable returns ``true``.
 
 .. php:class:: Filter
 
-   .. php:method:: __construct(iterable<TKey, TValue> $source, callable(TValue, TKey=): bool $filter = null)
+   .. php:method:: __construct(iterable<TKey, TValue> $source, callable(TValue, TKey=): bool $filter)
 
       :param $source: ``iterable<TKey, TValue>`` Stream source to iterate over.
-      :param $filter: ``?callable(TValue, TKey=): bool`` User defined callable to filter items.
+      :param $filter: ``callable(TValue, TKey=): bool`` User defined callable to filter items.
 
 
    .. php:method:: getIterator()

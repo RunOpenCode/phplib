@@ -23,7 +23,7 @@ original items.
    .. php:method:: __construct(iterable<TKey, TValue> $source, ?callable(TValue, TKey=): string $identity = null)
 
       :param $source: ``iterable<TKey, TValue>`` Stream to iterate over.
-      :param $predicate: ``?callable(TValue, TKey=): string`` User defined callable to determine item identity. If null, strict comparison (===) of values is used.
+      :param $identity: ``?callable(TValue, TKey=): string`` User defined callable to determine item identity. If null, strict comparison (===) of values is used.
 
 
    .. php:method:: getIterator()

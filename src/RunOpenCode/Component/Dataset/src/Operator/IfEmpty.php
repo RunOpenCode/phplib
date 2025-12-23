@@ -51,7 +51,7 @@ final class IfEmpty extends AbstractStream implements OperatorInterface
     ) {
         parent::__construct($source);
         $fallback       = $fallback ?? new StreamEmptyException();
-        $this->fallback = $fallback instanceof \Throwable ? static fn(): \Throwable => throw $fallback : $fallback(...);
+        $this->fallback = $fallback instanceof \Throwable ? static fn(): never => throw $fallback : $fallback(...);
     }
 
     /**
