@@ -15,24 +15,6 @@ namespace RunOpenCode\Component\Dataset\Contract;
 interface StreamInterface extends \IteratorAggregate
 {
     /**
-     * Get list of stream data origins.
-     *
-     * @var list<iterable<mixed, mixed>>
-     */
-    public array $upstreams {
-        get;
-    }
-
-    /**
-     * Get list of aggregators attached to this stream.
-     *
-     * @var array<non-empty-string, AggregatorInterface<mixed, mixed, mixed>>
-     */
-    public array $aggregators {
-        get;
-    }
-
-    /**
      * Get aggregated values collected during iteration process.
      *
      * @var array<non-empty-string, mixed>
@@ -52,6 +34,28 @@ interface StreamInterface extends \IteratorAggregate
      * streams can not be rewound.
      */
     public bool $closed {
+        get;
+    }
+
+    /**
+     * Get list of stream data origins.
+     *
+     * @var list<iterable<mixed, mixed>>
+     *
+     * @internal
+     */
+    public array $upstreams {
+        get;
+    }
+
+    /**
+     * Get list of aggregators attached to this stream.
+     *
+     * @var array<non-empty-string, AggregatorInterface<mixed, mixed, mixed>>
+     *
+     * @internal
+     */
+    public array $aggregators {
         get;
     }
 }

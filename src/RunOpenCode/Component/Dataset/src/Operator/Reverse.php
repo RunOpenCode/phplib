@@ -10,7 +10,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 /**
  * Reverse operator.
  *
- * Reverse operator iterates over given collection and yields items in reverse order.
+ * Reverse operator iterates over given stream source and yields items in reverse order.
  *
  * WARNING: this is not memory efficient operator.
  *
@@ -20,7 +20,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Reverse;
  *
  * $reverse = new Reverse(
- *  collection: new Dataset(['a' => 1, 'b' => 2, 'c' => 3]),
+ *  source: ['a' => 1, 'b' => 2, 'c' => 3],
  * );
  * // The resulting sequence will be: 'c' => 3, 'b' => 2, 'a' => 1
  * ```
@@ -34,12 +34,12 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 final class Reverse extends AbstractStream implements OperatorInterface
 {
     /**
-     * @param iterable<TKey, TValue> $collection Collection to iterate over in reverse order.
+     * @param iterable<TKey, TValue> $source Stream source to iterate over in reverse order.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
     ) {
-        parent::__construct($this->collection);
+        parent::__construct($this->source);
     }
 
     /**
@@ -49,7 +49,7 @@ final class Reverse extends AbstractStream implements OperatorInterface
     {
         $buffer = [];
 
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             $buffer[] = [$key, $value];
         }
 

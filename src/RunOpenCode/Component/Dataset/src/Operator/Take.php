@@ -10,8 +10,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 /**
  * Take operator.
  *
- * Take operator iterates over given collection and yields only the first N items,
- * where N is defined by user.
+ * Take operator iterates over given stream source and yields only the first N items.
  *
  * Example usage:
  *
@@ -19,7 +18,7 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Take;
  *
  * $take = new Take(
- *   collection: new Dataset(['a' => 1, 'b' => 2, 'c' => 3]),
+ *   source: ['a' => 1, 'b' => 2, 'c' => 3],
  *   count: 2,
  * );
  * // $take will yield ['a' => 1, 'b' => 2]
@@ -34,14 +33,14 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 final class Take extends AbstractStream implements OperatorInterface
 {
     /**
-     * @param iterable<TKey, TValue> $collection Collection to iterate over.
-     * @param positive-int           $count      Number of items to yield.
+     * @param iterable<TKey, TValue> $source Stream source to iterate over.
+     * @param positive-int           $count  Number of items to yield.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         private readonly int      $count,
     ) {
-        parent::__construct($this->collection);
+        parent::__construct($this->source);
     }
 
     /**
@@ -51,7 +50,7 @@ final class Take extends AbstractStream implements OperatorInterface
     {
         $count = 0;
 
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             $count++;
 
             if ($count > $this->count) {

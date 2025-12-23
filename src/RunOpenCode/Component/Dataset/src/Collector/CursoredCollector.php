@@ -105,10 +105,10 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
     private bool $exhausted = false;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection to collect.
+     * @param iterable<TKey, TValue> $source Stream source to collect.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         public readonly int       $offset = 0,
         public readonly ?int      $limit = null,
     ) {
@@ -124,12 +124,12 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
         $this->closed     = true;
         $this->aggregated = [];
 
-        foreach ($this->collection as $key => $value) {
+        foreach ($this->source as $key => $value) {
             $iteration++;
 
             if (null !== $this->limit && $iteration === $this->limit) {
                 yield $key => $value;
-                $this->aggregated = $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
+                $this->aggregated = $this->source instanceof StreamInterface ? $this->source->aggregated : [];
                 continue;
             }
 
@@ -139,7 +139,7 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
                 return;
             }
 
-            $this->aggregated = $this->collection instanceof StreamInterface ? $this->collection->aggregated : [];
+            $this->aggregated = $this->source instanceof StreamInterface ? $this->source->aggregated : [];
             yield $key => $value;
         }
 

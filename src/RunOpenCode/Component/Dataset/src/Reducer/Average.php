@@ -7,7 +7,7 @@ namespace RunOpenCode\Component\Dataset\Reducer;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 
 /**
- * Reducer which calculates average of values from a collection of values.
+ * Reducer which calculates average of values from a stream of values.
  *
  * Null values are ignored. You may define if null values are included in
  * the count of items when calculating average.

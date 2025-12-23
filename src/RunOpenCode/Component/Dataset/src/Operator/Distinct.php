@@ -10,20 +10,17 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 /**
  * Distinct operator.
  *
- * Distinct operator can be used in two modes, with identity callable or without it.
+ * The distinct operator emits only items that are unique, preserving FIFO order.
+ * By default, items are compared using the strict equality operator (===).
  *
- * When identity callable is provided, it is used to determine the identity of each
- * item in the collection. If two items have the same identity, only the first one
- * is yielded.
+ * Optionally, you may provide a callable that computes an identity for each item
+ * based on its value and key. When provided, distinctness is determined by
+ * performing strict equality comparisons on the computed identities instead of the
+ * original items.
  *
- * When identity callable is not provided, strict comparison (===) is used to determine
- * if two items are the same.
- *
- * WARNING: Memory consumption of this operator depends on the number of distinct items
- * and type of identity callable used. If the collection has a lot of distinct items,
- * or if the identity callable produces a lot of unique identities, memory consumption
- * can grow significantly. Do note that if value based comparison is used, memory consumption
- * can grow even more, as all distinct values need to be stored in memory.
+ * WARNING: The memory consumption of this operator depends on the number of distinct
+ * items emitted by the upstream. As a result, it is considered memory-unsafe, since
+ * memory usage can grow without bound for unbounded streams.
  *
  * Example usage:
  *
@@ -31,10 +28,12 @@ use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
  * use RunOpenCode\Component\Dataset\Operator\Distinct;
  *
  * $distinct = new Distinct(
- *    collection: new Dataset(['a' => 1, 'b' => 2, 'c' => 1]),
+ *    source: ['a' => 1, 'b' => 2, 'c' => 1],
  *    identity: static fn($value, $key): string => (string) $value,
  * );
  * ```
+ *
+ * TODO: This operator may be refactored for comparison without identity callable.
  *
  * @template TKey
  * @template TValue
@@ -49,14 +48,14 @@ final class Distinct extends AbstractStream implements OperatorInterface
     private readonly ?\Closure $identity;
 
     /**
-     * @param iterable<TKey, TValue> $collection Collection to iterate over.
-     * @param IdentityCallable|null  $identity   User defined callable to determine item identity. If null, strict comparison (===) is used.
+     * @param iterable<TKey, TValue> $source   Stream source to iterate over.
+     * @param IdentityCallable|null  $identity User defined callable to determine item identity. If null, strict comparison (===) of values is used.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
         ?callable                 $identity = null,
     ) {
-        parent::__construct($this->collection);
+        parent::__construct($this->source);
         $this->identity = $identity ? $identity(...) : null;
     }
 
@@ -77,7 +76,7 @@ final class Distinct extends AbstractStream implements OperatorInterface
 
         \assert(null !== $this->identity);
 
-        foreach ($this->collection as $key => $item) {
+        foreach ($this->source as $key => $item) {
             $identity = ($this->identity)($item, $key);
 
             if (isset($identities[$identity])) {
@@ -97,7 +96,7 @@ final class Distinct extends AbstractStream implements OperatorInterface
     {
         $emitted = [];
 
-        foreach ($this->collection as $key => $item) {
+        foreach ($this->source as $key => $item) {
             if (\in_array($item, $emitted, true)) {
                 continue;
             }

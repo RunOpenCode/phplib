@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RunOpenCode\Component\Dataset;
 
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
+use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
 use RunOpenCode\Component\Dataset\Model\Buffer;
 
@@ -28,9 +29,10 @@ use function RunOpenCode\Component\Dataset\tap as dataset_tap;
 use function RunOpenCode\Component\Dataset\finalize as dataset_finalize;
 use function RunOpenCode\Component\Dataset\if_empty as dataset_if_empty;
 use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
+use function RunOpenCode\Component\Dataset\operator as dataset_operator;
 
 /**
- * Dataset iterable stream.
+ * Iterable data stream.
  *
  * @template TKey
  * @template TValue
@@ -40,12 +42,12 @@ use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
 final class Stream extends AbstractStream
 {
     /**
-     * @param iterable<TKey, TValue> $collection
+     * @param iterable<TKey, TValue> $source Stream source to wrap.
      */
     public function __construct(
-        private readonly iterable $collection,
+        private readonly iterable $source,
     ) {
-        parent::__construct($collection);
+        parent::__construct($source);
     }
 
     /**
@@ -54,13 +56,13 @@ final class Stream extends AbstractStream
      * @template Key
      * @template Value
      *
-     * @param iterable<Key, Value> $collection Collection to wrap.
+     * @param iterable<Key, Value> $source Stream source.
      *
      * @return self<Key, Value>
      */
-    public static function create(iterable $collection): self
+    public static function create(iterable $source): self
     {
-        return new self($collection);
+        return new self($source);
     }
 
     /**
@@ -142,7 +144,7 @@ final class Stream extends AbstractStream
      */
     public function flatten(bool $preserveKeys = false): self
     {
-        return dataset_flatten($this, $preserveKeys);
+        return dataset_flatten($this, $preserveKeys); // @phpstan-ignore-line
     }
 
     /**
@@ -156,20 +158,17 @@ final class Stream extends AbstractStream
     }
 
     /**
-     * Applies if empty operator.
+     * Applies "if empty" operator.
      *
-     * @template TAlternativeKey
-     * @template TAlternativeValue
+     * @param \Throwable|(callable(): iterable<TKey, TValue>)|null $fallback Fallback stream source, or exception to throw.
      *
-     * @param \Exception|(callable(): iterable<TAlternativeKey, TAlternativeValue>|never) $action Action to undertake if collection is empty, or exception to throw.
-     *
-     * @return Stream<TKey|TAlternativeKey, TValue|TAlternativeValue>
+     * @return Stream<TKey, TValue>
      *
      * @see Operator\IfEmpty
      */
-    public function ifEmpty(\Exception|callable $action): self
+    public function ifEmpty(\Throwable|callable|null $fallback = null): self
     {
-        return dataset_if_empty($this, $action);
+        return dataset_if_empty($this, $fallback);
     }
 
     /**
@@ -284,7 +283,7 @@ final class Stream extends AbstractStream
     /**
      * Applies takeUntil operator on current stream.
      *
-     * @param callable(TValue, TKey): bool $predicate User defined callable to evaluate.
+     * @param callable(TValue, TKey=): bool $predicate User defined callable to evaluate.
      *
      * @return self<TKey, TValue>
      *
@@ -298,7 +297,7 @@ final class Stream extends AbstractStream
     /**
      * Applies tap operator on current stream.
      *
-     * @param callable(TValue, TKey): void $callback User defined callable to be called on each item.
+     * @param callable(TValue, TKey=): void $callback User defined callable to be called on each item.
      *
      * @return self<TKey, TValue>
      *
@@ -307,6 +306,22 @@ final class Stream extends AbstractStream
     public function tap(callable $callback): self
     {
         return dataset_tap($this, $callback);
+    }
+
+    /**
+     * Applies custom operator on current stream.
+     *
+     * @template TOutputKey
+     * @template TOutputValue
+     *
+     * @param class-string<OperatorInterface<TOutputKey, TOutputValue>> $operator     Class name of the custom operator.
+     * @param mixed                                                     ...$arguments Arguments passed to the operator.
+     *
+     * @return self<TOutputKey, TOutputValue>
+     */
+    public function operator(string $operator, mixed ...$arguments): self
+    {
+        return dataset_operator($this, $operator, ...$arguments);
     }
 
     /**
@@ -365,6 +380,6 @@ final class Stream extends AbstractStream
      */
     protected function iterate(): \Traversable
     {
-        yield from $this->collection;
+        yield from $this->source;
     }
 }

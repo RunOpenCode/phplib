@@ -331,7 +331,7 @@ final class StreamTest extends TestCase
 
         $tapped = [];
         $data   = new Stream($dataset)
-            ->tap(static function(int $value, string $key) use (&$tapped): void {
+            ->tap(static function(int $value, string $key) use (&$tapped): void { // @phpstan-ignore-line
                 $tapped[\sprintf('tapped_%s', $key)] = $value * 2;
             })
             ->collect(ArrayCollector::class)
