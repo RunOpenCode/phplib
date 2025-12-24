@@ -50,6 +50,34 @@ final class ArrayCollectorTest extends TestCase
     }
 
     #[Test]
+    public function keys(): void
+    {
+        $dataset = [
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ];
+
+        $collector = collect($dataset, ArrayCollector::class);
+
+        $this->assertSame(['a', 'b', 'c'], $collector->keys());
+    }
+
+    #[Test]
+    public function values(): void
+    {
+        $dataset = [
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ];
+
+        $collector = collect($dataset, ArrayCollector::class);
+
+        $this->assertSame([1, 2, 3], $collector->values());
+    }
+
+    #[Test]
     public function counts(): void
     {
         $dataset = [
