@@ -15,8 +15,9 @@ use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
  * @template TValue
  * @template TReducedValue
  *
+ * @phpstan-type ComparatorResult = 0|1|-1
  * @phpstan-type ExtractorCallable = callable(TValue, TKey): TReducedValue|null
- * @phpstan-type ComparatorCallable = callable(TReducedValue, TReducedValue): (0|1|-1)
+ * @phpstan-type ComparatorCallable = callable(TReducedValue, TReducedValue): ComparatorResult
  *
  * @implements ReducerInterface<TKey, TValue, TReducedValue|null>
  */

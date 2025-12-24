@@ -48,7 +48,7 @@ final class Average implements ReducerInterface
      *
      * @param int|float|null         $initial   Initial value to start with.
      * @param ExtractorCallable|null $extractor Optional function to extract reducible value.
-     * @param bool                   $countNull Should NULL values be accounted for, ignored by default.
+     * @param bool                   $countNull Should `null` values be accounted for, `false` by default.
      */
     public function __construct(
         int|float|null        $initial = null,

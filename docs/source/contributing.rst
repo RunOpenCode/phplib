@@ -88,8 +88,13 @@ In order to submit a pull request, the following guidelines should be followed:
 Make sure that you update ``CHANGELOG`` file with a description of your changes,
 following the existing format. 
 
+Useful links
+------------
 
-
+* Main repository: https://github.com/RunOpenCode/phplib
+* Sphinx: https://www.sphinx-doc.org
+* PHP Domain for Sphinx: https://github.com/markstory/sphinxcontrib-phpdomain 
+  and https://markstory.github.io/sphinxcontrib-phpdomain/reference.html#directives
 
 
 

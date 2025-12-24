@@ -461,7 +461,7 @@ function operator(iterable $source, string $operator, mixed ...$arguments): Stre
 }
 
 /**
- * Attach reducer as an aggregator.
+ * Attach reducer as an aggregator to stream source.
  *
  * @template TKey
  * @template TValue
@@ -488,7 +488,7 @@ function aggregate(string $name, iterable $source, callable|string $reducer, mix
 }
 
 /**
- * Collect values from dataset using specified collector.
+ * Collect values from given stream source using specified collector.
  *
  * @template TKey
  * @template TValue
@@ -539,4 +539,93 @@ function reduce(iterable $source, callable|string $reducer, mixed ...$args): mix
     flush($operator);
 
     return $operator->value;
+}
+
+/**
+ * Reduces values from stream source to their average.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue>                        $source    Stream source to reduce.
+ * @param int|float|null                                $initial   Initial value to start with.
+ * @param callable(TValue, TKey): (int|float|null)|null $extractor Optional function to extract reducible value.
+ * @param bool                                          $countNull Should `null` values be accounted for, `false` by default.
+ *
+ * @return float|null Average of values.
+ */
+function average(iterable $source, int|float|null $initial = null, ?callable $extractor = null, bool $countNull = false): float|null
+{
+    return reduce($source, Reducer\Average::class, $initial, $extractor, $countNull);
+}
+
+/**
+ * Reduces values from stream source to their count.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue>              $source Stream source to reduce.
+ * @param (callable(TValue, TKey): bool)|null $filter Optional filter callback to count only items that match the filter.
+ *
+ * @return int Number of items in the stream.
+ */
+function count(iterable $source, ?callable $filter = null): int
+{
+    return reduce($source, Reducer\Count::class, $filter);
+}
+
+/**
+ * Reduces values from stream source to their maximum value.
+ *
+ * @template TKey
+ * @template TValue
+ * @template TReducedValue
+ *
+ * @param iterable<TKey, TValue>                              $source     Stream source to reduce.
+ * @param TReducedValue|null                                  $initial    Initial value to start with.
+ * @param (callable(TValue, TKey): (TReducedValue|null))|null $extractor  Optional function to extract reducible value.
+ * @param (callable(TReducedValue, TReducedValue): int)|null  $comparator Optional comparator.
+ *
+ * @return TReducedValue Maximum value.
+ */
+function max(iterable $source, mixed $initial = null, ?callable $extractor = null, ?callable $comparator = null): mixed
+{
+    return reduce($source, Reducer\Max::class, $initial, $extractor, $comparator);
+}
+
+/**
+ * Reduces values from stream source to their minimum value.
+ *
+ * @template TKey
+ * @template TValue
+ * @template TReducedValue
+ *
+ * @param iterable<TKey, TValue>                              $source     Stream source to reduce.
+ * @param TReducedValue|null                                  $initial    Initial value to start with.
+ * @param (callable(TValue, TKey): (TReducedValue|null))|null $extractor  Optional function to extract reducible value.
+ * @param (callable(TReducedValue, TReducedValue): int)|null  $comparator Optional comparator.
+ *
+ * @return TReducedValue Minimum value.
+ */
+function min(iterable $source, mixed $initial = null, ?callable $extractor = null, ?callable $comparator = null): mixed
+{
+    return reduce($source, Reducer\Min::class, $initial, $extractor, $comparator);
+}
+
+/**
+ * Reduces values from stream source to their sum.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue>                          $source    Stream source to reduce.
+ * @param int|float|null                                  $initial   Initial value to start with.
+ * @param (callable(TValue, TKey): (int|float|null))|null $extractor Optional function to extract reducible value.
+ *
+ * @return int|float|null Sum of values.
+ */
+function sum(iterable $source, int|float|null $initial = null, ?callable $extractor = null): int|float|null
+{
+    return reduce($source, Reducer\Sum::class, $initial, $extractor);
 }

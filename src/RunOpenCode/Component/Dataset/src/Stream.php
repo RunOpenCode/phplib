@@ -31,6 +31,11 @@ use function RunOpenCode\Component\Dataset\if_empty as dataset_if_empty;
 use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
 use function RunOpenCode\Component\Dataset\operator as dataset_operator;
 use function RunOpenCode\Component\Dataset\left_join as dataset_left_join;
+use function RunOpenCode\Component\Dataset\average as dataset_average;
+use function RunOpenCode\Component\Dataset\count as dataset_count;
+use function RunOpenCode\Component\Dataset\max as dataset_max;
+use function RunOpenCode\Component\Dataset\min as dataset_min;
+use function RunOpenCode\Component\Dataset\sum as dataset_sum;
 
 /**
  * Iterable data stream.
@@ -342,6 +347,8 @@ final class Stream extends AbstractStream
     }
 
     /**
+     * Attaches aggregation to the current stream.
+     *
      * @template TReducedValue
      * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
      *
@@ -357,7 +364,7 @@ final class Stream extends AbstractStream
     }
 
     /**
-     * Collect values from dataset using specified collector.
+     * Collect values from current stream using specified collector.
      *
      * @template TCollectedValue
      * @template TCollector of CollectorInterface<TCollectedValue>
@@ -375,7 +382,7 @@ final class Stream extends AbstractStream
     }
 
     /**
-     * Reduce values from dataset using specified reducer.
+     * Reduce values of current stream to single value using specified reducer.
      *
      * @template TReducedValue
      * @template TReducer of ReducerInterface<TKey, TValue, TReducedValue>
@@ -390,6 +397,77 @@ final class Stream extends AbstractStream
     public function reduce(callable|string $reducer, mixed ...$args): mixed
     {
         return dataset_reduce($this, $reducer, ...$args);
+    }
+
+    /**
+     * Reduces values from the current stream to their average.
+     *
+     * @param int|float|null                                $initial   Initial value to start with.
+     * @param callable(TValue, TKey): (int|float|null)|null $extractor Optional function to extract reducible value.
+     * @param bool                                          $countNull Should `null` values be accounted for, `false` by default.
+     *
+     * @return float|null Average of values.
+     */
+    public function average(int|float|null $initial = null, ?callable $extractor = null, bool $countNull = false): float|null
+    {
+        return dataset_average($this, $initial, $extractor, $countNull);
+    }
+
+    /**
+     * Reduces values from the current streams to their count.
+     *
+     * @param (callable(TValue, TKey): bool)|null $filter Optional filter callback to count only items that match the filter.
+     *
+     * @return int Number of items in the stream.
+     */
+    public function count(?callable $filter = null): int
+    {
+        return dataset_count($this, $filter);
+    }
+
+    /**
+     * Reduces values from stream source to their maximum value.
+     *
+     * @template TReducedValue
+     *
+     * @param TReducedValue|null                                 $initial    Initial value to start with.
+     * @param (callable(TValue, TKey): TReducedValue|null)|null  $extractor  Optional function to extract reducible value.
+     * @param (callable(TReducedValue, TReducedValue): int)|null $comparator Optional comparator.
+     *
+     * @return TReducedValue
+     */
+    public function max(mixed $initial = null, ?callable $extractor = null, ?callable $comparator = null): mixed
+    {
+        return dataset_max($this, $initial, $extractor, $comparator);
+    }
+
+    /**
+     * Reduces values from stream source to their minimum value.
+     *
+     * @template TReducedValue
+     *
+     * @param TReducedValue|null                                 $initial    Initial value to start with.
+     * @param (callable(TValue, TKey): TReducedValue|null)|null  $extractor  Optional function to extract reducible value.
+     * @param (callable(TReducedValue, TReducedValue): int)|null $comparator Optional comparator.
+     *
+     * @return TReducedValue
+     */
+    public function min(mixed $initial = null, ?callable $extractor = null, ?callable $comparator = null): mixed
+    {
+        return dataset_min($this, $initial, $extractor, $comparator);
+    }
+
+    /**
+     * Reduces values from stream source to their sum.
+     *
+     * @param int|float|null                                  $initial   Initial value to start with.
+     * @param (callable(TValue, TKey): (int|float|null))|null $extractor Optional function to extract reducible value.
+     *
+     * @return int|float|null Sum of values.
+     */
+    public function sum(int|float|null $initial = null, ?callable $extractor = null): int|float|null
+    {
+        return dataset_sum($this, $initial, $extractor);
     }
 
     /**

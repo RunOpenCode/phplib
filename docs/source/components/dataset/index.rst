@@ -7,6 +7,22 @@ collections in a functional(ish), declarative way. In some aspects, it is also
 inspired by `ReactiveX`_, but with a much simpler approach and far fewer 
 features.
 
+Table of Contents
+-----------------
+
+.. toctree::
+   :maxdepth: 1
+
+   installation
+   concepts
+   stream/index
+   operators/index
+   reducers/index
+   collectors/index
+
+Introduction
+------------
+
 If your problem can be described as:
 
    I have a data stream from some source (file, database query result, etc.), 
@@ -42,19 +58,6 @@ Features
 * Introduces the concept of **aggregators**, allowing you to process a stream 
   and reduce (aggregate) values simultaneously without interrupting the data 
   stream.
-
-Table of Contents
------------------
-
-.. toctree::
-   :maxdepth: 1
-
-   installation
-   concepts
-   stream/index
-   operators/index
-   reducers/index
-   collectors/index
 
 
 Quick example
