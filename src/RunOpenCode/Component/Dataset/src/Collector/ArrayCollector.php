@@ -52,6 +52,22 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
     }
 
     /**
+     * @return list<TKey>
+     */
+    public function keys(): array
+    {
+        return \array_keys($this->value);
+    }
+
+    /**
+     * @return list<TValue>
+     */
+    public function values(): array
+    {
+        return \array_values($this->value);
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @param TKey $offset

@@ -52,14 +52,14 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
     /**
      * Index of values with keys of scalar type.
      *
-     * @var array<TKey, list<TValue>>
+     * @var array<scalar, list<TValue>>
      */
     private array $scalarIndex = [];
 
     /**
      * Index of values with keys of object type.
      *
-     * @var \SplObjectStorage<TKey&object, list<TValue>>
+     * @var \SplObjectStorage<object, list<TValue>>
      */
     private \SplObjectStorage $objectIndex;
 
@@ -81,9 +81,9 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
         foreach ($this->source as $key => $value) {
             $this->collected[] = [$key, $value];
 
-            if (\is_string($key) || \is_int($key)) {
-                $this->scalarIndex[$key]   = $this->scalarIndex[$key] ?? [];
-                $this->scalarIndex[$key][] = $value;
+            if (\is_scalar($key)) {
+                $this->scalarIndex[$key]   = $this->scalarIndex[$key] ?? []; // @phpstan-ignore-line
+                $this->scalarIndex[$key][] = $value; // @phpstan-ignore-line
                 continue;
             }
 
@@ -115,7 +115,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
     public function offsetExists(mixed $offset): bool
     {
         return match (true) {
-            \is_string($offset) || \is_int($offset) => \array_key_exists($offset, $this->scalarIndex),
+            \is_scalar($offset) => \array_key_exists($offset, $this->scalarIndex), // @phpstan-ignore-line
             \is_object($offset) => $this->objectIndex->contains($offset),
             default => throw new UnsupportedException('Only object and scalar keys are supported.'),
         };
@@ -135,7 +135,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
         }
 
         return match (true) {
-            \is_string($offset) || \is_int($offset) => $this->scalarIndex[$offset],
+            \is_scalar($offset) => $this->scalarIndex[$offset], // @phpstan-ignore-line
             \is_object($offset) => $this->objectIndex[$offset],
             default => throw new UnsupportedException('Only object and scalar keys are supported.'),
         };
