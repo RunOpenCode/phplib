@@ -18,5 +18,6 @@ Table of Contents
    :titlesonly:
 
    dataset/index
+   logger/index
    metadata/index
    query/index
