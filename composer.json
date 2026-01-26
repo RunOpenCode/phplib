@@ -39,8 +39,10 @@
         "psr-4": {
             "RunOpenCode\\Component\\Bitmask\\": "src/RunOpenCode/Component/Bitmask/src/",
             "RunOpenCode\\Component\\Dataset\\": "src/RunOpenCode/Component/Dataset/src/",
+            "RunOpenCode\\Component\\Logger\\": "src/RunOpenCode/Component/Logger/src/",
             "RunOpenCode\\Component\\Metadata\\": "src/RunOpenCode/Component/Metadata/src/",
             "RunOpenCode\\Component\\Query\\": "src/RunOpenCode/Component/Query/src/",
+            "RunOpenCode\\Bundle\\LoggerBundle\\": "src/RunOpenCode/Bundle/LoggerBundle/src/",
             "RunOpenCode\\Bundle\\QueryBundle\\": "src/RunOpenCode/Bundle/QueryBundle/src/",
             "RunOpenCode\\Bundle\\MetadataBundle\\": "src/RunOpenCode/Bundle/MetadataBundle/src/",
             "Monorepo\\": "monorepo/"
@@ -54,8 +56,10 @@
         "psr-4": {
             "RunOpenCode\\Component\\Bitmask\\Tests\\": "src/RunOpenCode/Component/Bitmask/tests/",
             "RunOpenCode\\Component\\Dataset\\Tests\\": "src/RunOpenCode/Component/Dataset/tests/",
+            "RunOpenCode\\Component\\Logger\\Tests\\": "src/RunOpenCode/Component/Logger/tests/",
             "RunOpenCode\\Component\\Metadata\\Tests\\": "src/RunOpenCode/Component/Metadata/tests/",
             "RunOpenCode\\Component\\Query\\Tests\\": "src/RunOpenCode/Component/Query/tests/",
+            "RunOpenCode\\Bundle\\LoggerBundle\\Tests\\": "src/RunOpenCode/Bundle/LoggerBundle/tests/",
             "RunOpenCode\\Bundle\\QueryBundle\\Tests\\": "src/RunOpenCode/Bundle/QueryBundle/tests/",
             "RunOpenCode\\Bundle\\MetadataBundle\\Tests\\": "src/RunOpenCode/Bundle/MetadataBundle/tests/"
         }

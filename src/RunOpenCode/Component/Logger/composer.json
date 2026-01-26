@@ -1,0 +1,30 @@
+{
+    "name": "runopencode/logger",
+    "description": "Wrapper for psr/logger with additional method to log exceptions.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nikola Svitlica a.k.a TheCelavi",
+            "email": "thecelavi@runopencode.com"
+        },
+        {
+            "name": "Stefan Veljancic",
+            "email": "veljancicstefan@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.4",
+        "psr/log": "^2.0|^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RunOpenCode\\Component\\Logger\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "version": "0.2",
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
