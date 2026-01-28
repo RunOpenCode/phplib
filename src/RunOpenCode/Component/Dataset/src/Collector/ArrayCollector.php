@@ -53,7 +53,7 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
 
     /**
      * Get collected keys.
-     * 
+     *
      * @return list<TKey>
      */
     public function keys(): array
@@ -63,7 +63,7 @@ final class ArrayCollector implements \IteratorAggregate, \Countable, \ArrayAcce
 
     /**
      * Get collected values.
-     * 
+     *
      * @return list<TValue>
      */
     public function values(): array

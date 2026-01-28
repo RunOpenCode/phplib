@@ -101,7 +101,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
 
     /**
      * Get collected keys.
-     * 
+     *
      * @return iterable<TKey>
      */
     public function keys(): iterable
@@ -110,10 +110,10 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
             yield $key;
         }
     }
-    
+
     /**
      * Get collected values.
-     * 
+     *
      * @return iterable<TValue>
      */
     public function values(): iterable
