@@ -100,6 +100,30 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
     }
 
     /**
+     * Get collected keys.
+     * 
+     * @return iterable<TKey>
+     */
+    public function keys(): iterable
+    {
+        foreach ($this->source as [$key,]) {
+            yield $key;
+        }
+    }
+    
+    /**
+     * Get collected values.
+     * 
+     * @return iterable<TValue>
+     */
+    public function values(): iterable
+    {
+        foreach ($this->source as [,$value]) {
+            yield $value;
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getIterator(): \Traversable
