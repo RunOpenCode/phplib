@@ -87,10 +87,7 @@ ENV PHP_EXTENSION_DIR=/usr/local/lib/php/extensions/no-debug-non-zts-20240924
 #####################################################################################
 
 RUN composer global config --no-plugins allow-plugins.infection/extension-installer true && \
-    composer global require infection/infection && \
-    composer global require maglnet/composer-require-checker && \
-    composer global require icanhazstring/composer-unused && \
-    composer global require phpmetrics/phpmetrics && \
+    composer global require infection/infection maglnet/composer-require-checker icanhazstring/composer-unused phpmetrics/phpmetrics && \
     export PATH=~/.config/composer/vendor/bin:$PATH
 
 #####################################################################################
