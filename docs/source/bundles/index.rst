@@ -14,5 +14,6 @@ Table of Contents
    :maxdepth: 2
    :titlesonly:
 
+   logger-bundle/index
    metadata-bundle/index
 
