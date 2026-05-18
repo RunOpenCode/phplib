@@ -21,6 +21,13 @@
     "repositories": [
         {
             "type": "path",
+            "url": "../../Component/Logger",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
             "url": "../../Component/Dataset",
             "options": {
                 "symlink": false
@@ -50,6 +57,13 @@
         {
             "type": "path",
             "url": "../../Bundle/QueryBundle",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Bundle/LoggerBundle",
             "options": {
                 "symlink": false
             }
