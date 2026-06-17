@@ -11,9 +11,14 @@
     "type": "library",
     "require": {
         "php": ">=8.4",
+        "ext-xml": "*",
+        "ext-xmlreader": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*",
         "doctrine/dbal": "^4.0",
         "psr/cache": "^3.0",
         "psr/container": "^2.0",
+        "psr/http-message": "^2.0",
         "psr/log": "^2.0|^3.0",
         "symfony/cache": "^7.0|^8.0",
         "symfony/config": "^7.0|^8.0",
@@ -42,6 +47,8 @@
             "RunOpenCode\\Component\\Logger\\": "src/RunOpenCode/Component/Logger/src/",
             "RunOpenCode\\Component\\Metadata\\": "src/RunOpenCode/Component/Metadata/src/",
             "RunOpenCode\\Component\\Query\\": "src/RunOpenCode/Component/Query/src/",
+            "RunOpenCode\\Component\\Stream\\": "src/RunOpenCode/Component/Stream/src/",
+            "RunOpenCode\\Component\\XmlParser\\": "src/RunOpenCode/Component/XmlParser/src/",
             "RunOpenCode\\Bundle\\LoggerBundle\\": "src/RunOpenCode/Bundle/LoggerBundle/src/",
             "RunOpenCode\\Bundle\\QueryBundle\\": "src/RunOpenCode/Bundle/QueryBundle/src/",
             "RunOpenCode\\Bundle\\MetadataBundle\\": "src/RunOpenCode/Bundle/MetadataBundle/src/",
@@ -49,7 +56,8 @@
         },
         "files": [
             "src/RunOpenCode/Component/Dataset/src/functions.php",
-            "src/RunOpenCode/Component/Query/src/functions.php"
+            "src/RunOpenCode/Component/Query/src/functions.php",
+            "src/RunOpenCode/Component/Stream/src/functions.php"
         ]
     },
     "autoload-dev": {
@@ -59,6 +67,8 @@
             "RunOpenCode\\Component\\Logger\\Tests\\": "src/RunOpenCode/Component/Logger/tests/",
             "RunOpenCode\\Component\\Metadata\\Tests\\": "src/RunOpenCode/Component/Metadata/tests/",
             "RunOpenCode\\Component\\Query\\Tests\\": "src/RunOpenCode/Component/Query/tests/",
+            "RunOpenCode\\Component\\Stream\\Tests\\": "src/RunOpenCode/Component/Stream/tests/",
+            "RunOpenCode\\Component\\XmlParser\\Tests\\": "src/RunOpenCode/Component/XmlParser/tests/",
             "RunOpenCode\\Bundle\\LoggerBundle\\Tests\\": "src/RunOpenCode/Bundle/LoggerBundle/tests/",
             "RunOpenCode\\Bundle\\QueryBundle\\Tests\\": "src/RunOpenCode/Bundle/QueryBundle/tests/",
             "RunOpenCode\\Bundle\\MetadataBundle\\Tests\\": "src/RunOpenCode/Bundle/MetadataBundle/tests/"
