@@ -123,7 +123,7 @@ final class MethodMetadataTest extends TestCase
     {
         return new CachedMethodMetadata(
             MethodMetadata::create($class, $method),
-            new ArrayAdapter(storeSerialized: false)
+            new ArrayAdapter()
         );
     }
 }

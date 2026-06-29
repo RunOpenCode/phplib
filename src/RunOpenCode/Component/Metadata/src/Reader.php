@@ -23,7 +23,7 @@ final readonly class Reader implements ReaderInterface
     public function __construct(
         ?CacheItemPoolInterface $cache,
     ) {
-        $this->cache = $cache ?? new ArrayAdapter(storeSerialized: false);
+        $this->cache = $cache ?? new ArrayAdapter();
     }
 
     /**

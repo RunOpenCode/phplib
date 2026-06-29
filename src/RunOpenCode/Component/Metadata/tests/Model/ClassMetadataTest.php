@@ -262,7 +262,7 @@ final class ClassMetadataTest extends TestCase
     {
         return new CachedClassMetadata(
             ClassMetadata::create($class),
-            new ArrayAdapter(storeSerialized: false)
+            new ArrayAdapter()
         );
     }
 }

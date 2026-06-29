@@ -20,7 +20,7 @@ final readonly class ReaderFactory
 
     public static function create(CacheItemPoolInterface $pool, string $environment): ReaderInterface
     {
-        $memory = new ArrayAdapter(storeSerialized: false);
+        $memory = new ArrayAdapter();
         $stack  = 'prod' === $environment ? new ChainAdapter([$memory, $pool]) : $memory;
 
         return new Reader($stack);

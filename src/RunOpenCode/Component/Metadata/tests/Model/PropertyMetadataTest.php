@@ -149,7 +149,7 @@ final class PropertyMetadataTest extends TestCase
     {
         return new CachedPropertyMetadata(
             PropertyMetadata::create($class, $name),
-            new ArrayAdapter(storeSerialized: false),
+            new ArrayAdapter(),
         );
     }
 }
