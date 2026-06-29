@@ -106,7 +106,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
      */
     public function keys(): iterable
     {
-        foreach ($this->source as [$key,]) {
+        foreach ($this->source as $key => $value) {
             yield $key;
         }
     }
@@ -118,7 +118,7 @@ final class IndexedCollector implements CollectorInterface, \ArrayAccess, \Itera
      */
     public function values(): iterable
     {
-        foreach ($this->source as [,$value]) {
+        foreach ($this->source as $value) {
             yield $value;
         }
     }

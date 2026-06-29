@@ -16,7 +16,7 @@ abstract readonly class AbstractMetadata implements MetadataInterface
     /**
      * @var list<object>
      */
-    private array $attributes;
+    final protected array $attributes;
 
     /**
      * @param list<\ReflectionAttribute<object>> $attributes

@@ -121,6 +121,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/thecodingmachine/safe" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php85" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/agent-detector" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-deepclone" />
     </content>
     <content url="file://$MODULE_DIR$/.idea/queries" />
     <orderEntry type="jdk" jdkName="Pipenv (phplib)" jdkType="Python SDK" />
