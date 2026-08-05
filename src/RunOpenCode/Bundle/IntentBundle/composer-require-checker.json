@@ -1,0 +1,7 @@
+{
+    "symbol-whitelist": [
+        "Doctrine\\DBAL\\Connection",
+        "Doctrine\\ORM\\Tools\\Event\\GenerateSchemaEventArgs",
+        "Symfony\\Component\\Console\\Command\\Command"
+    ]
+}

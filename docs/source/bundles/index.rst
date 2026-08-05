@@ -14,6 +14,7 @@ Table of Contents
    :maxdepth: 2
    :titlesonly:
 
+   intent-bundle/index
    logger-bundle/index
    metadata-bundle/index
 

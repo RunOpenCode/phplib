@@ -9,29 +9,45 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/monorepo" isTestSource="false" packagePrefix="Monorepo\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Metadata/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Metadata/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\Metadata\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/MetadataBundle/src" isTestSource="false" packagePrefix="RunOpenCode\Bundle\MetadataBundle\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/MetadataBundle/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/MetadataBundle/tests" isTestSource="true" packagePrefix="RunOpenCode\Bundle\MetadataBundle\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Dataset/src" isTestSource="false" packagePrefix="RunOpenCode\Component\Dataset\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Dataset/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Dataset/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\Dataset\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Metadata/src" isTestSource="false" packagePrefix="RunOpenCode\Component\Metadata\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Query/src" isTestSource="false" packagePrefix="RunOpenCode\Component\Query\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Query/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Query/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\Query\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/QueryBundle/src" isTestSource="false" packagePrefix="RunOpenCode\Bundle\QueryBundle\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/QueryBundle/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/QueryBundle/tests" isTestSource="true" packagePrefix="RunOpenCode\Bundle\QueryBundle\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Bitmask/src" isTestSource="false" packagePrefix="RunOpenCode\Component\Bitmask\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/LoggerBundle/src" isTestSource="false" packagePrefix="RunOpenCode\Bundle\LoggerBundle\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/LoggerBundle/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/LoggerBundle/tests" isTestSource="true" packagePrefix="RunOpenCode\Bundle\LoggerBundle\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/SaxParser/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Stream/src" isTestSource="false" packagePrefix="RunOpenCode\Component\Stream\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Stream/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Stream/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\Stream\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Logger/src" isTestSource="false" packagePrefix="RunOpenCode\Component\Logger\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Logger/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Logger/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\Logger\Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Bitmask/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Bitmask/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\Bitmask\Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Collection/Tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/DataStream/Tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/XmlParser/src" isTestSource="false" packagePrefix="RunOpenCode\Component\XmlParser\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/XmlParser/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/XmlParser/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\XmlParser\Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/IntentBundle/src" isTestSource="false" packagePrefix="RunOpenCode\Bundle\IntentBundle\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/IntentBundle/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Bundle/IntentBundle/tests" isTestSource="true" packagePrefix="RunOpenCode\Bundle\IntentBundle\Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Intent/src" isTestSource="false" packagePrefix="RunOpenCode\Component\Intent\" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Intent/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/RunOpenCode/Component/Intent/tests" isTestSource="true" packagePrefix="RunOpenCode\Component\Intent\Tests\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
@@ -123,6 +139,16 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/agent-detector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-deepclone" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/collections" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/event-manager" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/inflector" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/instantiator" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/orm" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/persistence" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/doctrine-bridge" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/uid" />
     </content>
     <content url="file://$MODULE_DIR$/.idea/queries" />
     <orderEntry type="jdk" jdkName="Pipenv (phplib)" jdkType="Python SDK" />
