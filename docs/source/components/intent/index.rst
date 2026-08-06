@@ -101,7 +101,7 @@ using its identifier and proceed with the use case:
            // noop.
        }
 
-       public function __invoke(Ulid $identifier): Response
+       public function __invoke(Ulid|string $identifier): Response
        {
            try {
                /** @var ResetPassword $intent */

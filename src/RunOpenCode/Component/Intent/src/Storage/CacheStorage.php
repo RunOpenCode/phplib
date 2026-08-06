@@ -63,8 +63,10 @@ final readonly class CacheStorage implements IntentStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function fetch(Ulid $identifier, bool $invalidate = true): object
+    public function fetch(Ulid|\Stringable|string $identifier, bool $invalidate = true): object
     {
+        $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
+
         $item = $this->pool->getItem((string)$identifier);
 
         if (!$item->isHit()) {
@@ -96,8 +98,10 @@ final readonly class CacheStorage implements IntentStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function invalidate(Ulid $identifier): void
+    public function invalidate(Ulid|\Stringable|string $identifier): void
     {
+        $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
+
         $this->pool->deleteItem((string)$identifier);
     }
 

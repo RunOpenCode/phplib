@@ -120,6 +120,9 @@ that your implementation honours the following rules:
 * ``store()`` returns a newly generated ``Ulid``, which must be unguessable,
   since it is the only thing which protects an intent from being fetched by
   somebody else.
+* ``fetch()`` and ``invalidate()`` accept an identifier which is a ``Ulid``, its
+  string representation, or any object which is ``Stringable``, so both have to
+  normalize such a value into a ``Ulid`` before it is used.
 * ``fetch()`` throws ``NotExistsException`` if an intent does not exist, if it
   has expired, or if it is not available yet.
 * ``fetch()`` invalidates an intent after it has been fetched, unless it is
