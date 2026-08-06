@@ -9,6 +9,7 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
+use PHPUnit\Framework\Attributes\Test;
 use RunOpenCode\Component\Intent\Contract\IntentStorageInterface;
 use RunOpenCode\Component\Intent\Storage\DbalStorage;
 use RunOpenCode\Component\Intent\Tests\AbstractIntentStorageTestBase;
@@ -16,6 +17,22 @@ use Symfony\Bridge\Doctrine\Types\UlidType;
 
 final class DbalStorageTest extends AbstractIntentStorageTestBase
 {
+    #[Test]
+    public function fetch_with_invalid_identifier_throws_exception(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->getIntentStorage()->fetch('foo');
+    }
+
+    #[Test]
+    public function invalidate_with_invalid_identifier_throws_exception(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->getIntentStorage()->invalidate('foo');
+    }
+
     protected function getIntentStorage(): IntentStorageInterface
     {
         // Doctrine bundle registers this type within a Symfony application.

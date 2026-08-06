@@ -24,6 +24,15 @@ interface IntentStorageInterface
     public function store(object $intent, int $ttl = 86400, ?\DateTimeInterface $from = null): Ulid;
 
     /**
+     * Check if intent for given identifier exists.
+     *
+     * @param Ulid|\Stringable|string $identifier Identifier for which  intent should be checked for.
+     *
+     * @return bool TRUE if intent exists and can be retrieved.
+     */
+    public function has(Ulid|\Stringable|string $identifier): bool;
+
+    /**
      * Fetch intent for given identifier.
      *
      * @param Ulid|\Stringable|string $identifier Identifier for which  intent should be fetched.

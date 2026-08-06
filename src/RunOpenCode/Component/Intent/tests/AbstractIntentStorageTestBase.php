@@ -97,22 +97,6 @@ abstract class AbstractIntentStorageTestBase extends TestCase
     }
 
     #[Test]
-    public function fetch_with_invalid_identifier_throws_exception(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $this->getIntentStorage()->fetch('foo');
-    }
-
-    #[Test]
-    public function invalidate_with_invalid_identifier_throws_exception(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $this->getIntentStorage()->invalidate('foo');
-    }
-
-    #[Test]
     public function maintenance(): void
     {
         $this->expectException(NotExistsException::class);

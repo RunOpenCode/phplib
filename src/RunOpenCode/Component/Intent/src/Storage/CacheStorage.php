@@ -35,17 +35,15 @@ final readonly class CacheStorage implements IntentStorageInterface
     public function store(object $intent, int $ttl = 86400, ?\DateTimeInterface $from = null): Ulid
     {
         $identifier = new Ulid();
-
-        $from = $from ? clone $from : new \DateTimeImmutable('now');
-        $to   = clone $from;
+        $from       = $from ? clone $from : new \DateTimeImmutable('now');
+        $to         = clone $from;
 
         if (!$to instanceof \DateTimeImmutable) {
             $to = \DateTimeImmutable::createFromMutable($to);
         }
 
         /** @var \DateTimeImmutable $to */
-        $to = $to->add(new \DateInterval(\sprintf('PT%sS', $ttl)));
-
+        $to   = $to->add(new \DateInterval(\sprintf('PT%sS', $ttl)));
         $item = $this->pool->getItem((string)$identifier);
 
         $item->set([
@@ -63,11 +61,28 @@ final readonly class CacheStorage implements IntentStorageInterface
     /**
      * {@inheritdoc}
      */
+    public function has(\Stringable|string|Ulid $identifier): bool
+    {
+        $identifier = (string)$identifier;
+        $item       = $this->pool->getItem($identifier);
+
+        if (!$item->isHit()) {
+            return false;
+        }
+
+        /** @var Envelope $envelope */
+        $envelope = $item->get();
+
+        return $envelope['valid_from'] <= new \DateTimeImmutable('now');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function fetch(Ulid|\Stringable|string $identifier, bool $invalidate = true): object
     {
-        $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
-
-        $item = $this->pool->getItem((string)$identifier);
+        $identifier = (string)$identifier;
+        $item       = $this->pool->getItem($identifier);
 
         if (!$item->isHit()) {
             throw new NotExistsException(\sprintf('There is no intent stored under key "%s".', $identifier));
@@ -100,8 +115,6 @@ final readonly class CacheStorage implements IntentStorageInterface
      */
     public function invalidate(Ulid|\Stringable|string $identifier): void
     {
-        $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
-
         $this->pool->deleteItem((string)$identifier);
     }
 

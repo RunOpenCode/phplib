@@ -66,6 +66,27 @@ final readonly class DbalStorage implements IntentStorageInterface
     /**
      * {@inheritdoc}
      */
+    public function has(\Stringable|string|Ulid $identifier): bool
+    {
+        $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
+
+        $row = $this->connection->executeQuery(\sprintf(
+            'SELECT id FROM %s WHERE id = :id AND valid_from <= :now AND expires_at > :now  LIMIT 1',
+            $this->tableName,
+        ), [
+            'id'  => $identifier,
+            'now' => new \DateTimeImmutable('now'),
+        ], [
+            'id'  => UlidType::NAME,
+            'now' => Types::DATETIME_IMMUTABLE,
+        ])->fetchAssociative() ?: null;
+
+        return null !== $row;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function fetch(Ulid|\Stringable|string $identifier, bool $invalidate = true): object
     {
         $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
