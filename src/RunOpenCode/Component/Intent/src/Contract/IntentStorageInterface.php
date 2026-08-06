@@ -26,19 +26,21 @@ interface IntentStorageInterface
     /**
      * Fetch intent for given identifier.
      *
-     * @param Ulid $identifier Identifier for which  intent should be fetched.
+     * @param Ulid|\Stringable|string $identifier Identifier for which  intent should be fetched.
      * @param bool   $invalidate Should intent be invalidated after fetch. Defaults to TRUE.
      *
      * @throws NotExistsException
      *
      */
-    public function fetch(Ulid $identifier, bool $invalidate = true): object;
+    public function fetch(Ulid|\Stringable|string $identifier, bool $invalidate = true): object;
 
     /**
      * Invalidates intent with given identifier. Does not throw exception
      * if intent with given identifier does not exists.
+     *
+     * @param Ulid|string $identifier Identifier for which  intent should be invalidated.
      */
-    public function invalidate(Ulid $identifier): void;
+    public function invalidate(Ulid|\Stringable|string $identifier): void;
 
     /**
      * Remove all expired intents.

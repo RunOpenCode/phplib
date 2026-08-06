@@ -97,6 +97,18 @@ An intent is fetched by using its identifier:
 You will get the very same object which you have stored, so you may safely type
 hint against your own classes.
 
+Identifier may be an instance of ``Ulid``, its string representation, or any
+object which is ``Stringable``. Since an identifier usually arrives from a
+request, as a part of an URL, you may pass that value directly, without
+converting it yourself:
+
+.. code-block:: php
+   :linenos:
+
+   <?php
+
+   $intent = $storage->fetch($request->attributes->get('token'));
+
 If an intent does not exist, if it has expired, if it is not available yet, or
 if it has been fetched already, ``NotExistsException`` is thrown. From the
 perspective of the code which fetches it, all these cases are the same and
@@ -113,6 +125,23 @@ should be handled in the same manner:
        $intent = $storage->fetch($identifier);
    } catch (NotExistsException) {
        // Link is invalid, expired, or it has been used already.
+   }
+
+Do note that a string which is not a valid ULID is not the same case. Such a
+value never identified an intent, so ``\InvalidArgumentException`` is thrown
+instead, before the storage is even queried. If you pass a value which comes
+from a request, and you want to treat a malformed identifier in the same manner
+as an intent which does not exist, catch it as well:
+
+.. code-block:: php
+   :linenos:
+
+   <?php
+
+   try {
+       $intent = $storage->fetch($token);
+   } catch (NotExistsException|\InvalidArgumentException) {
+       // Link is malformed, invalid, expired, or it has been used already.
    }
 
 Preserving an intent
@@ -149,8 +178,13 @@ process which has been initiated:
 
    $storage->invalidate($identifier);
 
+Identifier may be an instance of ``Ulid``, its string representation, or any
+object which is ``Stringable``, exactly as it is the case when an intent is
+fetched.
+
 Method does not throw an exception if an intent with the given identifier does
-not exist.
+not exist. It does, however, throw ``\InvalidArgumentException`` if given a
+string which is not a valid ULID.
 
 Removing expired intents
 ------------------------

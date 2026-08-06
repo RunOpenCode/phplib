@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace RunOpenCode\Component\Intent\Storage;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
@@ -67,8 +66,10 @@ final readonly class DbalStorage implements IntentStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function fetch(Ulid $identifier, bool $invalidate = true): object
+    public function fetch(Ulid|\Stringable|string $identifier, bool $invalidate = true): object
     {
+        $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
+
         $row = $this->connection->executeQuery(\sprintf(
             'SELECT * FROM %s WHERE id = :id LIMIT 1',
             $this->tableName,
@@ -123,8 +124,10 @@ final readonly class DbalStorage implements IntentStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function invalidate(Ulid $identifier): void
+    public function invalidate(Ulid|\Stringable|string $identifier): void
     {
+        $identifier = $identifier instanceof Ulid ? $identifier : Ulid::fromString((string)$identifier);
+
         $this->connection->executeQuery(\sprintf('DELETE FROM %s WHERE id = :id', $this->tableName), [
             'id' => $identifier,
         ], [

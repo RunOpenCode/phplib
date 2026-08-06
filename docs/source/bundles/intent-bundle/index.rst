@@ -193,7 +193,6 @@ available for dependency injection. Inject it using the interface:
    use App\Security\Intent\ResetPassword;
    use RunOpenCode\Component\Intent\Contract\IntentStorageInterface;
    use RunOpenCode\Component\Intent\Exception\NotExistsException;
-   use Symfony\Component\Uid\Ulid;
 
    final readonly class PasswordResetService
    {
@@ -214,7 +213,7 @@ available for dependency injection. Inject it using the interface:
        {
            try {
                /** @var ResetPassword $intent */
-               $intent = $this->storage->fetch(Ulid::fromString($token));
+               $intent = $this->storage->fetch($token);
            } catch (NotExistsException) {
                // Link is invalid, expired, or it has been used already.
                // ...
