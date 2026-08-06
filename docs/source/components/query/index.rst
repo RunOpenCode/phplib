@@ -91,7 +91,7 @@ example below.
                    ttl: 3600,
                ),
                new Replica(
-                   connection: 'reporting_database',
+                   connection: 'cache_database',
                    fallback: FallbackStrategy::Primary,
                )
            );

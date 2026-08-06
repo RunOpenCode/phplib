@@ -18,6 +18,7 @@ Table of Contents
    :titlesonly:
 
    dataset/index
+   intent/index
    logger/index
    metadata/index
    query/index
