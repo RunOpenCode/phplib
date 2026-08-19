@@ -29,6 +29,85 @@
             "RunOpenCode\\Component\\Intent\\": "src/"
         }
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../Component/Logger",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Dataset",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Stream",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Bitmask",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/XmlParser",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Query",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Component/Metadata",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Bundle/MetadataBundle",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Bundle/QueryBundle",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Bundle/LoggerBundle",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "../../Bundle/IntentBundle",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
     "suggest": {
         "doctrine/dbal": "Required by \"RunOpenCode\\Component\\Intent\\Storage\\DbalStorage\" to store intents within a database table.",
         "doctrine/orm": "Required by \"RunOpenCode\\Component\\Intent\\Storage\\DbalStorage\" to contribute the intent storage table to the generated schema.",
@@ -37,7 +116,7 @@
     "config": {
         "sort-packages": true
     },
-    "version": "0.1.54",
+    "version": "0.2",
     "minimum-stability": "dev",
     "prefer-stable": true
 }
