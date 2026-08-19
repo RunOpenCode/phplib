@@ -11,11 +11,14 @@ Transformation operators
    buffer_count
    buffer_while
    flatten
+   flip
+   keys
    left_join
    map
    merge
    reverse
    sort
+   values
 
 Filtering operators
 -------------------
@@ -27,7 +30,7 @@ Filtering operators
    filter
    skip
    take
-   takeUntil
+   take_until
 
 Asserting operators
 -------------------

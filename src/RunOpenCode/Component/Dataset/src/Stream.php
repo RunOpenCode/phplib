@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace RunOpenCode\Component\Dataset;
 
+use RunOpenCode\Component\Dataset\Collector\ArrayCollector;
+use RunOpenCode\Component\Dataset\Collector\ListCollector;
 use RunOpenCode\Component\Dataset\Contract\CollectorInterface;
 use RunOpenCode\Component\Dataset\Contract\OperatorInterface;
 use RunOpenCode\Component\Dataset\Contract\ReducerInterface;
@@ -15,8 +17,12 @@ use function RunOpenCode\Component\Dataset\buffer_while as dataset_buffer_while;
 use function RunOpenCode\Component\Dataset\collect as dataset_collect;
 use function RunOpenCode\Component\Dataset\distinct as dataset_distinct;
 use function RunOpenCode\Component\Dataset\filter as dataset_filter;
+use function RunOpenCode\Component\Dataset\finalize as dataset_finalize;
 use function RunOpenCode\Component\Dataset\flatten as dataset_flatten;
+use function RunOpenCode\Component\Dataset\flip as dataset_flip;
 use function RunOpenCode\Component\Dataset\flush as dataset_flush;
+use function RunOpenCode\Component\Dataset\if_empty as dataset_if_empty;
+use function RunOpenCode\Component\Dataset\keys as dataset_keys;
 use function RunOpenCode\Component\Dataset\map as dataset_map;
 use function RunOpenCode\Component\Dataset\merge as dataset_merge;
 use function RunOpenCode\Component\Dataset\reduce as dataset_reduce;
@@ -26,8 +32,7 @@ use function RunOpenCode\Component\Dataset\sort as dataset_sort;
 use function RunOpenCode\Component\Dataset\take as dataset_take;
 use function RunOpenCode\Component\Dataset\takeUntil as dataset_take_until;
 use function RunOpenCode\Component\Dataset\tap as dataset_tap;
-use function RunOpenCode\Component\Dataset\finalize as dataset_finalize;
-use function RunOpenCode\Component\Dataset\if_empty as dataset_if_empty;
+use function RunOpenCode\Component\Dataset\values as dataset_values;
 use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
 use function RunOpenCode\Component\Dataset\operator as dataset_operator;
 use function RunOpenCode\Component\Dataset\left_join as dataset_left_join;
@@ -154,6 +159,18 @@ final class Stream extends AbstractStream
     }
 
     /**
+     * Applies flip operator on current stream.
+     *
+     * @return self<TValue, TKey>
+     *
+     * @see Operator\Flip
+     */
+    public function flip(): self
+    {
+        return dataset_flip($this);
+    }
+
+    /**
      * Iterate through stream without yielding items.
      *
      * @return self<TKey, TValue>
@@ -175,6 +192,18 @@ final class Stream extends AbstractStream
     public function ifEmpty(\Throwable|callable|null $fallback = null): self
     {
         return dataset_if_empty($this, $fallback);
+    }
+
+    /**
+     * Applies keys operator on current stream.
+     *
+     * @return self<int, TKey>
+     *
+     * @see Operator\Keys
+     */
+    public function keys(): self
+    {
+        return dataset_keys($this);
     }
 
     /**
@@ -331,6 +360,18 @@ final class Stream extends AbstractStream
     }
 
     /**
+     * Applies values operator on current stream.
+     *
+     * @return self<int, TValue>
+     *
+     * @see Operator\Values
+     */
+    public function values(): self
+    {
+        return dataset_values($this);
+    }
+
+    /**
      * Applies custom operator on current stream.
      *
      * @template TOutputKey
@@ -468,6 +509,27 @@ final class Stream extends AbstractStream
     public function sum(int|float|null $initial = null, ?callable $extractor = null): int|float|null
     {
         return dataset_sum($this, $initial, $extractor);
+    }
+
+    /**
+     * Get stream values as array.
+     *
+     * @return array<TKey, TValue>
+     */
+    public function toArray(): array
+    {
+        // @phpstan-ignore-next-line
+        return $this->collect(ArrayCollector::class)->value;
+    }
+
+    /**
+     * Get stream values as list.
+     *
+     * @return list<TValue>
+     */
+    public function toList(): array
+    {
+        return $this->collect(ListCollector::class)->value;
     }
 
     /**

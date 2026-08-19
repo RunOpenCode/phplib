@@ -191,6 +191,25 @@ function flatten(iterable $source, bool $preserveKeys = false): Stream
 }
 
 /**
+ * Create flip operator.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue> $source Stream source to iterate over.
+ *
+ * @return Stream<TValue, TKey>
+ *
+ * @see Operator\Flip
+ */
+function flip(iterable $source): Stream
+{
+    return new Stream(
+        new Operator\Flip($source)
+    );
+}
+
+/**
  * Iterate through stream without yielding items.
  *
  * @template TKey
@@ -226,6 +245,25 @@ function if_empty(iterable $source, \Throwable|callable|null $fallback): Stream
 {
     return new Stream(
         new Operator\IfEmpty($source, $fallback)
+    );
+}
+
+/**
+ * Create keys operator.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue> $source Stream source to iterate over.
+ *
+ * @return Stream<int, TKey>
+ *
+ * @see Operator\Keys
+ */
+function keys(iterable $source): Stream
+{
+    return new Stream(
+        new Operator\Keys($source)
     );
 }
 
@@ -436,6 +474,25 @@ function tap(iterable $source, callable $callback): Stream
 {
     return new Stream(
         new Operator\Tap($source, $callback)
+    );
+}
+
+/**
+ * Create values operator.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue> $source Stream source to iterate over.
+ *
+ * @return Stream<int, TValue>
+ *
+ * @see Operator\Values
+ */
+function values(iterable $source): Stream
+{
+    return new Stream(
+        new Operator\Values($source)
     );
 }
 
