@@ -22,6 +22,7 @@ use function RunOpenCode\Component\Dataset\flatten as dataset_flatten;
 use function RunOpenCode\Component\Dataset\flip as dataset_flip;
 use function RunOpenCode\Component\Dataset\flush as dataset_flush;
 use function RunOpenCode\Component\Dataset\if_empty as dataset_if_empty;
+use function RunOpenCode\Component\Dataset\index_by as dataset_index_by;
 use function RunOpenCode\Component\Dataset\keys as dataset_keys;
 use function RunOpenCode\Component\Dataset\map as dataset_map;
 use function RunOpenCode\Component\Dataset\merge as dataset_merge;
@@ -34,6 +35,7 @@ use function RunOpenCode\Component\Dataset\takeUntil as dataset_take_until;
 use function RunOpenCode\Component\Dataset\tap as dataset_tap;
 use function RunOpenCode\Component\Dataset\values as dataset_values;
 use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
+use function RunOpenCode\Component\Dataset\pairwise as dataset_pairwise;
 use function RunOpenCode\Component\Dataset\operator as dataset_operator;
 use function RunOpenCode\Component\Dataset\left_join as dataset_left_join;
 use function RunOpenCode\Component\Dataset\average as dataset_average;
@@ -195,6 +197,22 @@ final class Stream extends AbstractStream
     }
 
     /**
+     * Applies indexBy operator on current stream.
+     *
+     * @template TModifiedKey
+     *
+     * @param callable(TValue, TKey): TModifiedKey $callable Callable function to generate new keys for the resulting stream.
+     *
+     * @return self<TModifiedKey, TValue>
+     *
+     * @see Operator\IndexBy
+     */
+    public function indexBy(callable $callable): self
+    {
+        return dataset_index_by($this, $callable);
+    }
+
+    /**
      * Applies keys operator on current stream.
      *
      * @return self<int, TKey>
@@ -270,6 +288,23 @@ final class Stream extends AbstractStream
     public function overflow(int $capacity, ?\Exception $exception = null): self
     {
         return dataset_overflow($this, $capacity, $exception);
+    }
+
+    /**
+     * Applies pairwise operator on current stream.
+     *
+     * @template TKeyOther
+     * @template TValueOther
+     *
+     * @param iterable<TKeyOther, TValueOther> $second Second source to iterate over.
+     *
+     * @return self<array{TKey|null, TKeyOther|null}, array{TValue|null, TValueOther|null}>
+     *
+     * @see Operator\Pairwise
+     */
+    public function pairwise(iterable $second): self
+    {
+        return dataset_pairwise($this, $second);
     }
 
     /**

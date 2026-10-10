@@ -37,9 +37,11 @@ function iterable_to_array(iterable $iterable, bool $preserveKeys = true): array
  * @template TKey
  * @template TValue
  *
- * @param iterable<TKey, TValue> $iterable
+ * @param iterable<TKey, TValue>|iterable<TValue> $iterable
  *
  * @return list<TValue>
+ *
+ * @phpstan-ignore-next-line
  */
 function iterable_to_list(iterable $iterable): array
 {
@@ -249,6 +251,27 @@ function if_empty(iterable $source, \Throwable|callable|null $fallback): Stream
 }
 
 /**
+ * Create index by operator.
+ *
+ * @template TKey
+ * @template TValue
+ * @template TModifiedKey
+ *
+ * @param iterable<TKey, TValue>               $source   Stream source to iterate over.
+ * @param callable(TValue, TKey): TModifiedKey $callable Callable function to generate new keys for the resulting stream.
+ *
+ * @return Stream<TModifiedKey, TValue>
+ *
+ * @see Operator\IndexBy
+ */
+function index_by(iterable $source, callable $callable): Stream
+{
+    return new Stream(
+        new Operator\IndexBy($source, $callable)
+    );
+}
+
+/**
  * Create keys operator.
  *
  * @template TKey
@@ -354,6 +377,28 @@ function overflow(iterable $source, int $capacity, \Throwable|callable|null $thr
 {
     return new Stream(
         new Operator\Overflow($source, $capacity, $throw)
+    );
+}
+
+/**
+ * Create pairwise operator.
+ *
+ * @template TKey1
+ * @template TValue1
+ * @template TKey2
+ * @template TValue2
+ *
+ * @param iterable<TKey1, TValue1> $first  First stream source to iterate over.
+ * @param iterable<TKey2, TValue2> $second Second stream source to iterate over.
+ *
+ * @return Stream<array{TKey1|null,TKey2|null}, array{TValue1|null,TValue2|null}>
+ *
+ * @see Operator\Pairwise
+ */
+function pairwise(iterable $first, iterable $second): Stream
+{
+    return new Stream(
+        new Operator\Pairwise($first, $second)
     );
 }
 

@@ -59,11 +59,8 @@ final class IterableCollector implements \IteratorAggregate, CollectorInterface
     /**
      * @param iterable<TKey, TValue> $source Stream source to collect.
      */
-    public function __construct(
-        private readonly iterable $source,
-        public readonly int       $offset = 0,
-        public readonly ?int      $limit = null,
-    ) {
+    public function __construct(private readonly iterable $source)
+    {
         // noop.
     }
 
