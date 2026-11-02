@@ -40,9 +40,9 @@ final class Max implements ReducerInterface
      * @param ComparatorCallable|null $comparator Optional comparator.
      */
     public function __construct(
-        mixed     $initial = null,
         ?callable $extractor = null,
         ?callable $comparator = null,
+        mixed     $initial = null,
     ) {
         $this->value      = $initial;
         $this->extractor  = null !== $extractor ? $extractor(...) : static fn(mixed $value): mixed => $value;

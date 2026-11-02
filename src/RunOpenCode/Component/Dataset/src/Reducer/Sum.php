@@ -32,8 +32,8 @@ final class Sum implements ReducerInterface
      * @param ExtractorCallable|null $extractor Optional reducible value extractor.
      */
     public function __construct(
-        int|float|null $initial = null,
         ?callable      $extractor = null,
+        int|float|null $initial = null,
     ) {
         $this->value     = $initial;
         $this->extractor = null !== $extractor ? $extractor(...) : static fn(mixed $value): mixed => $value;

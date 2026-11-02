@@ -51,9 +51,9 @@ final class Average implements ReducerInterface
      * @param bool                   $countNull Should `null` values be accounted for, `false` by default.
      */
     public function __construct(
-        int|float|null        $initial = null,
         ?callable             $extractor = null,
         private readonly bool $countNull = false,
+        int|float|null        $initial = null,
     ) {
         $this->extractor = null !== $extractor ? $extractor(...) : static fn(mixed $value): mixed => $value;
         $this->total     = null !== $initial ? (float)$initial : null;
