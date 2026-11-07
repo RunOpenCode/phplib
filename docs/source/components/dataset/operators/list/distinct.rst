@@ -43,6 +43,8 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream((static function(): iterable {
            yield 'a' => 1;
            yield 'a' => 2;

@@ -32,5 +32,7 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream(['a' => 1, 'b' => 2, 'c' => 3])
        ->skip(2); // yields 'c' => 3

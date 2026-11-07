@@ -37,7 +37,10 @@ Index entities by their ID.
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+   use Application\Model\MyEntity;
+
    new Stream($dataset)
        ->indexBy(function(MyEntity $entity): int {
            return $entity->getId();
-       });
+       }); // yields MyEntity with ID as key instead of 0, 1, 2, 3, ...

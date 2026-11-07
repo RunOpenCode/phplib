@@ -38,6 +38,8 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    // Sort by values.
    new Stream(['a' => 3, 'b' => 1, 'c' => 2])
        ->sort(

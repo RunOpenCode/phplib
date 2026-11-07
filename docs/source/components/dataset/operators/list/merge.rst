@@ -36,6 +36,8 @@ report for all clients.
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    $usClients = $usDbConnection->execute('SELECT ...');
    $euClients = $euDbConnection->execute('SELECT ...');
 

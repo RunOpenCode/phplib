@@ -32,5 +32,7 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream($dataset)
-       ->values();
+       ->values(); // yields only values of the dataset, zero-based indexed.

@@ -17,9 +17,13 @@ Transformation operators
    left_join
    map
    merge
+   pairwise
+   reduce
    reverse
    sort
    values
+   with_all
+   zip
 
 Filtering operators
 -------------------

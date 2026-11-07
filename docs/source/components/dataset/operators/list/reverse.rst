@@ -34,5 +34,7 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream(['a' => 1, 'b' => 2, 'c' => 3])
        ->reverse(); // yields 'c' => 3, 'b' => 2, 'a' => 1

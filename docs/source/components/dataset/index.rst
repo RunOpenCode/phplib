@@ -171,3 +171,23 @@ The example below uses ``echo`` to demonstrate the concept:
 
 So, during this process, memory footprint is almost as low as amount of memory
 required for storing one row.
+
+TODO
+----
+
+**Nice to have operators:**
+
+- **slice** - to slice the stream into a smaller stream, similar to array_slice.
+- **skipUntil** - skip items while condition is false, similar to takeUntil.
+- **takeWhile** and **skipWhile** - take or skip items while condition is true.
+- **truthy** - filter items that are truthy.
+- **notNull** - filter items that are not null.
+- **slidingWindow** - collect n items into a sliding window, then slide the window by m, m < n items.
+
+**Feature to consider:**
+
+- **Climbing upstream to detect inner operators** - since each operator decorates the stream,
+  it is impossible to utilise inner operators additional features. Upstreams are available,
+  but developer must iterate over them to detect inner operators. This is not ideal, could
+  be improved by adding a method to AbstractStream class that would allow to detect inner 
+  operators without iterating over them.

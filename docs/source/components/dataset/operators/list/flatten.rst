@@ -36,6 +36,9 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+   use RunOpenCode\Component\Dataset\Model\Buffer;
+
    new Stream($dataset)
        ->bufferCount(100)
        ->tap(function(Buffer $buffer): void {

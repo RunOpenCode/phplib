@@ -60,6 +60,8 @@ However, with this operator, same result can be achieved in declarative manner:
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream(...)
        ->filter(...)
        ->map(...)

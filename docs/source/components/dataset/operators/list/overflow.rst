@@ -39,8 +39,9 @@ Execute query which should yield number of items not more than expected count
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    $accounts = $database->execute('SELECT * FROM accounts WHERE accounts.user_id = :user');
 
    new Stream($accounts)
-       ->overflow(10)
-       ->collect(ArrayCollector::class);
+       ->overflow(10); // throws exception if more than 10 accounts are yielded.

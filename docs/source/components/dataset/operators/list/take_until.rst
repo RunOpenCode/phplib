@@ -32,6 +32,8 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream(['a' => 1, 'b' => 2, 'c' => 3])
        ->takeUntil(static fn(int $value, string $key): bool => $value > 2); 
        // yields 'a' => 1, 'b' => 2

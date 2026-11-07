@@ -33,6 +33,8 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream([1, 2, 3, 4, 5, 6])
        ->filter(static fn(int $value): bool => 0 === $value % 2);
 

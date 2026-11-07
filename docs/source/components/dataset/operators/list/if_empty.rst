@@ -55,5 +55,7 @@ exception.
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream($dataset)
        ->ifEmpty(new \RuntimeException('At least one record is expected.'));

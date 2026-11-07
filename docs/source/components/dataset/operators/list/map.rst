@@ -40,6 +40,8 @@ indexed by identifier.
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    $dataset = $database->execute('SELECT ...');
 
    new Stream($dataset)

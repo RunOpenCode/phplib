@@ -2,45 +2,49 @@
 pairwise()
 ==========
 
-Iterates over two streaming sources in parallel, yielding pairs of keys and 
-values from both sources.
+Iterates stream source and yields paired keys and values from previous iteration
+and current iteration.
 
-If size of both sources is not equal, missing keys and values will be filled 
-with `null` values.
+If stream source has less than two elements, the stream will be empty.
 
 .. php:namespace:: RunOpenCode\Component\Dataset\Operator
 
 
 .. php:class:: Pairwise
 
-   .. php:method:: __construct(iterable<TKey1, TValue1> $first, iterable<TKey2, TValue2> $second)
+   .. php:method:: __construct(iterable<TKey, TValue> $source
 
-      :param $first: ``iterable<TKey1, TValue1>`` First stream source to iterate over.
-      :param $second: ``iterable<TKey2, TValue2>`` Second stream source to iterate over.
-
+      :param $source: ``iterable<TKey, TValue>`` Stream source to iterate over.
 
    .. php:method:: getIterator()
 
-      :returns: ``\Traversable<array{TKey1|null, TKey2|null}, array{TValue1|null, TValue2|null}>`` Stream containing paired keys and values from both sources.
+      :returns: ``\Traversable<array{TKey, TKey}, array{TValue, TValue}>`` Stream containing paired keys and values from previous and current iteration.
 
 Use cases
 ---------
 
-* Combine two stream sources into one and iterate over them in parallel.
+* Combine previous and current iteration values to calculate delta between two iterations.
 
 Example
 -------
 
-Combine client records from a sharded database to produce a single consolidated
-report for all clients.
+Combine sequence of transactions to yield deltas.
 
 .. code-block:: php
    :linenos:
 
    <?php
 
-   $usClients = $usDbConnection->execute('SELECT ...');
-   $euClients = $euDbConnection->execute('SELECT ...');
+   use RunOpenCode\Component\Dataset\Stream;
 
-   new Stream($usClients)
-       ->merge($euClients);
+   $transactions = $connection->execute('SELECT ...');
+
+   new Stream($transactions)
+       ->pairwise()
+       ->map(function (array $previous, array $current): array {
+           return [
+                'delta' => $current['amount'] - $previous['amount'],
+                'previous' => $previous,
+                'current' => $current,
+           ];
+       }) 

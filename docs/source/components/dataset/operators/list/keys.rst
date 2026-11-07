@@ -32,5 +32,7 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream($dataset)
-       ->keys();
+       ->keys(); // yields only keys of the dataset.

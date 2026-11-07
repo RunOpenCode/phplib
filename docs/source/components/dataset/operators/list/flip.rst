@@ -33,5 +33,7 @@ Example
 
    <?php
 
+   use RunOpenCode\Component\Dataset\Stream;
+
    new Stream($dataset)
-       ->keys();
+       ->flip(); // yields value => key instead of key => value.
