@@ -12,6 +12,7 @@ Transformation operators
    buffer_while
    flatten
    flip
+   index_by
    keys
    left_join
    map

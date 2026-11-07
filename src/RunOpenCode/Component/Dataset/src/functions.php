@@ -53,6 +53,33 @@ function iterable_to_list(iterable $iterable): array
 }
 
 /**
+ * Converts an iterable to an iterator.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey,TValue> $iterable The iterable to convert.
+ *
+ * @return \Iterator<TKey,TValue> The resulting iterator.
+ */
+function to_iterator(iterable $iterable): \Iterator
+{
+    if (\is_array($iterable)) {
+        return new \ArrayIterator($iterable);
+    }
+
+    if ($iterable instanceof \Iterator) {
+        return $iterable;
+    }
+
+    return (static function() use ($iterable): \Iterator {
+        foreach ($iterable as $key => $value) {
+            yield $key => $value;
+        }
+    })();
+}
+
+/**
  * Create new stream.
  *
  * @template TKey
@@ -383,22 +410,19 @@ function overflow(iterable $source, int $capacity, \Throwable|callable|null $thr
 /**
  * Create pairwise operator.
  *
- * @template TKey1
- * @template TValue1
- * @template TKey2
- * @template TValue2
+ * @template TKey
+ * @template TValue
  *
- * @param iterable<TKey1, TValue1> $first  First stream source to iterate over.
- * @param iterable<TKey2, TValue2> $second Second stream source to iterate over.
+ * @param iterable<TKey, TValue> $source First stream source to iterate over.
  *
- * @return Stream<array{TKey1|null,TKey2|null}, array{TValue1|null,TValue2|null}>
+ * @return Stream<array{TKey,TKey}, array{TValue,TValue}>
  *
  * @see Operator\Pairwise
  */
-function pairwise(iterable $first, iterable $second): Stream
+function pairwise(iterable $source): Stream
 {
     return new Stream(
-        new Operator\Pairwise($first, $second)
+        new Operator\Pairwise($source)
     );
 }
 
@@ -538,6 +562,115 @@ function values(iterable $source): Stream
 {
     return new Stream(
         new Operator\Values($source)
+    );
+}
+
+/**
+ * Create with all operator.
+ *
+ * @template TKey
+ * @template TValue
+ *
+ * @param iterable<TKey, TValue>               $source    Stream source to iterate over.
+ * @param callable(Buffer<TKey, TValue>): void $finalizer User defined callable to invoke when iterator is depleted, or operator instance is garbage collected.
+ *
+ * @return Stream<TKey, TValue>
+ *
+ * @see Operator\WithAll
+ */
+function withAll(iterable $source, callable $finalizer): Stream
+{
+    return new Stream(
+        new Operator\WithAll($source, $finalizer)
+    );
+}
+
+/**
+ * Create zip operator.
+ *
+ * @template TKey1
+ * @template TValue1
+ * @template TKey2
+ * @template TValue2
+ *
+ * @param iterable<TKey1, TValue1>      $first  First stream source to iterate over.
+ * @param iterable<TKey2, TValue2>      $second Second stream source to iterate over.
+ * @param 'strict'|'longest'|'shortest' $mode   Mode of operation. Can be either 'strict', 'longest', or 'shortest'. Defaults to 'strict'.
+ *
+ * @return Stream<array{TKey1|null,TKey2|null}, array{TValue1|null,TValue2|null}>
+ *
+ * @see Operator\Zip
+ */
+function zip(iterable $first, iterable $second, string $mode = 'strict'): Stream
+{
+    return new Stream(
+        new Operator\Zip($first, $second, $mode)
+    );
+}
+
+/**
+ * Create zip longest operator.
+ *
+ * @template TKey1
+ * @template TValue1
+ * @template TKey2
+ * @template TValue2
+ *
+ * @param iterable<TKey1, TValue1> $first  First stream source to iterate over.
+ * @param iterable<TKey2, TValue2> $second Second stream source to iterate over.
+ *
+ * @return Stream<array{TKey1|null,TKey2|null}, array{TValue1|null,TValue2|null}>
+ *
+ * @see Operator\ZipLongest
+ */
+function zip_longest(iterable $first, iterable $second): Stream
+{
+    return new Stream(
+        new Operator\ZipLongest($first, $second)
+    );
+}
+
+/**
+ * Create zip shortest operator.
+ *
+ * @template TKey1
+ * @template TValue1
+ * @template TKey2
+ * @template TValue2
+ *
+ * @param iterable<TKey1, TValue1> $first  First stream source to iterate over.
+ * @param iterable<TKey2, TValue2> $second Second stream source to iterate over.
+ *
+ * @return Stream<array{TKey1,TKey2}, array{TValue1,TValue2}>
+ *
+ * @see Operator\ZipShortest
+ */
+function zip_shortest(iterable $first, iterable $second): Stream
+{
+    return new Stream(
+        new Operator\ZipShortest($first, $second)
+    );
+}
+
+/**
+ * Create zip strict operator.
+ *
+ * @template TKey1
+ * @template TValue1
+ * @template TKey2
+ * @template TValue2
+ *
+ * @param iterable<TKey1, TValue1> $first  First stream source to iterate over.
+ * @param iterable<TKey2, TValue2> $second Second stream source to iterate over.
+ *
+ * @return Stream<array{TKey1,TKey2}, array{TValue1,TValue2}>
+ *
+ * @see Operator\ZipStrict
+ */
+function zip_strict(iterable $first, iterable $second): Stream
+{
+    return new Stream(
+        new Operator\ZipStrict($first, $second)
     );
 }
 

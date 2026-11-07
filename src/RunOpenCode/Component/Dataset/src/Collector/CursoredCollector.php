@@ -133,7 +133,6 @@ final class CursoredCollector implements \IteratorAggregate, CollectorInterface
                 continue;
             }
 
-            // @phpstan-ignore-next-line greater.invalid
             if (null !== $this->limit && $iteration > $this->limit) {
                 $this->hasMore   = true;
                 $this->exhausted = true;

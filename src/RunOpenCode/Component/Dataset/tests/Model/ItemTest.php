@@ -27,8 +27,8 @@ final class ItemTest extends TestCase
     {
         $item = new Item('1', 1);
 
-        $this->assertArrayHasKey(0, $item); // @phpstan-ignore-line argument.type
-        $this->assertArrayHasKey(1, $item); // @phpstan-ignore-line argument.type
+        $this->assertArrayHasKey(0, $item);
+        $this->assertArrayHasKey(1, $item);
         $this->assertSame('1', $item[0]);
         $this->assertSame(1, $item[1]);
     }

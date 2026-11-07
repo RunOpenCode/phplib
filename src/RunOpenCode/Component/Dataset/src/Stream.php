@@ -34,6 +34,10 @@ use function RunOpenCode\Component\Dataset\take as dataset_take;
 use function RunOpenCode\Component\Dataset\takeUntil as dataset_take_until;
 use function RunOpenCode\Component\Dataset\tap as dataset_tap;
 use function RunOpenCode\Component\Dataset\values as dataset_values;
+use function RunOpenCode\Component\Dataset\withAll as dataset_with_all;
+use function RunOpenCode\Component\Dataset\zip_strict as dataset_zip_strict;
+use function RunOpenCode\Component\Dataset\zip_shortest as dataset_zip_shortest;
+use function RunOpenCode\Component\Dataset\zip_longest as dataset_zip_longest;
 use function RunOpenCode\Component\Dataset\overflow as dataset_overflow;
 use function RunOpenCode\Component\Dataset\pairwise as dataset_pairwise;
 use function RunOpenCode\Component\Dataset\operator as dataset_operator;
@@ -293,18 +297,13 @@ final class Stream extends AbstractStream
     /**
      * Applies pairwise operator on current stream.
      *
-     * @template TKeyOther
-     * @template TValueOther
-     *
-     * @param iterable<TKeyOther, TValueOther> $second Second source to iterate over.
-     *
-     * @return self<array{TKey|null, TKeyOther|null}, array{TValue|null, TValueOther|null}>
+     * @return self<array{TKey, TKey}, array{TValue, TValue}>
      *
      * @see Operator\Pairwise
      */
-    public function pairwise(iterable $second): self
+    public function pairwise(): self
     {
-        return dataset_pairwise($this, $second);
+        return dataset_pairwise($this);
     }
 
     /**
@@ -404,6 +403,94 @@ final class Stream extends AbstractStream
     public function values(): self
     {
         return dataset_values($this);
+    }
+
+    /**
+     * Applies withAll operator on current stream.
+     *
+     * @param callable(Buffer<TKey, TValue>): void $finalizer User defined callable to invoke when iterator is depleted, or operator instance is garbage collected.
+     *
+     * @return self<TKey, TValue>
+     *
+     * @see Operator\WithAll
+     */
+    public function withAll(callable $finalizer): self
+    {
+        return dataset_with_all($this, $finalizer);
+    }
+
+    /**
+     * Applies zip operator on current stream.
+     *
+     * @template TKeyOther
+     * @template TValueOther
+     *
+     * @param iterable<TKeyOther, TValueOther> $other Second source to iterate over.
+     * @param 'strict'|'longest'|'shortest'    $mode  Mode of the zip operation. If `strict`, both sources must have equal length, otherwise exception is thrown. If `longest`, shorter source will be filled with `null` values.
+     *
+     *
+     * @return ($mode is 'strict'|'shortest' ? self<array{TKey, TKeyOther}, array{TValue, TValueOther}> : self<array{TKey|null, TKeyOther|null}, array{TValue|null, TValueOther|null}>)
+     *
+     * @see Operator\Zip
+     */
+    public function zip(iterable $other, string $mode = 'strict'): self
+    {
+        return match ($mode) {
+            'strict' => dataset_zip_strict($this, $other),
+            'longest' => dataset_zip_longest($this, $other),
+            'shortest' => dataset_zip_shortest($this, $other),
+        };
+    }
+
+    /**
+     * Applies zip longest operator on current stream.
+     *
+     * @template TKeyOther
+     * @template TValueOther
+     *
+     * @param iterable<TKeyOther, TValueOther> $other Second source to iterate over.
+     *
+     * @return self<array{TKey|null, TKeyOther|null}, array{TValue|null, TValueOther|null}>
+     *
+     * @see Operator\ZipLongest
+     */
+    public function zipLongest(iterable $other): self
+    {
+        return dataset_zip_longest($this, $other);
+    }
+
+    /**
+     * Applies zip shortest operator on current stream.
+     *
+     * @template TKeyOther
+     * @template TValueOther
+     *
+     * @param iterable<TKeyOther, TValueOther> $other Second source to iterate over.
+     *
+     * @return self<array{TKey, TKeyOther}, array{TValue, TValueOther}>
+     *
+     * @see Operator\ZipShortest
+     */
+    public function zipShortest(iterable $other): self
+    {
+        return dataset_zip_shortest($this, $other);
+    }
+
+    /**
+     * Applies zip strict operator on current stream.
+     *
+     * @template TKeyOther
+     * @template TValueOther
+     *
+     * @param iterable<TKeyOther, TValueOther> $other Second source to iterate over.
+     *
+     * @return self<array{TKey, TKeyOther}, array{TValue, TValueOther}>
+     *
+     * @see Operator\ZipShortest
+     */
+    public function zipStrict(iterable $other): self
+    {
+        return dataset_zip_strict($this, $other);
     }
 
     /**

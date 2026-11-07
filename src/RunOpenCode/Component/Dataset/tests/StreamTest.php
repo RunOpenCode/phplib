@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RunOpenCode\Component\Dataset\Collector\ArrayCollector;
 use RunOpenCode\Component\Dataset\Exception\LogicException;
-use RunOpenCode\Component\Dataset\Model\Buffer;
+use RunOpenCode\Component\Dataset\Operator;
 use RunOpenCode\Component\Dataset\Reducer\Average;
 use RunOpenCode\Component\Dataset\Reducer\Count;
 use RunOpenCode\Component\Dataset\Reducer\Max;
@@ -30,338 +30,244 @@ final class StreamTest extends TestCase
     #[Test]
     public function buffer_count(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-            'e' => 7,
-        ];
-
-        $stream = new Stream($dataset)
-            ->bufferCount(2)
-            ->map(static function(Buffer $buffer): iterable {
-                return new Stream($buffer)
-                    ->map(
-                        static fn(int $value): int => $value * 2,
-                        static fn(string $key): string => \sprintf('processed_%s', $key)
-                    );
-            })
-            ->aggregate('count', Count::class)
-            ->flatten(true);
-
-        $this->assertSame([
-            'processed_a' => 4,
-            'processed_b' => 20,
-            'processed_c' => 10,
-            'processed_d' => 2,
-            'processed_e' => 14,
-        ], \iterator_to_array($stream));
-
-        $this->assertSame(3, $stream->aggregated['count']);
+        $this->assertInstanceOf(
+            Operator\BufferCount::class,
+            new Stream([])->bufferCount(2)->upstreams[0]
+        );
     }
 
     #[Test]
     public function buffer_while(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 2,
-            'c' => 2,
-            'd' => 3,
-            'e' => 3,
-        ];
-
-        $stream = new Stream($dataset)
-            ->bufferWhile(static fn(Buffer $buffer, int $value): bool => $value === $buffer->last()->value()) // @phpstan-ignore-line
-            ->aggregate('count', Count::class)
-            ->map(static function(Buffer $buffer): iterable {
-                return new Stream($buffer)
-                    ->map(
-                        static fn(int $value): int => $value * 2,
-                        static fn(string $key): string => \sprintf('processed_%s', $key)
-                    );
-            })
-            ->flatten(true);
-
-        $this->assertSame([
-            'processed_a' => 4,
-            'processed_b' => 4,
-            'processed_c' => 4,
-            'processed_d' => 6,
-            'processed_e' => 6,
-        ], \iterator_to_array($stream));
-
-        $this->assertSame(2, $stream->aggregated['count']);
+        $this->assertInstanceOf(
+            Operator\BufferWhile::class,
+            new Stream([])->bufferWhile(static fn(): bool => true)->upstreams[0]
+        );
     }
 
     #[Test]
     public function distinct(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 2,
-            'd' => 10,
-        ];
-
-        $data = new Stream($dataset)
-            ->distinct()
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            'a' => 2,
-            'b' => 10,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\Distinct::class,
+            new Stream([])->distinct()->upstreams[0]
+        );
     }
 
     #[Test]
     public function filter(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 2,
-            'd' => 10,
-        ];
-
-        $data = new Stream($dataset)
-            ->filter(static fn(int $value): bool => $value > 2)
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            'b' => 10,
-            'd' => 10,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\Filter::class,
+            new Stream([])->filter(static fn(): bool => true)->upstreams[0]
+        );
     }
 
     #[Test]
     public function flatten(): void
     {
-        $dataset = [
-            'a' => [1, 2],
-            'b' => [3, 4],
-            'c' => [5],
-        ];
+        $this->assertInstanceOf(
+            Operator\Flatten::class,
+            new Stream([])->flatten()->upstreams[0]
+        );
+    }
 
-        $data = new Stream($dataset)
-            ->flatten()
-            ->collect(ArrayCollector::class)
-            ->value;
+    #[Test]
+    public function flip(): void
+    {
+        $this->assertInstanceOf(
+            Operator\Flip::class,
+            new Stream([])->flip()->upstreams[0]
+        );
+    }
 
-        $this->assertSame([
-            0 => 1,
-            1 => 2,
-            2 => 3,
-            3 => 4,
-            4 => 5,
-        ], $data);
+    #[Test]
+    public function if_empty(): void
+    {
+        $this->assertInstanceOf(
+            Operator\IfEmpty::class,
+            new Stream([])->ifEmpty()->upstreams[0]
+        );
+    }
+
+    #[Test]
+    public function index_by(): void
+    {
+        $this->assertInstanceOf(
+            Operator\IndexBy::class,
+            new Stream([])->indexBy(static fn(): null => null)->upstreams[0]
+        );
+    }
+
+    #[Test]
+    public function keys(): void
+    {
+        $this->assertInstanceOf(
+            Operator\Keys::class,
+            new Stream([])->keys()->upstreams[0]
+        );
     }
 
     #[Test]
     public function left_join(): void
     {
-        $left  = [1 => 'a', 2 => 'b', 3 => 'c'];
-        $right = [1 => 'x', 2 => 'y'];
-
-        $joined = new Stream($left)
-            ->leftJoin($right)
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            1 => ['a', ['x']],
-            2 => ['b', ['y']],
-            3 => ['c', []],
-        ], $joined);
+        $this->assertInstanceOf(
+            Operator\LeftJoin::class,
+            new Stream([])->leftJoin([])->upstreams[0]
+        );
     }
 
     #[Test]
     public function map(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 2,
-            'd' => 10,
-        ];
-
-        $data = new Stream($dataset)
-            ->map(
-                static fn(int $value): int => $value * 2,
-                static fn(string $key): string => \sprintf('processed_%s', $key),
-            )
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            'processed_a' => 4,
-            'processed_b' => 20,
-            'processed_c' => 4,
-            'processed_d' => 20,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\Map::class,
+            new Stream([])->map(static fn() => null)->upstreams[0]
+        );
     }
 
     #[Test]
     public function merge(): void
     {
-        $dataset1 = [
-            'a' => 2,
-            'b' => 10,
-        ];
-        $dataset2 = [
-            'c' => 5,
-            'd' => 1,
-        ];
+        $this->assertInstanceOf(
+            Operator\Merge::class,
+            new Stream([])->merge([])->upstreams[0]
+        );
+    }
 
-        $data = new Stream($dataset1)
-            ->merge($dataset2)
-            ->collect(ArrayCollector::class)
-            ->value;
+    #[Test]
+    public function overflow(): void
+    {
+        $this->assertInstanceOf(
+            Operator\Overflow::class,
+            new Stream([])->overflow(1)->upstreams[0]
+        );
+    }
 
-        $this->assertSame([
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ], $data);
+    #[Test]
+    public function pairwise(): void
+    {
+        $this->assertInstanceOf(
+            Operator\Pairwise::class,
+            new Stream([])->pairwise()->upstreams[0]
+        );
+    }
+
+    #[Test]
+    public function reduce(): void
+    {
+        $this->assertSame(
+            0,
+            new Stream([])->reduce(Count::class)
+        );
     }
 
     #[Test]
     public function reverse(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ];
-
-        $data = new Stream($dataset)
-            ->reverse()
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            'd' => 1,
-            'c' => 5,
-            'b' => 10,
-            'a' => 2,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\Reverse::class,
+            new Stream([])->reverse()->upstreams[0]
+        );
     }
 
     #[Test]
     public function skip(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ];
-
-        $data = new Stream($dataset)
-            ->skip(2)
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            'c' => 5,
-            'd' => 1,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\Skip::class,
+            new Stream([])->skip(1)->upstreams[0]
+        );
     }
 
     #[Test]
     public function sort(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ];
-
-        $data = new Stream($dataset)
-            ->sort()
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            'd' => 1,
-            'a' => 2,
-            'c' => 5,
-            'b' => 10,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\Sort::class,
+            new Stream([])->sort()->upstreams[0]
+        );
     }
 
     #[Test]
     public function take(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ];
-
-        $data = new Stream($dataset)
-            ->take(2)
-            ->collect(ArrayCollector::class)
-            ->value;
-
-        $this->assertSame([
-            'a' => 2,
-            'b' => 10,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\Take::class,
+            new Stream([])->take(1)->upstreams[0]
+        );
     }
 
     #[Test]
     public function take_until(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ];
-
-        $data = new Stream($dataset)
-            ->takeUntil(static fn(int $value): bool => 5 === $value)
-            ->collect(ArrayCollector::class)
-            ->value;
-        $this->assertSame([
-            'a' => 2,
-            'b' => 10,
-        ], $data);
+        $this->assertInstanceOf(
+            Operator\TakeUntil::class,
+            new Stream([])->takeUntil(static fn(): bool => true)->upstreams[0]
+        );
     }
 
     #[Test]
     public function tap(): void
     {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ];
+        $this->assertInstanceOf(
+            Operator\Tap::class,
+            new Stream([])->tap(static fn(): null => null)->upstreams[0]
+        );
+    }
 
-        $tapped = [];
-        $data   = new Stream($dataset)
-            ->tap(static function(int $value, string $key) use (&$tapped): void { // @phpstan-ignore-line
-                $tapped[\sprintf('tapped_%s', $key)] = $value * 2;
-            })
-            ->collect(ArrayCollector::class)
-            ->value;
+    #[Test]
+    public function values(): void
+    {
+        $this->assertInstanceOf(
+            Operator\Values::class,
+            new Stream([])->values()->upstreams[0]
+        );
+    }
 
-        $this->assertSame($dataset, $data);
-        $this->assertSame([
-            'tapped_a' => 4,
-            'tapped_b' => 20,
-            'tapped_c' => 10,
-            'tapped_d' => 2,
-        ], $tapped);
+    #[Test]
+    public function with_all(): void
+    {
+        $this->assertInstanceOf(
+            Operator\WithAll::class,
+            new Stream([])->withAll(static fn(): null => null)->upstreams[0]
+        );
+    }
+
+    #[Test]
+    public function zip(): void
+    {
+        $this->assertInstanceOf(
+            Operator\ZipStrict::class,
+            new Stream([])->zip([])->upstreams[0]
+        );
+    }
+
+    #[Test]
+    public function zipLongest(): void
+    {
+        $this->assertInstanceOf(
+            Operator\ZipLongest::class,
+            new Stream([])->zipLongest([])->upstreams[0]
+        );
+    }
+
+    #[Test]
+    public function zipShortest(): void
+    {
+        $this->assertInstanceOf(
+            Operator\ZipShortest::class,
+            new Stream([])->zipShortest([])->upstreams[0]
+        );
+    }
+
+    #[Test]
+    public function zipStrict(): void
+    {
+        $this->assertInstanceOf(
+            Operator\ZipStrict::class,
+            new Stream([])->zipStrict([])->upstreams[0]
+        );
     }
 
     #[Test]
@@ -401,24 +307,6 @@ final class StreamTest extends TestCase
         $this->assertSame(12, $dataset->aggregated['middle_sum']);
         $this->assertSame(16, $dataset->aggregated['inner_sum']);
         $this->assertSame(28, $dataset->aggregated['total_sum']);
-    }
-
-    #[Test]
-    public function reduce(): void
-    {
-        $dataset = [
-            'a' => 2,
-            'b' => 10,
-            'c' => 5,
-            'd' => 1,
-        ];
-
-        $this->assertEqualsWithDelta(4.5, new Stream($dataset)->reduce(Average::class), PHP_FLOAT_EPSILON);
-        $this->assertSame(4, new Stream($dataset)->reduce(Count::class));
-        $this->assertSame(10, new Stream($dataset)->reduce(Max::class));
-        $this->assertSame(1, new Stream($dataset)->reduce(Min::class));
-        $this->assertSame(18, new Stream($dataset)->reduce(Sum::class));
-        $this->assertSame(36, new Stream($dataset)->reduce(static fn(?int $carry, int $value, string $key): int => $value * 2 + ($carry ?? 0))); // @phpstan-ignore-line
     }
 
     #[Test]

@@ -79,13 +79,12 @@ final class RegistryTest extends TestCase
 
         $this->assertCount(1, $registry);
         $this->assertSame($aggregator, $registry['foo']);
-        // @phpstan-ignore-next-line isset.offset
         $this->assertArrayHasKey('foo', $registry);
 
         unset($registry['foo']);
 
         $this->assertCount(0, $registry);
-        $this->assertArrayNotHasKey('foo', $registry); // @phpstan-ignore-line argument.type
+        $this->assertArrayNotHasKey('foo', $registry);
     }
 
     #[Test]
