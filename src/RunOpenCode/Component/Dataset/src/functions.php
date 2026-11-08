@@ -487,6 +487,28 @@ function sort(iterable $source, ?callable $comparator = null, bool $byKeys = fal
 }
 
 /**
+ * Create switch map operator.
+ *
+ * @template TKey
+ * @template TValue
+ * @template TInnerKey
+ * @template TInnerValue
+ *
+ * @param iterable<TKey, TValue>                                    $source Stream source to iterate over.
+ * @param callable(TValue, TKey=): iterable<TInnerKey, TInnerValue> $mapper Mapper callable to transform each item.
+ *
+ * @return Stream<TInnerKey, TInnerValue>
+ *
+ * @see Operator\SwitchMap
+ */
+function switch_map(iterable $source, callable $mapper): Stream
+{
+    return new Stream(
+        new Operator\SwitchMap($source, $mapper)
+    );
+}
+
+/**
  * Create take operator.
  *
  * @template TKey

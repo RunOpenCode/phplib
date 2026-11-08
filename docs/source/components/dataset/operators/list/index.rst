@@ -21,6 +21,7 @@ Transformation operators
    reduce
    reverse
    sort
+   switch_map
    values
    with_all
    zip

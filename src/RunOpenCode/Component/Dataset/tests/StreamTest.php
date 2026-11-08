@@ -190,6 +190,15 @@ final class StreamTest extends TestCase
     }
 
     #[Test]
+    public function switch_map(): void
+    {
+        $this->assertInstanceOf(
+            Operator\SwitchMap::class,
+            new Stream([])->switchMap(static fn(): iterable => [])->upstreams[0]
+        );
+    }
+
+    #[Test]
     public function take(): void
     {
         $this->assertInstanceOf(

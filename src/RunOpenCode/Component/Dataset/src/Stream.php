@@ -30,6 +30,7 @@ use function RunOpenCode\Component\Dataset\reduce as dataset_reduce;
 use function RunOpenCode\Component\Dataset\reverse as dataset_reverse;
 use function RunOpenCode\Component\Dataset\skip as dataset_skip;
 use function RunOpenCode\Component\Dataset\sort as dataset_sort;
+use function RunOpenCode\Component\Dataset\switch_map as dataset_switch_map;
 use function RunOpenCode\Component\Dataset\take as dataset_take;
 use function RunOpenCode\Component\Dataset\takeUntil as dataset_take_until;
 use function RunOpenCode\Component\Dataset\tap as dataset_tap;
@@ -349,6 +350,23 @@ final class Stream extends AbstractStream
     public function sort(?callable $comparator = null, bool $byKeys = false): self
     {
         return dataset_sort($this, $comparator, $byKeys);
+    }
+    
+    /**
+     * Applies switchMap operator on current stream.
+     * 
+     * @template TInnerKey
+     * @template TInnerValue
+     *
+     * @param callable(TValue, TKey=): iterable<TInnerKey, TInnerValue> $mapper User defined callable to transform each item into an iterable.
+     *
+     * @return self<TInnerKey, TInnerValue>
+     *
+     * @see Operator\SwitchMap
+     */
+    public function switchMap(callable $mapper): self
+    {
+        return dataset_switch_map($this, $mapper);
     }
 
     /**
